@@ -922,7 +922,10 @@ define map<string,any> getHardDiskWidget () {
 			_("Power Saving")),
 		    `item (`id ("aggressiv_powersave"),
 			// combo box item
-			_("Aggressive Power Saving"))
+			_("Aggressive Power Saving")),
+		    `item (`id ("off"),
+			// combo box item
+			_("Disabled")),
 		])),
 	    `VStretch (),
 	    `Left (`ComboBox (`id (`acoustic), `opt (`hstretch),
@@ -938,6 +941,9 @@ define map<string,any> getHardDiskWidget () {
 		    `item (`id ("quiet"),
 			// combo box item
 			_("Maximally Quiet")),
+		    `item (`id ("off"),
+			// combo box item
+			_("Disabled")),
 		])),
 	    `VStretch ()
 	)),

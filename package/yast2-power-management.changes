@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Sep 17 10:09:13 CEST 2004 - jsrain@suse.cz
+
+- added possibility not to modify disk parameters (#45456)
+
+-------------------------------------------------------------------
 Fri Sep  3 14:31:53 CEST 2004 - jsrain@suse.cz
 
 - added GetModified and SetModified functions to _auto client
