@@ -458,7 +458,7 @@ global list Summary() {
 	// summary text, %1 is scheme name
 	sformat (_("AC scheme: %1"), ac_scheme),
 	// summary text, %1 is scheme name
-	sformat (_("Battery scheme: 1"), bat_scheme),
+	sformat (_("Battery scheme: %1"), bat_scheme),
     ];
 }
 

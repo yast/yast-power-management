@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon Mar 29 15:08:44 CEST 2004 - jsrain@suse.de
+
+- fixed summary displaying (#37242)
+
+-------------------------------------------------------------------
 Mon Mar 29 08:38:17 CEST 2004 - jsrain@suse.de
 
 - fixed aborting of saving process (#37205)
