@@ -497,7 +497,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 	    if (s["_scheme_id"]:"" == current)
 		descr = s["SCHEME_DESCRIPTION"]:"";
 	});
-	descr = PowerManagement::scheme_desciptions[descr]:descr;
+	descr = PowerManagement::TranslateSchemeDescription (descr);
 	if (descr == "")
 	{
 	    // fallback scheme description, displayed in a rich text
@@ -519,7 +519,7 @@ define void SchemeSelectionInit (string key) {
     list items = maplist (map<string,string> s, PowerManagement::schemes, {
 	string id = s["_scheme_id"]:"";
 	string name = s["SCHEME_NAME"]:id;
-	name = PowerManagement::scheme_names[name]:name;
+	name = PowerManagement::TranslateSchemeName (name);
 	return `item (`id (id), name);
     });
     UI::ReplaceWidget (`ac_scheme_rp,
@@ -607,9 +607,9 @@ define void SchemesRedraw () {
     {
 	string scheme_id = s["_scheme_id"]:"";
 	string name = s["SCHEME_NAME"]:scheme_id;
-	name = PowerManagement::scheme_names[name]:name;
+	name = PowerManagement::TranslateSchemeName (name);
 	string descr = s["SCHEME_DESCRIPTION"]:"";
-	descr = PowerManagement::scheme_desciptions[descr]:descr;
+	descr = PowerManagement::TranslateSchemeDescription (descr);
 	if (descr == "")
 	{
 	    // fallback scheme description, table entre
@@ -751,7 +751,7 @@ define void SchemeNameInit (string key) {
 	= PowerManagement::current_scheme["SCHEME_NAME"]:"";
     if (scheme_name == "")
         scheme_name = PowerManagement::current_scheme["_scheme_id"]:"";
-    scheme_name = PowerManagement::scheme_names[scheme_name]:scheme_name;
+    scheme_name = PowerManagement::TranslateSchemeName (scheme_name);
     original_scheme_name = PowerManagement::current_schemes[
 	PowerManagement::current_scheme_index, "SCHEME_NAME"]:"";
     UI::ChangeWidget (`id (key), `Value, scheme_name);
@@ -849,7 +849,7 @@ define map<string,any> getSchemeNameWidget () {
 define void SchemeDescrInit (string key) {
     string descr = (string)
 	(PowerManagement::current_scheme["SCHEME_DESCRIPTION"]:"");
-    descr = PowerManagement::scheme_desciptions[descr]:descr;
+    descr = PowerManagement::TranslateSchemeDescription (descr);
     UI::ChangeWidget (`id (key), `Value, descr);
 }
 

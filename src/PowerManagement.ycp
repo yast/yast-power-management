@@ -84,7 +84,8 @@ global map<string,string> new_schemes = $[];
 
 string apm_acpi = "";
 
-global map scheme_names = $[
+/* not needed any more, getting from kpowersave package
+ global map scheme_names = $[
     // power saving scheme name, combo box and default contents of text entry
     "Performance" : _("Performance"),
     // power saving scheme name, combo box and default contents of text entry
@@ -105,7 +106,7 @@ global map scheme_desciptions = $[
     "Scheme optimized to let machine run as quiet as possible." :
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let machine run as quietly as possible."),
-];
+];*/
 
 list<string> acpi_modes = nil;
 
@@ -540,6 +541,26 @@ global boolean ACPI () {
  */
 global boolean APM () {
     return tolower (apm_acpi) == "apm";
+}
+
+global string TranslatePowersaveText (string text) {
+    map out = (map)SCR::Execute (.target.bash_output, sformat (
+	"TEXTDOMAINDIR=/opt/kde3/share/locale/ gettext kpowersave \"%1\"",
+	text));
+    if (out["exit"]:-1 != 0)
+    {
+	return text;
+    }
+    string translated = out["stdout"]:"";
+    return translated;
+}
+
+global string TranslateSchemeName (string name) {
+    return TranslatePowersaveText (name);
+}
+
+global string TranslateSchemeDescription (string descr) {
+    return TranslatePowersaveText (descr);
 }
 
 /* EOF */

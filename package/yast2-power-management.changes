@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Dec 14 11:25:47 CET 2004 - jsrain@suse.cz
+
+- get scheme names and descriptions translatinos from kpowersave.po
+  (#46186, #46403)
+
+-------------------------------------------------------------------
 Thu Nov 18 17:36:31 CET 2004 - jsrain@suse.cz
 
 - checking if power-saving modes are supported for ACPI (#48175)
