@@ -394,7 +394,7 @@ next }
 	SCR::Write (
 	    .sysconfig.powersave.global.value + conf[0]:"" + conf[1]:"", v);
     });
-    SCR::Write (.etc.powersave.global, nil);
+    SCR::Write (.sysconfig.powersave.global, nil);
 
     if(! stage_success)
     {
