@@ -45,6 +45,7 @@ include "power-management/widgets.ycp";
  * @return `abort if aborted and `next otherwise
  */
 symbol ReadDialog() {
+    y2milestone ("Running read dialog");
     Wizard::RestoreHelp(HELPS["read"]:"");
     // PowerManagement::AbortFunction = PollAbort;
     boolean ret = PowerManagement::Read();
@@ -56,6 +57,7 @@ symbol ReadDialog() {
  * @return `abort if aborted and `next otherwise
  */
 symbol WriteDialog() {
+    y2milestone ("Running write dialog");
     Wizard::RestoreHelp(HELPS["write"]:"");
     // PowerManagement::AbortFunction = PollAbort;
     boolean ret = PowerManagement::Write();

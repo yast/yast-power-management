@@ -285,6 +285,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 	    if (s["_scheme_id"]:"" == current)
 		descr = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
 	});
+	descr = PowerManagement::scheme_desciptions[descr]:descr;
 	if (descr == "")
 	{
 	    // fallback scheme description, displayed in a rich text
@@ -306,6 +307,7 @@ define void SchemeSelectionInit (string key) {
     list items = maplist (map<string,string> s, PowerManagement::schemes, {
 	string id = s["_scheme_id"]:"";
 	string name = s["POWERSAVE_SCHEME_NAME"]:id;
+	name = PowerManagement::scheme_names[name]:name;
 	return `item (`id (id), name);
     });
     UI::ReplaceWidget (`ac_scheme_rp,
@@ -394,7 +396,9 @@ define void SchemesRedraw () {
     {
 	string scheme_id = s["_scheme_id"]:"";
 	string name = s["POWERSAVE_SCHEME_NAME"]:scheme_id;
+	name = PowerManagement::scheme_names[name]:name;
 	string descr = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+	descr = PowerManagement::scheme_desciptions[descr]:descr;
 	if (descr == "")
 	{
 	    // fallback scheme description, table entre
@@ -546,6 +550,7 @@ define void SchemeNameInit (string key) {
 	= PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"]:"";
     if (scheme_name == "")
         scheme_name = PowerManagement::current_scheme["_scheme_id"]:"";
+    original_scheme_name = scheme_name;
     scheme_name = PowerManagement::scheme_names[scheme_name]:scheme_name;
     UI::ChangeWidget (`id (key), `Value, scheme_name);
 }

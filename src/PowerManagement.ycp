@@ -115,6 +115,7 @@ global boolean Modified() {
  * @return true on success
  */
 global boolean Read() {
+    AbortFunction = nil; // FIXME check abort correctly
 
     /* PowerManagement read dialog caption */
     string caption = _("Initializing Configuration");
@@ -262,6 +263,7 @@ global boolean Read() {
  * @return true on success
  */
 global boolean Write() {
+    AbortFunction = nil; // FIXME check abort correctly
 
     /* PowerManagement read dialog caption */
     string caption = _("Saving Configuration");
@@ -299,6 +301,7 @@ global boolean Write() {
     if(Abort()) return false;
     Progress::NextStage();
 
+    y2milestone ("Writing power saving schemes");
     // copy new scheme files
     foreach (string dst, string src, new_schemes, ``{
 	if (dst != "")
@@ -325,6 +328,7 @@ next }
     // write the settings
     foreach (map<string,string> scheme, schemes, ``{
 	string id = scheme["_scheme_id"]:"";
+	y2milestone ("Writing scheme %1", id);
 	path p = add (.sysconfig.powersave.schemes.value, id);
 	foreach (string k, string v, scheme, ``{
 	    if (k != "_scheme_id")
@@ -346,6 +350,7 @@ next }
     if(Abort()) return false;
     Progress::NextStage ();
 
+    y2milestone ("Writing global settings");
     path p = .sysconfig.powersave.common;
     foreach (string k, string v, common_settings, ``{
 	SCR::Write (add (p, k), v);
@@ -371,8 +376,9 @@ next }
     if(Abort()) return false;
     Progress::NextStage ();
 
-    stage_success = Service::Restart ("powersave");
-    stage_success = Service::Enable ("powersave") && stage_success;
+    y2milestone ("Restarting powersave daemon");
+    stage_success = Service::Restart ("powersaved");
+    stage_success = Service::Enable ("powersaved") && stage_success;
 
     if(! stage_success)
     {
