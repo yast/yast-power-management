@@ -52,7 +52,7 @@ define void BatteryWarningStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getBatteryWarning () {
     return $[
@@ -139,7 +139,7 @@ define void AcpiButtonsStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getAcpiButtonsWidget () ``{
     return $[
@@ -204,7 +204,7 @@ define void EnableSTDStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getEnableSTDWidget () {
     return $[
@@ -268,7 +268,7 @@ on many machines. See help for details.
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getEnableSTRWidget () {
     return $[
@@ -286,7 +286,11 @@ define map<string,any> getEnableSTRWidget () {
 
 // warning related to STR and Stand-by
 
-define map getStrStandbyAdditionalHelp () {
+/**
+ * Get description map of a widget
+ * @return a map widget description map
+ */
+define map<string,any> getStrStandbyAdditionalHelp () {
     return $[
 	"widget" : `empty,
 	"help" : HELPS["str_standby_additional_info"]:"",
@@ -344,7 +348,7 @@ fails on many machines. See help for details.
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getEnableStandbyWidget () {
     return $[
@@ -375,7 +379,7 @@ define symbol BatteryWarningHandle (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getBatteryWarningButton () {
     return $[
@@ -401,7 +405,7 @@ define symbol AcpiSettingsButtonHandle (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getAcpiSettingsButton () {
     return $[
@@ -429,7 +433,7 @@ define symbol EnableSuspendButtonHandle (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getEnableSuspendButton () {
     return $[
@@ -522,7 +526,7 @@ define void SchemeSelectionStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getSchemeSelectionWidget () {
     return $[
@@ -679,7 +683,7 @@ define void SchemesInit (string key) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getSchemesListWidget () {
     return $[
@@ -791,7 +795,7 @@ define void SchemeNameStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getSchemeNameWidget () {
     return $[
@@ -831,7 +835,7 @@ define void SchemeDescrStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getSchemeDescrWidget () {
     return $[
@@ -877,7 +881,7 @@ define void HardDiskStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getHardDiskWidget () {
     return $[
@@ -965,7 +969,7 @@ define void CoolingPolicyStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getCoolingPolicyWidget () {
     return $[
@@ -1045,7 +1049,7 @@ define void CpuStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getCpuWidget () {
     return $[
@@ -1116,7 +1120,7 @@ define void ScreensaverStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getScreensaverWidget () {
     return $[
@@ -1198,7 +1202,7 @@ define void DpmsStore (string key, map event) {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 define map<string,any> getDpmsWidget () {
     return $[
@@ -1291,7 +1295,7 @@ define map<string,any> getDpmsWidget () {
 
 /**
  * Get description map of a widget
- * @return map widget description map
+ * @return a map widget description map
  */
 /*define map<string,any> getSuspendTimeoutWidget () {
     return $[

@@ -43,8 +43,10 @@ define boolean PrintHandler (map options) {
 	    {
 		if (printed)
 		    CommandLine::Print ("\n");
+		// cmdline output, %1 is scheme name
 		CommandLine::Print (sformat (_("Scheme Name: %1"),
 		    s["SCHEME_NAME"]:""));
+		// cmdline output, %1 is scheme description
 		CommandLine::Print (sformat (_("Scheme Description: %1"),
 		    s["SCHEME_DESCRIPTION"]:""));
 		foreach (string k, string v, s, {
@@ -63,6 +65,7 @@ define boolean PrintHandler (map options) {
     {
 	if (printed)
 	    CommandLine::Print ("\n");
+	// header for commandline output
 	CommandLine::Print (_("Power Saving Schemes\n"));
 	string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
 	if (scheme == "")
@@ -94,6 +97,7 @@ define boolean PrintHandler (map options) {
 	    return PowerManagement::TranslateSchemeName (s["SCHEME_NAME"]:nil);
 	});
 	available = filter (string s, available, {return s != nil;});
+	// cmdline about batter feedback, %1 is capacity level,
 	CommandLine::Print (sformat (_("Available Schemes: %1"),
 	    mergestring (available, ", ")));
 	printed = true;
@@ -102,10 +106,17 @@ define boolean PrintHandler (map options) {
     {
 	if (printed)
 	    CommandLine::Print ("\n");
+	// header for commandline output
 	CommandLine::Print (_("Battery Capacity Feedback\n"));
 	map<string,string> texts = $[
+	    // cmdline about batter feedback, %1 is capacity level,
+	    // %2 is the action if level reached (eg. suspend to disk)
 	    "WARNING" : _("Warning Capacity: %1%%, Action: %2"),
+	    // cmdline about batter feedback, %1 is capacity level,
+	    // %2 is the action if level reached (eg. suspend to disk)
 	    "LOW" : _("Low Capacity: %1%%, Action: %2"),
+	    // cmdline about batter feedback, %1 is capacity level,
+	    // %2 is the action if level reached (eg. suspend to disk)
 	    "CRITICAL" : _("Critical Capacity: %1%%, Action: %2"),
 	];
 	foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
@@ -122,10 +133,17 @@ define boolean PrintHandler (map options) {
     {
 	if (printed)
 	    CommandLine::Print ("\n");
+	// header for commandline output
 	CommandLine::Print (_("ACPI Button Actions\n"));
 	map<string,string> texts = $[
+	    // cmdline information about actions to be done if event occurres
+	    // %1 is the action (eg. suspend to disk)
 	    "POWER" : _("Power Button Action: %1"),
+	    // cmdline information about actions to be done if event occurres
+	    // %1 is the action (eg. suspend to disk)
 	    "SLEEP" : _("Sleep Button Action: %1"),
+	    // cmdline information about actions to be done if event occurres
+	    // %1 is the action (eg. suspend to disk)
 	    "LID_CLOSED" : _("Laptop Lid Closed Action: %1"),
 	];
 	foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
@@ -140,16 +158,22 @@ define boolean PrintHandler (map options) {
     {
 	if (printed)
 	    CommandLine::Print ("\n");
+	// header for commandline output
 	CommandLine::Print (_("Actions Allowed for Users\n"));
 	map <string,string> texts = $[
+	    // cmdline information about (dis)allowed operration, %1 = Yes or No
 	    "SUSPEND2DISK" : _("Suspend to Disk Allowed: %1"),
+	    // cmdline information about (dis)allowed operration, %1 = Yes or No
 	    "SUSPEND2RAM" : _("Suspend to RAM Allowed: %1"),
+	    // cmdline information about (dis)allowed operration, %1 = Yes or No
 	    "STANDBY" : _("Stand-by Allowed: %1"),
 	];
 	foreach (string w, ["SUSPEND2DISK", "SUSPEND2RAM", "STANDBY"], {
 	    string format = texts[w]:"";
 	    string allowed = GetActionAllowed (w)
+		// label to be put to messages like Suspend to Disk Allowed: %1
 		? _("Yes")
+		// label to be put to messages like Suspend to Disk Allowed: %1
 		: _("No");
 	    CommandLine::Print (sformat (format, allowed));
 	});
@@ -158,16 +182,23 @@ define boolean PrintHandler (map options) {
     return false;
 }
 
+/**
+  * Handler for command line interface
+  * @param options map options from the command line
+  * @return boolean true if settings have been changed
+  */
 boolean SetHandler (map options) {
     if (haskey (options, "battery_feedback"))
     {
 	if (! haskey (options, "capacity"))
 	{
+	    // error report
 	    CommandLine::Error (_("Battery capacity not specified."));
 	    return false;
 	}
 	if (! haskey (options, "action"))
 	{
+	    // error report
 	    CommandLine::Error (_("Action not specified."));
 	    return false;
 	}
@@ -176,6 +207,7 @@ boolean SetHandler (map options) {
 	integer capacity = options["capacity"]:0;
 	if (capacity < 0 || capacity > 100)
 	{
+	    // error report
 	    CommandLine::Error (_("Capacity must be higher than 0%% and lower than 100%%"));
 	    return false;
 	}
@@ -187,6 +219,7 @@ boolean SetHandler (map options) {
     {
 	if (! haskey (options, "action"))
 	{
+	    // error report
 	    CommandLine::Error (_("Action not specified."));
 	    return false;
 	}
@@ -199,6 +232,7 @@ boolean SetHandler (map options) {
     {
 	if (! haskey (options, "allowed"))
 	{
+	    // error report
 	    CommandLine::Error (_("Specify whether the operation should be allowed."));
 	    return false;
 	}
@@ -227,6 +261,7 @@ boolean SetHandler (map options) {
 	}
 	else if (bat != "")
 	{
+	    // error report
 	    CommandLine::Error (_("Specified battery scheme not found."));
 	}
 	if (ac_id != nil)
@@ -236,6 +271,7 @@ boolean SetHandler (map options) {
 	}
 	else if (ac != "")
 	{
+	    // error report
 	    CommandLine::Error (_("Specified AC scheme not found."));
 	}
 	return ret;
@@ -243,17 +279,24 @@ boolean SetHandler (map options) {
     return false;
 }
 
+/**
+  * Handler for command line interface
+  * @param options map options from the command line
+  * @return boolean true if settings have been changed
+  */
 boolean SchemeHandler (map options) {
     boolean s_add = haskey (options, "add");
     boolean s_edit = haskey (options, "edit");
     boolean s_delete = haskey (options, "delete");
     if (! (s_add || s_edit || s_delete))
     {
+	// error report
 	CommandLine::Error (_("Operation with the scheme not specified."));
 	return false;
     }
     if (! haskey (options, "name"))
     {
+	// error report
 	CommandLine::Error (_("Scheme name not specified."));
 	return false;
     }

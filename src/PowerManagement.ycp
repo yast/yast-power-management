@@ -70,7 +70,8 @@ map<string,list<string> > global_options_mapping = $[
 ];
 
 /**
- * Prototypes
+ * Was the settings modified?
+ * @return boolean true if modified
  */
 global boolean Modified();
 
@@ -545,6 +546,11 @@ global boolean APM () {
     return tolower (apm_acpi) == "apm";
 }
 
+/**
+ * Translate a text using powersave mo-file
+ * @param text string to translate
+ * @return string translated text
+ */
 global string TranslatePowersaveText (string text) {
     map out = (map)SCR::Execute (.target.bash_output, sformat (
 	"TEXTDOMAINDIR=/opt/kde3/share/locale/ gettext power-management \"%1\"",
@@ -557,14 +563,29 @@ global string TranslatePowersaveText (string text) {
     return translated;
 }
 
+/**
+ * Get localized scheme name
+ * @param name string original scheme name
+ * @return string localized scheme name
+ */
 global string TranslateSchemeName (string name) {
     return TranslatePowersaveText (name);
 }
 
+/**
+ * Get localized scheme description
+ * @param descr string original scheme desceriptino
+ * @return string localized scheme decription
+ */
 global string TranslateSchemeDescription (string descr) {
     return TranslatePowersaveText (descr);
 }
 
+/**
+ * Find index of a scheme
+ * @param name string scheme name
+ * @return integer scheme index (-1 if not found)
+ */
 global integer FindScheme (string name) {
     integer ret = -1;
     integer index = -1;
@@ -578,15 +599,26 @@ global integer FindScheme (string name) {
     return ret;
 }
 
+/**
+ * Fetch all schemes
+ */
 global void FetchSchemes () {
     current_schemes = schemes;
 }
 
+/**
+ * Store all schemes
+ */
 global void StoreSchemes () {
     schemes = current_schemes;
     modified = true;
 }
 
+/**
+ * fetch a scheme
+ * @param index integer index of the scheme (-1 is new scheme)
+ * @param clone integer index of scheme to clone if not exists
+ */
 global void FetchScheme (integer index, integer clone) {
     current_scheme_index = index;
     if (index == -1)
@@ -611,6 +643,9 @@ global void FetchScheme (integer index, integer clone) {
     }
 }
 
+/**
+ * Store the current scheme
+ */
 global void StoreScheme () {
     if (current_scheme_index == -1)
     {

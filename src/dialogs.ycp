@@ -27,22 +27,42 @@ boolean Modified() {
     return PowerManagement::Modified();
 }
 
+/**
+ * Ask if Abort if modified
+ * @return boolean true if answered Yes
+ */
 boolean ReallyAbort() {
     return !PowerManagement::Modified() || Popup::ReallyAbort(true);
 }
 
+/**
+ * Ask if Abort
+ * @return boolean true if answered Yes
+ */
 boolean AskAbort () {
     return Popup::ReallyAbort(true);
 }
 
+/**
+ * Check for Abort
+ * @return boolean true if was pushed
+ */
 boolean PollAbort() {
     return UI::PollInput() == `abort;
 }
 
+/**
+ * Check for Abort durign read
+ * @return boolean true if was pushed
+ */
 boolean ReadAbort () {
     return PollAbort () && AskAbort ();
 }
 
+/**
+ * Check for Abort durign write
+ * @return boolean true if was pushed
+ */
 boolean WriteAbort () {
     // yes-no popup
     return PollAbort () && Popup::YesNo (_("Really abort?
@@ -361,16 +381,28 @@ symbol SchemeDialog3 () {
 
 // pseudo dialogs
 
+/**
+ * Fetch all schemes
+ * @return symbol always `mext
+ */
 symbol FetchSchemes () {
     PowerManagement::FetchSchemes ();
     return `next;
 }
 
+/**
+ * Store all schemes
+ * @return symbol always `mext
+ */
 symbol StoreSchemes () {
     PowerManagement::StoreSchemes ();
     return `next;
 }
 
+/**
+ * Store current scheme
+ * @return symbol always `mext
+ */
 symbol StoreScheme () {
     PowerManagement::StoreScheme ();
     return `next;
