@@ -30,6 +30,10 @@ boolean ReallyAbort() {
     return !PowerManagement::Modified() || Popup::ReallyAbort(true);
 }
 
+boolean AskAbort () {
+    return Popup::ReallyAbort(true);
+}
+
 boolean PollAbort() {
     return UI::PollInput() == `abort;
 }
@@ -65,18 +69,18 @@ symbol WriteDialog() {
 symbol MainDialog () {
     y2milestone ("Running main dialog");
 
-    term contents = `HBox (`HStretch (), `VBox (
+    term contents = `HBox (`HSpacing (2), `VBox (
 	`VStretch (),
 	"scheme_selection",
 	`VStretch (),
 	`HBox (
 	    `HStretch (),
-	    "battery_warning_button",
-	    "acpi_settings_button",
+	    `HWeight (1, "battery_warning_button"),
+	    `HWeight (1, "acpi_settings_button"),
 	    `HStretch ()
 	),
 	`VStretch ()
-    ), `HStretch ());
+    ), `HSpacing (2));
 
     // dialog caption
     string caption = _("Power Management Settings");
@@ -102,6 +106,14 @@ symbol MainDialog () {
 symbol ACPIButtonsDialog () {
     y2milestone ("Running ACPI buttons dialog");
 
+    if (PowerManagement::apm_acpi != "ACPI")
+    {
+	// message popup
+	Popup::Message (_("Buttons can be configured only for ACPI. Your
+system probably does not support ACPI and uses APM."));
+	return `back;
+    }
+
     term contents = `HBox (`HStretch (), `VBox (
 	`VStretch(),
 	"acpi_buttons",
@@ -113,7 +125,7 @@ symbol ACPIButtonsDialog () {
 
     return CWM::ShowAndRun (["acpi_buttons"],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : ReallyAbort ]);
+	$[`abort : AskAbort ]);
 }
 
 /**
@@ -134,7 +146,7 @@ symbol BatteryWarningDialog () {
 
     return CWM::ShowAndRun (["battery_warning"],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : ReallyAbort ]);
+	$[`abort : AskAbort ]);
 }
 
 /**
@@ -144,18 +156,18 @@ symbol BatteryWarningDialog () {
 symbol SchemesDialog () {
     y2milestone ("Running schemes management dialog");
 
-    term contents = `HBox (`HStretch (), `VBox (
-	`VStretch(),
+    term contents = `HBox (`HSpacing (2), `VBox (
+	`VSpacing (2),
 	"schemes_list",
-	`VStretch ()
-    ), `HStretch ());
+	`VSpacing (2)
+    ), `HSpacing (2));
 
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
     return CWM::ShowAndRun (["schemes_list"],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : ReallyAbort ]);
+	$[`abort : AskAbort ]);
 }
 
 /**
@@ -165,20 +177,26 @@ symbol SchemesDialog () {
 symbol SchemeDialog1 () {
     y2milestone ("Running single scheme management dialog part 1");
 
-    term contents = `HBox (`HStretch (), `VBox (
+    term contents = `HBox (`HSpacing (2), `VBox (
 	`VStretch(),
 	"scheme_name",
+	`VSpacing (1),
+	"scheme_descr",
 	`VStretch (),
-	"hard_disk",
+	`HBox (
+	    `HStretch (),
+	    "hard_disk",
+	    `HStretch ()
+	),
 	`VStretch ()
-    ), `HStretch ());
+    ), `HSpacing (2));
 
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["scheme_name", "hard_disk"],
+    return CWM::ShowAndRun (["scheme_name", "scheme_descr", "hard_disk"],
 	widgets, contents, caption, Label::BackButton (), Label::NextButton (),
-	$[`abort : ReallyAbort ]);
+	$[`abort : AskAbort ]);
 }
 
 /**
@@ -189,8 +207,6 @@ symbol SchemeDialog2 () {
     y2milestone ("Running single scheme management dialog part 1");
 
     term contents = `HBox (`HStretch (), `VBox (
-	`VStretch(),
-	"scheme_name",
 	`VStretch (),
 	"cpu",
 	`VStretch (),
@@ -201,9 +217,9 @@ symbol SchemeDialog2 () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["scheme_name", "cpu", "cooling_policy"],
+    return CWM::ShowAndRun (["cpu", "cooling_policy"],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : ReallyAbort ]);
+	$[`abort : AskAbort ]);
 }
 
 

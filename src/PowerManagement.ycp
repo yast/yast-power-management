@@ -15,8 +15,10 @@
 module "PowerManagement";
 textdomain "power-management";
 
+import "Mode";
 import "Progress";
 import "Report";
+import "Require";
 import "Summary";
 
 /**
@@ -33,6 +35,8 @@ global map<string,string> common_settings = $[];
 global map<string,string> daemon_settings = $[];
 
 global map<string,string> new_schemes = $[];
+
+global string apm_acpi = "";
 
 /**
  * Data was modified?
@@ -125,7 +129,35 @@ global boolean Read() {
     if(Abort()) return false;
     Progress::NextStage();
 
-// TODO check powersave daemon
+    // check installed packages
+    if (! Require::AreAllPackagesInstalled (["powersave"]) || Mode::config)
+    {
+	boolean install_ok = Require::RequireAndConflictTarget (["pwoersave"],
+	    [],
+	    // richtext, %1 is name of package
+	    _("For runnign power saving mechanisms, the powersave daemon is
+required. YaST will install package %1."));
+	if (! install_ok && ! Require::LastOperationCanceled ())
+	{
+	    // error popup
+	    Report::Error (_("Installing required packages failed."));
+	    return false;
+	}
+    }
+    // check supported APM or ACPI
+    map out = (map)SCR::Execute (.target.bash_output,
+	"/usr/bin/powersave --apm-acpi");
+    if (issubstring (out["stdout"]:"", "ACPI"))
+	apm_acpi = "ACPI";
+    else if (issubstring (out["stdout"]:"", "APM"))
+	apm_acpi = "APM";
+    else
+    {
+	// error report
+	Report::Error (_("This system supports neither ACPI nor APM"));
+	return false;
+    }
+
 // TODO check APM or ACPI support
 
     if(! stage_success)

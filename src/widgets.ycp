@@ -41,6 +41,10 @@ list acpi_event_handlers = [
 
 // battery warning widget
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void BatteryWarningInit (string key) {
     foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
 	string option = sformat ("POWERSAVE_EVENT_BATTERY_%1", w);
@@ -59,6 +63,11 @@ define void BatteryWarningInit (string key) {
     UI::SetFocus (`id ("POWER"));
 }
 
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
 define void BatteryWarningStore (string key, map event) {
     foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
 	string option = sformat ("POWERSAVE_EVENT_BATTERY_%1", w);
@@ -72,9 +81,14 @@ define void BatteryWarningStore (string key, map event) {
     });
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getBatteryWarning () {
     return $[
 	"widget" : `custom,
+	// frame
 	"custom_widget" : `Frame (_("Battery Capacity Feedback"), `HBox (
 	    `HSpacing (2),
 	    `VBox (
@@ -94,29 +108,29 @@ define map getBatteryWarning () {
                 `IntField (`id ("CRITICAL"),
                     `opt (`hstretch),
 		    // int field
-		    _("&Ciritical Capacity"),
+		    _("&Critical Capacity"),
 		    0, 100, 0),
                 `VSpacing (2)
             ),
             `HSpacing (2),
 	    `VBox (
 		`VSpacing (2),
-		// combo box
 		`ComboBox (`id ("A_WARNING"),
 		    `opt (`hstretch),
-		    _("&Warning Action"),
+                    // combo box
+		    _("War&ning Level Action"),
 		    acpi_event_handlers),
 		`VSpacing (1),
-		// combo box
 		`ComboBox (`id ("A_LOW"),
 		    `opt (`hstretch),
-		    _("L&ow Action"),
+                    // combo box
+		    _("Low Level &Action"),
                     acpi_event_handlers),
                 `VSpacing (1),
-                // combo box
                 `ComboBox (`id ("A_CRITICAL"),
                     `opt (`hstretch),
-		    _("Cr&itical Action"),
+                    // combo box
+		    _("Cr&itical Level Action"),
                     acpi_event_handlers),
                 `VSpacing (2)
             ),
@@ -130,6 +144,10 @@ define map getBatteryWarning () {
 
 // acpi buttons widget
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void AcpiButtonsInit (string key) {
     foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
 	string option = sformat ("POWERSAVE_EVENT_BUTTON_%1", w);
@@ -141,6 +159,11 @@ define void AcpiButtonsInit (string key) {
     UI::SetFocus (`id ("POWER"));
 }
 
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
 define void AcpiButtonsStore (string key, map event) {
     foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
 	string option = sformat ("POWERSAVE_EVENT_BUTTON_%1", w);
@@ -149,28 +172,33 @@ define void AcpiButtonsStore (string key, map event) {
     });
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getAcpiButtonsWidget () ``{
     return $[
 	"widget" : `custom,
+	// frame
 	"custom_widget" : `Frame (_("ACPI Button Configuration"), `HBox (
 	    `HSpacing (2),
 	    `VBox (
 		`VSpacing (2),
-		// combo box
 		`ComboBox (`id ("POWER"),
 		    `opt (`hstretch),
+		    // combo box
 		    _("&Power Button"),
 		    acpi_event_handlers),
 		`VSpacing (1),
-		// combo box
 		`ComboBox (`id ("SLEEP"),
 		    `opt (`hstretch),
-		    _("Sleep& Button"),
+		    // combo box
+		    _("&Sleep Button"),
 		    acpi_event_handlers),
 		`VSpacing (1),
-		// combo box
 		`ComboBox (`id ("LID_CLOSED"),
 		    `opt (`hstretch),
+		    // combo box
 		    _("&Laptop's Lid Closing"),
 		    acpi_event_handlers),
 		`VSpacing (2)
@@ -185,30 +213,52 @@ define map getAcpiButtonsWidget () ``{
 
 // battery warning button
 
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
 define symbol BatteryWarningHandle (string key, map event) {
     return `battery;
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getBatteryWarningButton () {
     return $[
 	"widget" : `push_button,
 	// push button
-	"label" : _("&Battery Warning"),
+	"label" : _("Batt&ery Warning"),
+	"opt" : [ `hstretch ],
 	"help" : HELPS["battery_warning_button"]:"",
 	"handle" : BatteryWarningHandle,
 	"handle_events" : [ "battery_warning_button" ],
     ];
 }
 
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
 define symbol AcpiSettingsButtonHandle (string key, map event) {
     return `buttons;
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getAcpiSettingsButton () {
     return $[
 	"widget" : `push_button,
 	// push button
-	"label" : _("&ACPI settings"),
+	"label" : _("AC&PI settings"),
+	"opt" : [ `hstretch ],
 	"help" : HELPS["acpi_settings_button"]:"",
 	"handle" : AcpiSettingsButtonHandle,
 	"handle_events" : [ "acpi_settings_button" ],
@@ -217,37 +267,138 @@ define map getAcpiSettingsButton () {
 
 // scheme selection widget
 
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
 define symbol SchemeSelectionHandle (string key, map event) {
-    return `schemes_edit;
+    any ev_id = event["ID"]:nil;
+    if (ev_id == `schemes_edit)
+	return `schemes_edit;
+    if (ev_id == `ac_scheme || ev_id == `dc_scheme)
+    {
+	string current = (string)UI::QueryWidget (`id (ev_id), `Value);
+	string descr = "";
+	foreach (map s, PowerManagement::schemes, {
+	    if (s["_scheme_id"]:"" == current)
+		descr = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+	});
+	if (descr == "")
+	{
+	    // fallback scheme description, displayed in a rich text
+	    // but without HTML tags!!!
+	    descr = _("No scheme description avilable");
+	}
+	UI::ChangeWidget (`id (ev_id == `ac_scheme ? `ac_descr : `dc_descr),
+	    `Value, descr);
+    }
+
+    return nil;
 }
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void SchemeSelectionInit (string key) {
+    list items = maplist (map<string,string> s, PowerManagement::schemes, {
+	string id = s["_scheme_id"]:"";
+	string name = s["POWERSAVE_SCHEME_NAME"]:id;
+	return `item (`id (id), name);
+    });
+    UI::ReplaceWidget (`ac_scheme_rp,
+	`ComboBox (`id (`ac_scheme), `opt (`hstretch, `notify),
+	    // combo box
+	    _("&AC Powered"), items));
+    UI::ReplaceWidget (`dc_scheme_rp,
+	`ComboBox (`id (`dc_scheme), `opt (`hstretch, `notify),
+	    // combo box
+	    _("&Battery Powered"), items));
+
+    string scheme = PowerManagement::common_settings["POWERSAVE_AC_SCHEME"]:"";
+    if (scheme == "")
+	scheme = "performance";
+    UI::ChangeWidget (`id (`ac_scheme), `Value, scheme);
+    scheme = PowerManagement::common_settings["POWERSAVE_BATTERY_SCHEME"]:"";
+    if (scheme == "")
+	scheme = "performance";
+    UI::ChangeWidget (`id (`dc_scheme), `Value, scheme);
+    SchemeSelectionHandle (key, $["ID" : `ac_scheme ]);
+    SchemeSelectionHandle (key, $["ID" : `dc_scheme ]);
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getSchemeSelectionWidget () {
     return $[
 	"widget" : `custom,
-	"custom_widget" : `PushButton (`id (`schemes_edit),
-	    _("Ed&it Schemes")),
+	// frame
+	"custom_widget" : `Frame (_("Energy saving schemes"), `VBox (
+	    `HBox (
+		`HWeight (1, `VBox (
+		    `ReplacePoint (`id (`ac_scheme_rp),
+			`ComboBox (`id (`ac_scheme), `opt (`hstretch, `notify),
+			    // combo box
+			    _("&AC Powered"), [])),
+		    `RichText (`id (`ac_descr), `opt (`hstretch), "")
+		)),
+		`HWeight (1, `VBox (
+		    `ReplacePoint (`id (`dc_scheme_rp),
+			`ComboBox (`id (`dc_scheme), `opt (`hstretch, `notify),
+			    // combo box
+			    _("&Battery Powered"), [])),
+		    `RichText (`id (`dc_descr), `opt (`hstretch), "")
+		))
+	    ),
+	    `HBox (
+		`HStretch (),
+		`PushButton (`id (`schemes_edit),
+		    // push button
+		    _("Ed&it Schemes")),
+		`HStretch ()
+	    )
+	)),
+	"init" : SchemeSelectionInit,
 	"handle" : SchemeSelectionHandle,
-	"handle_events" : [`schemes_edit],
+	"handle_events" : [`schemes_edit, `ac_scheme, `dc_scheme],
+	"help" : HELPS["scheme_selection"]:"",
     ];
 }
 
 
 // schemes list widget
 
+/**
+ * Redraw the table of energy saving schemes
+ */
 define void SchemesRedraw () {
     list items = maplist (map<string,string> s,
 	PowerManagement::current_schemes,
     {
-	return s["_scheme_id"]:"";
+	string scheme_id = s["_scheme_id"]:"";
+	string name = s["POWERSAVE_SCHEME_NAME"]:scheme_id;
+	string descr = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+	if (descr == "")
+	{
+	    // fallback scheme description, table entre
+	    descr = _("No scheme description avilable");
+	}
+	return `item (`id (scheme_id), name, descr);
     });
-    items = filter (any i, items, ``(i != ""));
-    UI::ReplaceWidget (`schemes_rp,
-	`SelectionBox (`id (`schemes), `opt (`notify),
-	    // selection box
-	    _("Available &Schemes"), items));
+    UI::ChangeWidget (`id (`schemes), `Items, items);
     UI::SetFocus (`schemes);
 }
 
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
 define symbol SchemesHandle (string key, map event) {
     any event_id = event["ID"]:nil;
     string selected = (string)UI::QueryWidget (`id (`schemes), `CurrentItem);
@@ -294,6 +445,10 @@ define symbol SchemesHandle (string key, map event) {
     return nil;
 }
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void SchemesInit (string key) {
     SchemesRedraw ();
     SchemesHandle (key, $[]);
@@ -301,15 +456,20 @@ define void SchemesInit (string key) {
 	PowerManagement::current_schemes[0, "_scheme_id"]:"");
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getSchemesListWidget () {
     return $[
 	"widget" : `custom,
 	"custom_widget" : `VBox (
-	    `ReplacePoint (`id (`schemes_rp),
-		`SelectionBox (`id (`schemes), `opt (`notify),
-		    // selection box
-		    _("Available &Schemes"), [])
-	    ),
+	    `Table (`id (`schemes), `opt (`notify, `immediate), `header (
+		// table header
+		_("Scheme Name"),
+		// table header
+		_("Scheme Description")),
+		[]),
 	    `HBox (
 		`PushButton (`id (`add), Label::AddButton ()),
 		`PushButton (`id (`edit), Label::EditButton ()),
@@ -319,27 +479,92 @@ define map getSchemesListWidget () {
 	),
 	"init" : SchemesInit,
 	"handle" : SchemesHandle,
+	"help" : HELPS["schemes_list"]:"",
     ];
 }
 
 // scheme name widget
 
+string original_scheme_name = "";
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void SchemeNameInit (string key) {
-    return;
+    string scheme_name
+	= PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"]:"";
+    if (scheme_name == "")
+        scheme_name = PowerManagement::current_scheme["_scheme_id"]:"";
+    UI::ChangeWidget (`id (key), `Value, scheme_name);
 }
 
-define boolean SchemeNameValidate (string key) {
+/**
+ * Validate function of a widget
+ * @param key string widget id
+ * @param event map event that caused widget validation
+ * @return boolean true if validation succeeded
+ */
+define boolean SchemeNameValidate (string key, map event) {
+    string new_name = (string)UI::QueryWidget (`id (key), `Value);
+    if (new_name == "")
+    {
+	// popup message
+	Popup::Message (_("Scheme name must be set."));
+	return false;
+    }
+    if (new_name == original_scheme_name)
+	return true;
+    list<string> names = maplist (map s, PowerManagement::current_schemes, {
+	s["POWERSAVE_SCHEME_NAME"]:s["_scheme_key"]:"";
+    });
+    if (contains (names, new_name))
+    {
+	// popup message
+	Popup::Message (_("Specified scheme name is not unique"));
+	return false;
+    }
     return true;
 }
 
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
 define void SchemeNameStore (string key, map event) {
-    return;
+    string new_name = (string)UI::QueryWidget (`id (key), `Value);
+    PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"] = new_name;
+
+    if (original_scheme_name == "")
+    {
+	string scheme_id = new_name;
+	scheme_id = filterchars (scheme_id, "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	if (scheme_id == "")
+	    scheme_id = "user";
+	list<string> ids = maplist (map s, PowerManagement::current_schemes, {
+	    s["_scheme_key"]:"";
+	});
+	if (contains (ids, scheme_id))
+	{
+	    integer index = 0;
+	    while (contains (ids, sformat ("%1_%2", scheme_id, index)))
+		index = index + 1;
+	    scheme_id = sformat ("%1_%2", scheme_id, index);
+	}
+	current_scheme["_scheme_id"] = scheme_id;
+    }
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getSchemeNameWidget () {
     return $[
 	"widget" : `textentry,
-	"label" : _("Scheme &Name"),
+	// text entry
+	"label" : _("S&cheme Name"),
 	"help" : HELPS["scheme_name"]:"",
 	"init" : SchemeNameInit,
 	"store" : SchemeNameStore,
@@ -347,8 +572,48 @@ define map getSchemeNameWidget () {
     ];
 }
 
+// scheme description widget
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void SchemeDescrInit (string key) {
+    UI::ChangeWidget (`id (key), `Value,
+	PowerManagement::current_scheme["POWERSAVE_SCHEME_DESCRIPTION"]:"");
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void SchemeDescrStore (string key, map event) {
+    PowerManagement::current_scheme["POWERSAVE_SCHEME_DESCRIPTION"]
+	= (string)UI::QueryWidget (`id (key), `Value);
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getSchemeDescrWidget () {
+    return $[
+	"widget" : `textentry,
+	// text entry
+	"label" : _("Scheme &Description"),
+	"help" : HELPS["scheme_descr"]:"",
+	"init" : SchemeDescrInit,
+	"store" : SchemeDescrStore,
+    ];
+}
+
 // hard disk settings widget
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void HardDiskInit (string key) {
     string value = (string)
 	PowerManagement::current_scheme["POWERSAVE_DISK_STANDBY_MODE"]:"";
@@ -362,6 +627,11 @@ define void HardDiskInit (string key) {
     UI::ChangeWidget (`id (`acoustic), `Value, value);
 }
 
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
 define void HardDiskStore (string key) {
     PowerManagement::current_scheme["POWERSAVE_DISK_STANDBY_MODE"]
 	= (string)UI::QueryWidget (`id (`standby), `Value);
@@ -369,6 +639,10 @@ define void HardDiskStore (string key) {
 	= (string)UI::QueryWidget (`id (`acoustic), `Value);
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getHardDiskWidget () {
     return $[
 	"widget" : `custom,
@@ -400,7 +674,7 @@ define map getHardDiskWidget () {
 			_("Maximum Performance")),
 		    `item (`id ("low"),
 			// combo box item
-			_("Low - FIXME")),
+			_("Quiet")),
 		    `item (`id ("quiet"),
 			// combo box item
 			_("Maximally Quiet")),
@@ -409,11 +683,16 @@ define map getHardDiskWidget () {
 	)),
 	"init" : HardDiskInit,
 	"store" : HardDiskStore,
+	"help" : HELPS["hard_disk"]:"",
     ];
 }
 
 // cpu cooling policy widget
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void CoolingPolicyInit (string key) {
     string value = (string)
 	PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]:"";
@@ -422,11 +701,20 @@ define void CoolingPolicyInit (string key) {
     UI::ChangeWidget (`id (`cooling_policy), `Value, value);
 }
 
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
 define void CoolingPolicyStore (string key, map event) {
     PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]
 	= (string)UI::QueryWidget (`id (`cooling_policy), `Value);
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getCoolingPolicyWidget () {
     return $[
 	"widget" : `custom,
@@ -442,27 +730,57 @@ define map getCoolingPolicyWidget () {
 	)),
 	"init" : CoolingPolicyInit,
 	"store" : CoolingPolicyStore,
+	"help" : HELPS["cooling_policy"]:"",
     ];
 }
 
 // CPU settings widget
 
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
 define symbol CpuHandle (string key, map event) {
     boolean enabled = (boolean)UI::QueryWidget (`id (`allow_throt), `Value);
     UI::ChangeWidget (`id (`max_throt), `Enabled, enabled);
-    return void;
+    return nil;
 }
 
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
 define void CpuInit (string key) {
-    return;
-
-    CpuHandle ();
+    UI::ChangeWidget (`id (`scaling), `Value,
+	PowerManagement::current_scheme["POWERSAVE_CPUFREQUENCY"]:"dynamic");
+    UI::ChangeWidget (`id (`allow_throt), `Value,
+	PowerManagement::current_scheme["POWERSAVE_ALLOW_THROTTLING"]:"yes"
+	    != "no");
+    UI::ChangeWidget (`id (`max_throt), `Value, tointeger (
+	PowerManagement::current_scheme["POWERSAVE_MAX_THROTTLING"]:"50"));
+    CpuHandle (key, $[]);
 }
 
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
 define void CpuStore (string key, map event) {
-    return;
+    PowerManagement::current_scheme["POWERSAVE_CPUFREQUENCY"]
+	= (string)UI::QueryWidget (`id (`scaling), `Value);
+    PowerManagement::current_scheme["POWERSAVE_ALLOW_THROTTLING"]
+	= (boolean)UI::QueryWidget (`id (`allow_throt), `Value) ? "yes" : "no";
+    PowerManagement::current_scheme["POWERSAVE_MAX_THROTTLING"]
+	= sformat ("%1", (integer)UI::QueryWidget (`id (`max_throt), `Value));
 }
 
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
 define map getCpuWidget () {
     return $[
 	"widget" : `custom,
@@ -488,6 +806,7 @@ define map getCpuWidget () {
 			// check box
 			_("Allow Throttling"))
 		)),
+		// integer field
 		`IntField (`id (`max_throt), _("&Max. %"), 0, 100, 50)
 	    ),
 	    `VStretch ()
@@ -495,6 +814,7 @@ define map getCpuWidget () {
 	"init" : CpuInit,
 	"store" : CpuStore,
 	"handle" : CpuHandle,
+	"help" : HELPS["cpu"]:"",
     ];
 }
 
@@ -508,6 +828,7 @@ map widgets = $[
     "scheme_selection" : getSchemeSelectionWidget (),
     "schemes_list" : getSchemesListWidget (),
     "scheme_name" : getSchemeNameWidget (),
+    "scheme_descr" : getSchemeDescrWidget (),
     "hard_disk" : getHardDiskWidget (),
     "cooling_policy" : getCoolingPolicyWidget (),
     "cpu" : getCpuWidget (),

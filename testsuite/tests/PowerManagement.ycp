@@ -1,0 +1,13 @@
+{
+
+// testedfiles: PowerManagement.ycp
+
+include "testsuite.ycp";
+TESTSUITE_INIT([], nil);
+
+import "PowerManagement";
+
+DUMP("PowerManagement::Modified");
+TEST(``(PowerManagement::Modified()), [], nil);
+
+}

@@ -27,4 +27,5 @@ Summary:	Configuration of power-management
 @clientdir@/power-management_*.ycp
 @moduledir@/PowerManagement.*
 @desktopdir@/power-management.desktop
+@scrconfdir@/*
 %doc @docdir@
