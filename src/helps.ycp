@@ -59,18 +59,18 @@ closed, use <b>Laptop's Lid Closing</b>.</p>"),
 
 
     // enabling standby/suspend dialog help 1/4
-    "enable_std" : _("<p><b><big>Suspending do Disk</big></b><br>
+    "enable_std" : _("<p><b><big>Suspending to Disk</big></b><br>
 To allow users to suspend the computer to the disk (ACPI mode 4), set
 <b>Allow Suspending to Disk</b>.
-Note that resuming after suspending to disk takes longer time than resuming
+Resuming after suspending to disk takes longer than resuming
 after suspending to RAM.</p>"),
 
     // enabling standby/suspend dialog help 2/4
-    "enable_str" : _("<p><b><big>Suspend to RAM</big></b><br>
+    "enable_str" : _("<p><b><big>Suspending to RAM</big></b><br>
 To allow users to suspend the computer to the RAM (ACPI mode 3), set
 <b>Allow Suspending to RAM</b>.
-Note that computer suspended to RAM still consumes electric energy and
-if disconnected (or battery gets empty) unsaved data will be lost.</p>"),
+A computer suspended to RAM still consumes electricity and
+if disconnected (or the battery is drained) unsaved data will be lost.</p>"),
 
     // enabling standby/suspend dialog help 3/4
     "enable_standby" : _("<p><b><big>Switching to Stand-by Mode</big></b><br>
@@ -80,10 +80,10 @@ To allow users to switch the computer to the stand-by power saving mode
 
     // enabling standby/suspend dialog help 3/4
     "str_standby_additional_info" : _("<p><b><big>Warning</big></b><br>
-Depending on your hardware Suspend to RAM or Stand-by could fail and you may 
+Depending on your hardware suspend to RAM or stand-by could fail and you may 
 need to push the reset button to reboot your computer. This could lead to 
-possible data losses.
-See <i>/usr/share/doc/packages/powersave/README.suspend</i> for details).</p>"),
+data loss.
+See <i>/usr/share/doc/packages/powersave/README.suspend</i> for details.</p>"),
 
     // Main dialog help 1/6
     "scheme_selection" : _("<p><b><big>Energy Saving Schemes</big></b><br>
@@ -152,10 +152,10 @@ only on ACPI machines.</p>")
     +
     // Scheme editation dialog 1 help 5/5
     _("<p>If your processor does not support CPU frequency scaling 
-(SpeedStep/PowerNow!) you may want to let your processor be constantly 
-slowed down when working on battery to save power. To do it, set
+you may want to let your processor be constantly 
+slowed down when working on battery to save power. To do this, set
 <b>Always Throttle</b>.  This setting 
-might be useful on long-distance trips where you do not need the whole 
+might be useful on long-distance trips where you do not need the entire 
 performance of your machine.</p>"),
 
     // Scheme editation dialog 2 help 1/2
