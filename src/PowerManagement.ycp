@@ -162,7 +162,7 @@ global boolean Modified() {
  * @return true on success
  */
 global boolean Read() {
-    if (Mode::config)
+    if (Mode::config ())
 	AbortFunction = nil;
 
     /* PowerManagement read dialog caption */
@@ -202,7 +202,7 @@ global boolean Read() {
     Progress::NextStage();
 
     // check installed packages
-    if (! Mode::test
+    if (! Mode::test ()
 	&& ! PackageSystem::CheckAndInstallPackagesInteractive (["powersave"])
     )
     {
@@ -297,7 +297,7 @@ global boolean Read() {
  * @return true on success
  */
 global boolean Write() {
-    if (Mode::autoinst)
+    if (Mode::autoinst ())
 	AbortFunction = nil;
 
     /* PowerManagement read dialog caption */

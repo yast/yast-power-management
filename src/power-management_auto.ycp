@@ -36,7 +36,7 @@ include "power-management/wizards.ycp";
  * @param settings the import map
  */
 define void CreateNewSchemesMap (map settings) {
-    if (! Mode::autoinst)
+    if (! Mode::autoinst ())
 	return;
     list<string> r_schemes = (list<string>)
         SCR::Dir (.sysconfig.powersave.schemes.section);
