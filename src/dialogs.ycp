@@ -266,19 +266,22 @@ symbol SchemeDialog3 () {
 
     term contents = `HBox (`HStretch (), `VBox (
 	`VStretch (),
-	// frame
+	`Left ("allow_screensaver"),
+	`VStretch (),
+	`Left ("dpms"),
+/*	// frame
 	`Frame (_("Display Settings"), `HBox (
 	    `HSpacing (2),
 	    `VBox (
 		`VSpacing (1),
 		`Left ("allow_screensaver"),
-		`Left ("allow_dpms"),
+		`Left ("dpms"),
 		`VSpacing (1)
 	    ),
 	    `HSpacing (2)
 	)),
 	`VStretch (),
-	"suspend_timeout",
+	"suspend_timeout",*/
 	`VStretch ()
     ), `HStretch ());
 
@@ -287,8 +290,8 @@ symbol SchemeDialog3 () {
 
     return CWM::ShowAndRun ([
 	    "allow_screensaver",
-	    "allow_dpms",
-	    "suspend_timeout"
+	    "dpms",
+//	    "suspend_timeout"
 	],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
 	$[`abort : AskAbort ]);

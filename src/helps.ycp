@@ -145,31 +145,39 @@ disks support this feature.</p>"),
     // Scheme editation dialog 2 help 2/2
     "cooling_policy" : _("<p><b><big>Cooling Policy</big></b><br>
 Use cooling policy <b>Status</b> to adjust the active or passive cooling policy.
-Active means that, if system is getting overheated, the cooling fan is turned on.
+Active means that, if system is getting overheated, the cooling fan is
+turned on.
 If the system continues getting overheated, CPU frequency and voltage is
 reduced. Passive means that the system first reduces frequency and, if
-that does not help, turns the cooling fan on.</p>"),
+that does not help, turns the cooling fan on.</p>
+<p>To specify actions that will be performed when the system gets overheated
+ot reaches critical temperature use <b>Overheat Teperature Action</b> and
+<b>Critical Temperature Action</b>.</p>"),
 
-    // Scheme editation dialog 3 help 1/3
+    // Scheme editation dialog 3 help 1/2
     "allow_screensaver" : _("<p><b><big>Enable Screen Saver</big></b><br>
 To enable the screen saver in this scheme, set <b>Enable Screen Saver</b>.
 Disabling screen saver is useful for schemes used e. g. for
 presentations.</p>"),
 
-    // Scheme editation dialog 3 help 2/3
-    "allow_dpms" : _("<p><b><big>Display Blanking</big></b><br>
+    // Scheme editation dialog 3 help 2/2
+    "dpms" : _("<p><b><big>Display Blanking</big></b><br>
 To allow blanking the dislpay using DPMS, set
-<b>Enable Display Power Management</b>."),
+<b>Enable Display Power Management</b>.
+To set the stand-by, suspend and power off timeouts use
+<b>Display Stand-by Timeout</b>, <b>Display Suspend Timeout</b> or
+<b>Display Power Off Timeout</b>. To disable any particular timeout,
+set its value to <b>0</b>.</p>"),
 
     // Scheme editation dialog 3 help 3/3
-    "suspend_timeout" : _("<p><b><big>System Suspend Settings</big></b><br>
+/*    "suspend_timeout" : _("<p><b><big>System Suspend Settings</big></b><br>
 To enable system suspend when keyboard and mouse are not used for
 a specified time, set <b>Enable System Suspend Timeout</b>. To specify the
 timeout, use <b>Suspend Timeout</b> to set it in minutes.
 To set the suspend method, use
 <b>Suspend Method</b>. See the documentation to learn more information
 about power saving modes.</p>"),
-
+*/
 ];
 
 /* EOF */

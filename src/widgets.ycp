@@ -246,7 +246,7 @@ define map getEnableSuspendWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
-	"label" : _("Allow Switching to Suspend Mode"),
+	"label" : _("Allow Switching to &Suspend Mode"),
 	"help" : HELPS["enable_suspend"]:"",
 	"init" : EnableSuspendInit,
 	"store" : EnableSuspendStore,
@@ -289,7 +289,7 @@ define map getEnableStandbyWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
-	"label" : _("Allow Switching to Stand-by Mode"),
+	"label" : _("Allow Switching to S&tand-by Mode"),
 	"help" : HELPS["enable_standby"]:"",
 	"init" : EnableStandbyInit,
 	"store" : EnableStandbyStore,
@@ -664,8 +664,9 @@ define void SchemeNameInit (string key) {
 	= PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"]:"";
     if (scheme_name == "")
         scheme_name = PowerManagement::current_scheme["_scheme_id"]:"";
-    original_scheme_name = scheme_name;
     scheme_name = PowerManagement::scheme_names[scheme_name]:scheme_name;
+    original_scheme_name = PowerManagement::current_schemes[
+	PowerManagement::current_scheme_index, "POWERSAVE_SCHEME_NAME"]:"";
     UI::ChangeWidget (`id (key), `Value, scheme_name);
 }
 
@@ -692,6 +693,13 @@ define boolean SchemeNameValidate (string key, map event) {
     {
 	// popup message
 	Popup::Message (_("The specified scheme name is not unique."));
+	return false;
+    }
+    if (size (new_name) > 32)
+    {
+	Popup::Message (
+	    // poupp message
+	    _("The scheme name must not be longer than 32 characters."));
 	return false;
     }
     return true;
@@ -740,7 +748,8 @@ define map getSchemeNameWidget () {
 	"help" : HELPS["scheme_name"]:"",
 	"init" : SchemeNameInit,
 	"store" : SchemeNameStore,
-	"validate" : SchemeNameValidate,
+	"validate_type" : `function,
+	"validate_function" : SchemeNameValidate,
     ];
 }
 
@@ -873,6 +882,12 @@ define void CoolingPolicyInit (string key) {
     if (value == "")
 	value = "passive";
     UI::ChangeWidget (`id (`cooling_policy), `Value, value);
+    UI::ChangeWidget (`id (`overheat), `Value,
+	PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"]:
+		"notify");
+    UI::ChangeWidget (`id (`overheat_critical), `Value,
+	PowerManagement::current_scheme["POWERSAVE_THERMAL_CRITICAL"]:
+		"suspend");
 }
 
 /**
@@ -883,6 +898,10 @@ define void CoolingPolicyInit (string key) {
 define void CoolingPolicyStore (string key, map event) {
     PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]
 	= (string)UI::QueryWidget (`id (`cooling_policy), `Value);
+    PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"]
+	= (string)UI::QueryWidget (`id (`overheat), `Value);
+    PowerManagement::current_scheme["POWERSAVE_THERMAL_CRITICAL"]
+	= (string)UI::QueryWidget (`id (`overheat_critical), `Value);
 }
 
 /**
@@ -900,7 +919,17 @@ define map getCoolingPolicyWidget () {
 		`item (`id ("active"), _("Active")),
 		// combo box item
 		`item (`id ("passive"),_("Passive")),
-	    ])
+	    ]),
+	    `ComboBox (`id (`overheat),
+		`opt (`hstretch),
+		// combo box
+		_("&Overheat Teperature Action"),
+		acpi_event_handlers),
+	    `ComboBox (`id (`overheat_critical),
+		`opt (`hstretch),
+		// combo box
+		_("&Critical Temperature Action"),
+		acpi_event_handlers)
 	)),
 	"init" : CoolingPolicyInit,
 	"store" : CoolingPolicyStore,
@@ -1000,7 +1029,8 @@ define map getCpuWidget () {
  */
 define void AllowScreensaverInit (string key) {
     boolean value = tolower ((string)
-	    PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]:"") == "yes"
+	PowerManagement::current_scheme["POWERSAVE_DISABLE_SCREEN_SAVER"]:"")
+		== "yes"
 	? false
 	: true;
     UI::ChangeWidget (`id (key), `Value, value);
@@ -1012,7 +1042,7 @@ define void AllowScreensaverInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void AllowScreensaverStore (string key, map event) {
-    PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]
+    PowerManagement::current_scheme["POWERSAVE_DISABLE_SCREEN_SAVER"]
 	= (boolean)UI::QueryWidget (`id (key), `Value)
 	    ? "no"
 	    : "yes";
@@ -1033,18 +1063,40 @@ define map getAllowScreensaverWidget () {
     ];
 }
 
-// allow DPMS widget
+// DPMS widget
+
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
+define symbol DpmsHandle (string key, map event) {
+    boolean enabled = (boolean)UI::QueryWidget (`id (`enable_dpms), `Value);
+    UI::ChangeWidget (`id (`dpms_stdby), `Enabled, enabled);
+    UI::ChangeWidget (`id (`dpms_susp), `Enabled, enabled);
+    UI::ChangeWidget (`id (`dpms_off), `Enabled, enabled);
+    return nil;
+}
 
 /**
  * Init function of a widget
  * @param key string widget id
  */
-define void AllowDpmsInit (string key) {
+define void DpmsInit (string key) {
     boolean value = tolower ((string)
-	    PowerManagement::current_scheme["DISABLE_DPMS"]:"") == "yes"
+	PowerManagement::current_scheme["POWERSAVE_DISABLE_DPMS"]:"")
+		== "yes"
 	? false
 	: true;
-    UI::ChangeWidget (`id (key), `Value, value);
+    UI::ChangeWidget (`id (`enable_dpms), `Value, value);
+    UI::ChangeWidget (`id (`dpms_stdby), `Value, tointeger (
+	PowerManagement::current_scheme["POWERSAVE_DPMS_STANDBY"]:"10"));
+    UI::ChangeWidget (`id (`dpms_susp), `Value, tointeger (
+	PowerManagement::current_scheme["POWERSAVE_DPMS_SUSPEND"]:"20"));
+    UI::ChangeWidget (`id (`dpms_off), `Value, tointeger (
+	PowerManagement::current_scheme["POWERSAVE_DPMS_OFF"]:"30"));
+    DpmsHandle (key, $[]);
 }
 
 /**
@@ -1052,25 +1104,55 @@ define void AllowDpmsInit (string key) {
  * @param key string widget id
  * @param event map event that caused storing of widget settings
  */
-define void AllowDpmsStore (string key, map event) {
-    PowerManagement::current_scheme["DISABLE_DPMS"]
-	= (boolean)UI::QueryWidget (`id (key), `Value)
+define void DpmsStore (string key, map event) {
+    PowerManagement::current_scheme["POWERSAVE_DISABLE_DPMS"]
+	= (boolean)UI::QueryWidget (`id (`enable_dpms), `Value)
 	    ? "no"
 	    : "yes";
+    PowerManagement::current_scheme["POWERSAVE_DPMS_STANDBY"]
+	= sformat ("%1", UI::QueryWidget (`id (`dpms_stdby), `Value));
+    PowerManagement::current_scheme["POWERSAVE_DPMS_SUSPEND"]
+	= sformat ("%1", UI::QueryWidget (`id (`dpms_susp), `Value));
+    PowerManagement::current_scheme["POWERSAVE_DPMS_OFF"]
+	= sformat ("%1", UI::QueryWidget (`id (`dpms_off), `Value));
 }
 
 /**
  * Get description map of a widget
  * @return map widget description map
  */
-define map getAllowDpmsWidget () {
+define map getDpmsWidget () {
     return $[
-	"widget" : `checkbox,
-	// check box
-	"label" : _("Enable &Display Power Management"),
-	"help" : HELPS["allow_dpms"]:"",
-	"init" : AllowDpmsInit,
-	"store" : AllowDpmsStore,
+	"widget" : `custom,
+	"custom_widget" : `Frame (
+	    // frame
+	    _("Display Power Management Settings"),
+	    `HBox (
+		`HSpacing (2),
+		`VBox (
+		    `VSpacing (1),
+		    `Left (`CheckBox (`id (`enable_dpms), `opt (`notify),
+			// check box
+			_("Enable &Display Power Management"))),
+		    `VSpacing (1),
+		    `IntField (`id (`dpms_stdby),
+			// int field
+			_("Display S&tand-by Timeout (minutes)"), 0, 120, 1),
+		    `IntField (`id (`dpms_susp),
+			// int field
+			_("Display &Suspend Timeout (minutes)"), 0, 120, 2),
+		    `IntField (`id (`dpms_off),
+			// int field
+			_("Display Power &Off Timeout (minutes)"), 0, 120, 3),
+		    `VSpacing (1)
+		),
+		`HSpacing (2)
+	    )
+	),
+	"help" : HELPS["dpms"]:"",
+	"init" : DpmsInit,
+	"store" : DpmsStore,
+	"handle" : DpmsHandle,
     ];
 }
 
@@ -1082,18 +1164,19 @@ define map getAllowDpmsWidget () {
  * @param event map event that will be handled
  * @return symbol for wizard sequencer
  */
-define symbol SuspendTimeoutHandle (string key, map event) {
+/*define symbol SuspendTimeoutHandle (string key, map event) {
     boolean enabled = (boolean)
 	UI::QueryWidget (`id ("enable_suspend_timeout"), `Value);
-y2error ("Enabled: %1", enabled);
     UI::ChangeWidget (`id ("suspend_timeout"), `Enabled, enabled);
     UI::ChangeWidget (`id ("suspend_method"), `Enabled, enabled);
     return nil;
-}/**
+}
+
+/**
  * Init function of a widget
  * @param key string widget id
  */
-define void SuspendTimeoutInit (string key) {
+/*define void SuspendTimeoutInit (string key) {
     UI::ChangeWidget (`id ("suspend_method"), `Value,
 	PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]:"stand-by");
     string timeout_str = (string)
@@ -1104,7 +1187,6 @@ define void SuspendTimeoutInit (string key) {
     UI::ChangeWidget (`id ("enable_suspend_timeout"), `Value,
 	timeout != 0);
     UI::ChangeWidget (`id ("suspend_timeout"), `Value, timeout);
-y2error ("STI");
     SuspendTimeoutHandle (key, $[]);
 }
 
@@ -1113,8 +1195,7 @@ y2error ("STI");
  * @param key string widget id
  * @param event map event that caused storing of widget settings
  */
-define void SuspendTimeoutStore (string key, map event) {
-y2error ("STS");
+/*define void SuspendTimeoutStore (string key, map event) {
     boolean enabled = (boolean)
 	UI::QueryWidget (`id ("enable_suspend_timeout"), `Value);
     PowerManagement::current_scheme["POWERSAVE_SUSPEND_TIMEOUT"] = enabled
@@ -1128,7 +1209,7 @@ y2error ("STS");
  * Get description map of a widget
  * @return map widget description map
  */
-define map getSuspendTimeoutWidget () {
+/*define map getSuspendTimeoutWidget () {
     return $[
 	"widget" : `custom,
 	"custom_widget" : `Frame (_("Syspend Suspend Settings"), `HBox (
@@ -1158,7 +1239,7 @@ define map getSuspendTimeoutWidget () {
 	"handle_events" : ["enable_suspend_timeout"],
     ];
 }
-
+*/
 // general settings
 
 map widgets = $[
@@ -1177,8 +1258,8 @@ map widgets = $[
     "cooling_policy" : getCoolingPolicyWidget (),
     "cpu" : getCpuWidget (),
     "allow_screensaver" : getAllowScreensaverWidget (),
-    "allow_dpms" : getAllowDpmsWidget (),
-    "suspend_timeout" : getSuspendTimeoutWidget ()
+    "dpms" : getDpmsWidget (),
+//    "suspend_timeout" : getSuspendTimeoutWidget ()
 ];
 
 /* EOF */
