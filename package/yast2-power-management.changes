@@ -2,6 +2,9 @@
 Thu Mar  4 10:19:03 CET 2004 - jsrain@suse.de
 
 - fixed saving of new schemes
+- restarting powersave daemon after configuration files are saved
+- scheme names are localized now
+- providing meaningful summary for AutoYaST
 
 -------------------------------------------------------------------
 Mon Mar  1 12:54:26 CET 2004 - jsrain@suse.de

@@ -19,6 +19,7 @@ import "Mode";
 import "Progress";
 import "Report";
 import "Require";
+import "Service";
 import "Summary";
 
 /**
@@ -37,6 +38,28 @@ global map<string,string> daemon_settings = $[];
 global map<string,string> new_schemes = $[];
 
 global string apm_acpi = "";
+
+map scheme_names = $[
+    // power saving scheme name, combo box and default contents of text entry
+    "Performance" : _("Performance"),
+    // power saving scheme name, combo box and default contents of text entry
+    "Powersave" : _("Powersave"),
+    // power saving scheme name, combo box and default contents of text entry
+    "Acoustic" : _("Acoustic"),
+];
+
+map scheme_desciptions = $[
+    "Scheme optimized to let machine run on maximum performance." :
+	// pwer saving scheme description, contents of text entry
+	_("Scheme optimized to let machine run on maximum performance."),
+    "Scheme optimized to let maximum power savings take place." :
+	// pwer saving scheme description, contents of text entry
+	_("Scheme optimized to let maximum power savings take place."),
+    "Scheme optimized to let machine run as quiet as possible." :
+	// pwer saving scheme description, contents of text entry
+	_("Scheme optimized to let machine run as quiet as possible."),
+];
+
 
 /**
  * Data was modified?
@@ -159,7 +182,7 @@ required. YaST will install package %1.
 	return false;
     }
 
-// TODO check APM or ACPI support
+    y2milestone ("Dected saving mehanism: %1", apm_acpi);
 
     if(! stage_success)
     {
@@ -353,7 +376,8 @@ next }
     if(Abort()) return false;
     Progress::NextStage ();
 
-// TODO restart powersave daemon
+    stage_success = Service::Restart ("powersave");
+    stage_success = Service::Enable ("powersave") && stage_success;
 
     if(! stage_success)
     {
@@ -404,9 +428,35 @@ global map Export () {
  * @return summary of the current configuration
  */
 global list Summary() {
-    // TODO FIXME: your code here...
-    /* Configuration summary text for autoyast */
-    return [ _("Configuration summary ..."), [] ];
+    string ac_scheme = "";
+    string bat_scheme = "";
+    string scheme = PowerManagement::common_settings["POWERSAVE_AC_SCHEME"]:"";
+    if (scheme == "")
+	scheme = "performance";
+
+    foreach (map<string,string> s, schemes, ``{
+	if (s["_scheme_id"]:"" == scheme)
+	    ac_scheme = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+    });
+    if (ac_scheme == "")
+	ac_scheme = scheme;
+
+    UI::ChangeWidget (`id (`ac_scheme), `Value, scheme);
+    scheme = PowerManagement::common_settings["POWERSAVE_BATTERY_SCHEME"]:"";
+    if (scheme == "")
+        scheme = "performance";
+    foreach (map<string,string> s, schemes, ``{
+	if (s["_scheme_id"]:"" == scheme)
+	    bat_scheme = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+    });
+    if (bat_scheme == "")
+	bat_scheme = scheme;
+
+
+    return [
+	sformat (_("AC scheme: %1"), ac_scheme),
+	sformat (_("Battery scheme: 1"), bat_scheme),
+    ];
 }
 
 /**

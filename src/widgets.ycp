@@ -515,6 +515,7 @@ define void SchemeNameInit (string key) {
 	= PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"]:"";
     if (scheme_name == "")
         scheme_name = PowerManagement::current_scheme["_scheme_id"]:"";
+    scheme_name = PowerManagement::scheme_names[scheme_name]:scheme_name;
     UI::ChangeWidget (`id (key), `Value, scheme_name);
 }
 
@@ -600,8 +601,10 @@ define map getSchemeNameWidget () {
  * @param key string widget id
  */
 define void SchemeDescrInit (string key) {
-    UI::ChangeWidget (`id (key), `Value,
-	PowerManagement::current_scheme["POWERSAVE_SCHEME_DESCRIPTION"]:"");
+    string descr = (string)
+	(PowerManagement::current_scheme["POWERSAVE_SCHEME_DESCRIPTION"]:"");
+    descr = PowerManagement::scheme_desciptions[descr]:descr;
+    UI::ChangeWidget (`id (key), `Value, descr);
 }
 
 /**
