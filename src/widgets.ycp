@@ -85,7 +85,7 @@ define void BatteryWarningStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getBatteryWarning () {
+define map<string,any> getBatteryWarning () {
     return $[
 	"widget" : `custom,
 	// frame
@@ -176,7 +176,7 @@ define void AcpiButtonsStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getAcpiButtonsWidget () ``{
+define map<string,any> getAcpiButtonsWidget () ``{
     return $[
 	"widget" : `custom,
 	// frame
@@ -242,7 +242,7 @@ define void EnableSuspendStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getEnableSuspendWidget () {
+define map<string,any> getEnableSuspendWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
@@ -285,7 +285,7 @@ define void EnableStandbyStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getEnableStandbyWidget () {
+define map<string,any> getEnableStandbyWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
@@ -313,7 +313,7 @@ define symbol BatteryWarningHandle (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getBatteryWarningButton () {
+define map<string,any> getBatteryWarningButton () {
     return $[
 	"widget" : `push_button,
 	// push button
@@ -339,7 +339,7 @@ define symbol AcpiSettingsButtonHandle (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getAcpiSettingsButton () {
+define map<string,any> getAcpiSettingsButton () {
     return $[
 	"widget" : `push_button,
 	// push button
@@ -367,7 +367,7 @@ define symbol EnableSuspendButtonHandle (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getEnableSuspendButton () {
+define map<string,any> getEnableSuspendButton () {
     return $[
 	"widget" : `push_button,
 	// push button
@@ -461,7 +461,7 @@ define void SchemeSelectionStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getSchemeSelectionWidget () {
+define map<string,any> getSchemeSelectionWidget () {
     return $[
 	"widget" : `custom,
 	// frame
@@ -628,7 +628,7 @@ define void SchemesInit (string key) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getSchemesListWidget () {
+define map<string,any> getSchemesListWidget () {
     return $[
 	"widget" : `custom,
 	"custom_widget" : `VBox (
@@ -740,7 +740,7 @@ define void SchemeNameStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getSchemeNameWidget () {
+define map<string,any> getSchemeNameWidget () {
     return $[
 	"widget" : `textentry,
 	// text entry
@@ -780,7 +780,7 @@ define void SchemeDescrStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getSchemeDescrWidget () {
+define map<string,any> getSchemeDescrWidget () {
     return $[
 	"widget" : `textentry,
 	// text entry
@@ -826,7 +826,7 @@ define void HardDiskStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getHardDiskWidget () {
+define map<string,any> getHardDiskWidget () {
     return $[
 	"widget" : `custom,
 	// frame,
@@ -908,7 +908,7 @@ define void CoolingPolicyStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getCoolingPolicyWidget () {
+define map<string,any> getCoolingPolicyWidget () {
     return $[
 	"widget" : `custom,
 	// frame
@@ -984,7 +984,7 @@ define void CpuStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getCpuWidget () {
+define map<string,any> getCpuWidget () {
     return $[
 	"widget" : `custom,
 	// frame
@@ -1052,7 +1052,7 @@ define void AllowScreensaverStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getAllowScreensaverWidget () {
+define map<string,any> getAllowScreensaverWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
@@ -1121,7 +1121,7 @@ define void DpmsStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map getDpmsWidget () {
+define map<string,any> getDpmsWidget () {
     return $[
 	"widget" : `custom,
 	"custom_widget" : `Frame (
@@ -1209,7 +1209,7 @@ define map getDpmsWidget () {
  * Get description map of a widget
  * @return map widget description map
  */
-/*define map getSuspendTimeoutWidget () {
+/*define map<string,any> getSuspendTimeoutWidget () {
     return $[
 	"widget" : `custom,
 	"custom_widget" : `Frame (_("Syspend Suspend Settings"), `HBox (
@@ -1242,7 +1242,7 @@ define map getDpmsWidget () {
 */
 // general settings
 
-map widgets = $[
+map<string,map<string,any> > widgets = $[
     "battery_warning" : getBatteryWarning (),
     "acpi_buttons" : getAcpiButtonsWidget (),
     "enable_suspend" : getEnableSuspendWidget (),

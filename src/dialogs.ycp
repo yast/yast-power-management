@@ -126,9 +126,15 @@ system probably does not support ACPI and uses APM."));
     // dialog caption
     string caption = _("Configuration of ACPI Buttons");
 
-    return CWM::ShowAndRun (["acpi_buttons"],
-	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : AskAbort ]);
+    return CWM::ShowAndRun ($[
+	"widget_names" : ["acpi_buttons"],
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::OKButton (),
+	"fallback_functions" : $[`abort : AskAbort ]
+    ]);
 }
 
 /**
@@ -147,9 +153,15 @@ symbol BatteryWarningDialog () {
     // dialog caption
     string caption = _("Configuration of Battery Capacity Feedback");
 
-    return CWM::ShowAndRun (["battery_warning"],
-	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : AskAbort ]);
+    return CWM::ShowAndRun ($[
+	"widget_names" : ["battery_warning"],
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::OKButton (),
+	"fallback_functions" : $[`abort : AskAbort ]
+    ]);
 }
 
 /**
@@ -179,9 +191,15 @@ symbol EnableSuspendDialog () {
     // dialog caption
     string caption = _("Allow Users to Suspend the Computer");
 
-    return CWM::ShowAndRun ([ "enable_standby", "enable_suspend"],
-	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : AskAbort ]);
+    return CWM::ShowAndRun ($[
+	"widget_names" : ["enable_standby", "enable_suspend"],
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::OKButton (),
+	"fallback_functions" : $[`abort : AskAbort ]
+    ]);
 }
 
 /**
@@ -200,9 +218,15 @@ symbol SchemesDialog () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["schemes_list"],
-	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : AskAbort ]);
+    return CWM::ShowAndRun ($[
+	"widget_names" : ["schemes_list"],
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::OKButton (),
+	"fallback_functions" : $[`abort : AskAbort ]
+    ]);
 }
 
 /**
@@ -229,9 +253,15 @@ symbol SchemeDialog1 () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["scheme_name", "scheme_descr", "cpu"],
-	widgets, contents, caption, Label::BackButton (), Label::NextButton (),
-	$[`abort : AskAbort ]);
+    return CWM::ShowAndRun ($[
+	"widget_names" : ["scheme_name", "scheme_descr", "cpu"],
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::NextButton (),
+	"fallback_functions" :$[`abort : AskAbort ]
+    ]);
 }
 
 /**
@@ -252,9 +282,15 @@ symbol SchemeDialog2 () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["hard_disk", "cooling_policy"],
-	widgets, contents, caption, Label::BackButton (), Label::NextButton (),
-	$[`abort : AskAbort ]);
+    return CWM::ShowAndRun ($[
+	"widget_names" : ["hard_disk", "cooling_policy"],
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::NextButton (),
+	"fallback_functions" : $[`abort : AskAbort ]
+    ]);
 }
 
 /**
@@ -288,13 +324,19 @@ symbol SchemeDialog3 () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun ([
+    return CWM::ShowAndRun ($[
+	"widget_names" : [
 	    "allow_screensaver",
 	    "dpms",
 //	    "suspend_timeout"
 	],
-	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
-	$[`abort : AskAbort ]);
+	"widget_descr" : widgets,
+	"contents" : contents,
+	"caption" : caption,
+	"back_button" : Label::BackButton (),
+	"next_button" : Label::OKButton (),
+	"fallback_functions" : $[`abort : AskAbort ]
+    ]);
 }
 
 
