@@ -79,10 +79,11 @@ To allow users to switch the computer to the stand-by power saving mode
 <b>Allow Switching to Stand-by Mode</b>.</p>"),
 
     // enabling standby/suspend dialog help 4/5
-    "str_standby_additional_info" : _("<p><b><big>Power-saving Modes Support
+    "str_standby_additional_info" : _("<p><b><big>Supported Power-Saving Modes
 </big></b><br>
 Some machines do not support all power-saving modes. If a mode is not supported
-by your machine, the appropriate check box is disabled.</p>")
+by your machine, the appropriate check box is disabled.</p>
+")
 
 	// enabling standby/suspend dialog help 5/5
 	+ _("<p><b><big>Warning</big></b><br>
@@ -157,12 +158,13 @@ according to current CPU load.</p>")
 only on ACPI machines.</p>")
     +
     // Scheme editation dialog 1 help 5/5
-    _("<p>If your processor does not support CPU frequency scaling 
+    _("<p>If your processor does not support CPU frequency scaling, 
 you may want to let your processor be constantly 
 slowed down when working on battery to save power. To do this, set
 <b>Always Throttle</b>.  This setting 
 might be useful on long-distance trips where you do not need the entire 
-performance of your machine.</p>"),
+performance of your machine.</p>
+"),
 
     // Scheme editation dialog 2 help 1/2
     "hard_disk" : _("<p><b><big>Hard Disk Settings</big></b><br>

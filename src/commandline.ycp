@@ -122,11 +122,11 @@ define boolean PrintHandler (map options) {
     {
 	if (printed)
 	    CommandLine::Print ("\n");
-	CommandLine::Print (_("ACPI Buttons Actions\n"));
+	CommandLine::Print (_("ACPI Button Actions\n"));
 	map<string,string> texts = $[
 	    "POWER" : _("Power Button Action: %1"),
 	    "SLEEP" : _("Sleep Button Action: %1"),
-	    "LID_CLOSED" : _("Notebook Lid Closed Action: %1"),
+	    "LID_CLOSED" : _("Laptop Lid Closed Action: %1"),
 	];
 	foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
 	    string format = texts[w]:"";
@@ -140,11 +140,11 @@ define boolean PrintHandler (map options) {
     {
 	if (printed)
 	    CommandLine::Print ("\n");
-	CommandLine::Print (_("Actions allowed for users\n"));
+	CommandLine::Print (_("Actions Allowed for Users\n"));
 	map <string,string> texts = $[
-	    "SUSPEND2DISK" : _("Suspend to Disk allowed: %1"),
-	    "SUSPEND2RAM" : _("Suspend to RAM allowed: %1"),
-	    "STANDBY" : _("Stand-by allowed: %1"),
+	    "SUSPEND2DISK" : _("Suspend to Disk Allowed: %1"),
+	    "SUSPEND2RAM" : _("Suspend to RAM Allowed: %1"),
+	    "STANDBY" : _("Stand-by Allowed: %1"),
 	];
 	foreach (string w, ["SUSPEND2DISK", "SUSPEND2RAM", "STANDBY"], {
 	    string format = texts[w]:"";
@@ -199,7 +199,7 @@ boolean SetHandler (map options) {
     {
 	if (! haskey (options, "allowed"))
 	{
-	    CommandLine::Error (_("Not specified if operation is to be allowed."));
+	    CommandLine::Error (_("Specify whether the operation should be allowed."));
 	    return false;
 	}
 	string operation = toupper (options["operation"]:"");
@@ -348,7 +348,7 @@ map cmdline = $[
 	],
 	"buttons" : $[
 	    // command line help text for an option
-	    "help"	: _("Display only ACPI buttons configuration"),
+	    "help"	: _("Display only ACPI button configuration"),
 	],
 	"allowed_actions" : $[
 	    // command line help text for an option
@@ -371,7 +371,7 @@ map cmdline = $[
 	],
 	"action" : $[
 	    // command line help text for an option
-	    "help"	: _("The action to be performed when specified capacity level is reached"),
+	    "help"	: _("The action to perform when the specified capacity level is reached"),
 	    "type"	: "enum",
 	    "typespec"	: acpi_actions,
 	],
@@ -383,23 +383,23 @@ map cmdline = $[
 	],
 	"operation" : $[
 	    // command line help text for an option
-	    "help"	: _("The action to be performed wnen the specified ACPI button is preseed"),
+	    "help"	: _("The action to perform when the specified ACPI button is preseed"),
 	    "type"	: "enum",
 	    "typespec"	: ["suspend2disk", "suspend2ram", "standby"],
 	],
 	"allowed" : $[
 	    // command line help text for an option
-	    "help"	: _("Setting if the specified operation is to be allowed for users"),
+	    "help"	: _("Sets whether the specified operation should be allowed for users"),
 	    "type"	: "boolean",
 	],
 	"ac_scheme" : $[
 	    // command line help text for an option
-	    "help"	: _("Scheme to be used when running on AC power source"),
+	    "help"	: _("Scheme to use when running on AC power source"),
 	    "type"	: "string",
 	],
 	"battery_scheme" : $[
 	    // command line help text for an option
-	    "help"	: _("Scheme to be used when running on battery power"),
+	    "help"	: _("Scheme to use when running on battery power"),
 	    "type"	: "string",
 	],
 	"name" : $[
@@ -436,12 +436,12 @@ map cmdline = $[
 	],
 	"value" : $[
 	    // command line help text for an option
-	    "help"	: _("Value of the specified option to be set"),
+	    "help"	: _("Value of the specified option to set"),
 	    "type"	: "string",
 	],
 	"rename" : $[
 	    // command line help text for an option
-	    "help"	: _("New name of the scheme to rename it"),
+	    "help"	: _("New name of the scheme to rename"),
 	    "type"	: "string",
 	],
     ],

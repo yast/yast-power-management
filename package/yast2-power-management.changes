@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon Feb  7 16:12:15 CET 2005 - jsrain@suse.cz
+
+- merged texts from proofread
+
+-------------------------------------------------------------------
 Mon Jan 31 15:58:36 CET 2005 - jsrain@suse.cz
 
 - translate scheme names and descriptions, added gettext to
