@@ -258,7 +258,7 @@ define void EnableSTRStore (string key, map event) {
 define symbol EnableSTRHandle (string key, map event) {
     if ((boolean)UI::QueryWidget (`id (key), `Value))
     {
-	// help text
+	// popup message
 	Popup::Message (_("Use caution because suspending the machine to RAM fails
 on many machines. See help for details.
 "));
@@ -334,7 +334,7 @@ define void EnableStandbyStore (string key, map event) {
 define symbol EnableStandbyHandle (string key, map event) {
     if ((boolean)UI::QueryWidget (`id (key), `Value))
     {
-	// help text
+	// popup message
 	Popup::Message (_("Use caution because putting the machine to the stand-by state
 fails on many machines. See help for details.
 "));
