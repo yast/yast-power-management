@@ -26,8 +26,31 @@ textdomain "power-management";
 y2milestone("----------------------------------------");
 y2milestone("PowerManagement auto started");
 
+import "Mode";
 import "PowerManagement";
 include "power-management/wizards.ycp";
+
+/**
+ * Fill the new_schemes map so that schemes that weren't existing before
+ * importing have their config file initialized before modifying it
+ * @param settings the import map
+ */
+define void CreateNewSchemesMap (map settings) {
+    if (! Mode::autoinst)
+	return;
+    list<string> r_schemes = (list<string>)
+        SCR::Dir (.sysconfig.powersave.schemes.section);
+    if (size (r_schemes) == 0) // no scheme file to clone
+	return;
+    list<map<string,string> > schemes = settings["schemes"]:[];
+    foreach (map<string,string> s, schemes, {
+	string id = s["_scheme_id"]:"";
+	if (! contains (r_schemes, id))
+	{
+	    PowerManagement::new_schemes[id] = r_schemes[0]:"";
+	}
+    });
+}
 
 any ret = nil;
 string func = "";
@@ -57,6 +80,7 @@ else if (func == "Change") {
 }
 /* Import configuration */
 else if (func == "Import") {
+    CreateNewSchemesMap (param);
     ret = PowerManagement::Import(param);
 }
 /* Return actual state */
