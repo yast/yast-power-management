@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jan 31 15:58:36 CET 2005 - jsrain@suse.cz
+
+- translate scheme names and descriptions, added gettext to
+  required packages
+- 2.11.2
+
+-------------------------------------------------------------------
 Tue Dec 21 11:17:28 CET 2004 - jsrain@suse.cz
 
 - added support for the commandline interface

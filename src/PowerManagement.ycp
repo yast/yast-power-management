@@ -547,7 +547,7 @@ global boolean APM () {
 
 global string TranslatePowersaveText (string text) {
     map out = (map)SCR::Execute (.target.bash_output, sformat (
-	"TEXTDOMAINDIR=/opt/kde3/share/locale/ gettext kpowersave \"%1\"",
+	"TEXTDOMAINDIR=/opt/kde3/share/locale/ gettext power-management \"%1\"",
 	text));
     if (out["exit"]:-1 != 0)
     {

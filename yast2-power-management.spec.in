@@ -2,7 +2,7 @@
 # neededforbuild yast2-devel-packages
 
 @HEADER@
-Requires:	yast2
+Requires:	yast2 gettext
 
 Summary:	Configuration of power-management
 
