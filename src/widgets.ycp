@@ -16,27 +16,7 @@ import "Popup";
 import "PowerManagement";
 
 include "power-management/helps.ycp";
-
-// global data
-
-list acpi_event_handlers = [
-    // combo box item
-    `item (`id ("notify"), _("Notify")),
-    // combo box item
-    `item (`id ("wm_shutdown"), _("Shut Down")),
-    // combo box item
-    `item (`id ("wm_logout"), _("Log Out")),
-    // combo box item
-    `item (`id ("standby"), _("Stand-by")),
-    // combo box item
-    `item (`id ("suspend_to_ram"), _("Suspend to RAM")),
-    // combo box item
-    `item (`id ("suspend_to_disk"), _("Suspend to Disk")),
-    // combo box item
-    `item (`id ("screen_saver"), _("Start Screen Saver")),
-    // combo box item
-    `item (`id ("ignore"), _("Ignore")),
-];
+include "power-management/misc.ycp";
 
 // battery warning widget
 
@@ -46,17 +26,10 @@ list acpi_event_handlers = [
  */
 define void BatteryWarningInit (string key) {
     foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	string option = sformat ("EVENT_BATTERY_%1", w);
 	string widget = sformat ("A_%1", w);
-	string value = PowerManagement::global_settings[option]:"";
-	if (value == "")
-	    value = "ignore";
+	string value = GetBatteryStatusAction (w);
 	UI::ChangeWidget (`id (widget), `Value, value);
-	option = sformat ("BATTERY_%1", w);
-	value = PowerManagement::global_settings[option]:"";
-	if (value == "")
-	    value = "0";
-	integer i_value = tointeger (value);
+	integer i_value = GetBatteryStatusCapacity (w);
 	UI::ChangeWidget (`id (w), `Value, i_value);
     });
     UI::SetFocus (`id ("POWER"));
@@ -69,14 +42,11 @@ define void BatteryWarningInit (string key) {
  */
 define void BatteryWarningStore (string key, map event) {
     foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	string option = sformat ("EVENT_BATTERY_%1", w);
 	string widget = sformat ("A_%1", w);
 	string value = (string)UI::QueryWidget (`id (widget), `Value);
-	PowerManagement::global_settings[option] = value;
-	option = sformat ("BATTERY_%1", w);
+	SetBatteryStatusAction (w, value);
 	integer i_value = (integer)UI::QueryWidget (`id (w), `Value);
-	value = sformat ("%1", i_value);
-	PowerManagement::global_settings[option] = value;
+	SetBatteryStatusCapacity (w, i_value);
     });
 }
 
@@ -118,19 +88,19 @@ define map<string,any> getBatteryWarning () {
 		    `opt (`hstretch),
                     // combo box
 		    _("War&ning Level Action"),
-		    acpi_event_handlers),
+		    GetAcpiEventHandlers ()),
 		`VSpacing (1),
 		`ComboBox (`id ("A_LOW"),
 		    `opt (`hstretch),
                     // combo box
 		    _("Low Level &Action"),
-                    acpi_event_handlers),
+                    GetAcpiEventHandlers ()),
                 `VSpacing (1),
                 `ComboBox (`id ("A_CRITICAL"),
                     `opt (`hstretch),
                     // combo box
 		    _("Cr&itical Level Action"),
-                    acpi_event_handlers),
+                    GetAcpiEventHandlers ()),
                 `VSpacing (2)
             ),
 	    `HSpacing (2)
@@ -149,10 +119,7 @@ define map<string,any> getBatteryWarning () {
  */
 define void AcpiButtonsInit (string key) {
     foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	string option = sformat ("EVENT_BUTTON_%1", w);
-	string value = PowerManagement::global_settings[option]:"";
-	if (value == "")
-	    value = "ignore";
+	string value = GetAcpiButtonAction (w);
 	UI::ChangeWidget (`id (w), `Value, value);
     });
     UI::SetFocus (`id ("POWER"));
@@ -165,9 +132,8 @@ define void AcpiButtonsInit (string key) {
  */
 define void AcpiButtonsStore (string key, map event) {
     foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	string option = sformat ("EVENT_BUTTON_%1", w);
 	string value = (string)UI::QueryWidget (`id (w), `Value);
-	PowerManagement::global_settings[option] = value;
+	SetAcpiButtonAction (w, value);
     });
 }
 
@@ -187,19 +153,19 @@ define map<string,any> getAcpiButtonsWidget () ``{
 		    `opt (`hstretch),
 		    // combo box
 		    _("&Power Button"),
-		    acpi_event_handlers),
+		    GetAcpiEventHandlers ()),
 		`VSpacing (1),
 		`ComboBox (`id ("SLEEP"),
 		    `opt (`hstretch),
 		    // combo box
 		    _("&Sleep Button"),
-		    acpi_event_handlers),
+		    GetAcpiEventHandlers ()),
 		`VSpacing (1),
 		`ComboBox (`id ("LID_CLOSED"),
 		    `opt (`hstretch),
 		    // combo box
 		    _("&Laptop's Lid Closing"),
-		    acpi_event_handlers),
+		    GetAcpiEventHandlers ()),
 		`VSpacing (2)
 	    ),
 	    `HSpacing (2)
@@ -1017,12 +983,12 @@ define map<string,any> getCoolingPolicyWidget () {
 		`opt (`hstretch),
 		// combo box
 		_("&Overheat Temperature Action"),
-		acpi_event_handlers),
+		GetAcpiEventHandlers ()),
 	    `ComboBox (`id (`overheat_critical),
 		`opt (`hstretch),
 		// combo box
 		_("&Critical Temperature Action"),
-		acpi_event_handlers)
+		GetAcpiEventHandlers ())
 	)),
 	"init" : CoolingPolicyInit,
 	"store" : CoolingPolicyStore,

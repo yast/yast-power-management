@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Dec 21 11:17:28 CET 2004 - jsrain@suse.cz
+
+- added support for the commandline interface
+
+-------------------------------------------------------------------
 Tue Dec 14 11:25:47 CET 2004 - jsrain@suse.cz
 
 - get scheme names and descriptions translatinos from kpowersave.po

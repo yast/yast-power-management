@@ -362,28 +362,17 @@ symbol SchemeDialog3 () {
 // pseudo dialogs
 
 symbol FetchSchemes () {
-    PowerManagement::current_schemes = PowerManagement::schemes;
+    PowerManagement::FetchSchemes ();
     return `next;
 }
 
 symbol StoreSchemes () {
-    PowerManagement::schemes = PowerManagement::current_schemes;
-    PowerManagement::modified = true;
+    PowerManagement::StoreSchemes ();
     return `next;
 }
 
 symbol StoreScheme () {
-    if (PowerManagement::current_scheme_index == -1)
-    {
-	PowerManagement::current_schemes = add (
-	    PowerManagement::current_schemes,
-	    PowerManagement::current_scheme);
-    }
-    else
-    {
-	PowerManagement::current_schemes[PowerManagement::current_scheme_index]
-	    = PowerManagement::current_scheme;
-    }
+    PowerManagement::StoreScheme ();
     return `next;
 }
 

@@ -21,8 +21,23 @@ textdomain "power-management";
 y2milestone ("----------------------------------------");
 y2milestone ("PowerManagement module started");
 
-//import "CommandLine";
+import "CommandLine";
 include "power-management/wizards.ycp";
+
+
+/**
+  * CommandLine handler for running GUI
+  * @return boolean true if settings were saved
+  */
+define boolean GuiHandler () {
+    symbol ret = PowerManagementSequence();
+    if (ret == `abort || ret == `back || ret == `nil)
+	return false;
+    return true;
+}
+
+include "power-management/commandline.ycp";
+
 
 /*map cmdline_description = $[
     "id"	: "power-management",
@@ -40,8 +55,8 @@ include "power-management/wizards.ycp";
 ];*/
 
 /* main ui function */
-any ret = PowerManagementSequence ();
-//CommandLine::Run(cmdline_description);
+//any ret = PowerManagementSequence ();
+any ret = CommandLine::Run(cmdline);
 y2debug("ret=%1", ret);
 
 /* Finish */

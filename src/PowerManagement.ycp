@@ -165,6 +165,7 @@ global boolean Modified() {
  * @return true on success
  */
 global boolean Read() {
+    y2milestone ("Reading power management settings");
     if (Mode::config ())
 	AbortFunction = nil;
 
@@ -300,6 +301,7 @@ global boolean Read() {
  * @return true on success
  */
 global boolean Write() {
+    y2milestone ("Writing power management settings");
     if (Mode::autoinst ())
 	AbortFunction = nil;
 
@@ -561,6 +563,63 @@ global string TranslateSchemeName (string name) {
 
 global string TranslateSchemeDescription (string descr) {
     return TranslatePowersaveText (descr);
+}
+
+global integer FindScheme (string name) {
+    integer ret = -1;
+    integer index = -1;
+    foreach (map<string,string> s, schemes, {
+	index = index + 1;
+	if (s["SCHEME_NAME"]:"" == name)
+	{
+	    ret = index;
+	}
+    });
+    return ret;
+}
+
+global void FetchSchemes () {
+    current_schemes = schemes;
+}
+
+global void StoreSchemes () {
+    schemes = current_schemes;
+    modified = true;
+}
+
+global void FetchScheme (integer index, integer clone) {
+    current_scheme_index = index;
+    if (index == -1)
+    {
+	if (clone != nil)
+	{
+	    current_scheme = current_schemes[clone]:$[];
+
+	}
+	else
+	{
+	    current_scheme = current_schemes[0]:$[];
+	}
+    }
+    else
+    {
+	current_scheme = current_schemes[index]:$[];
+    }
+    if (current_scheme == $[])
+    {
+	current_scheme = current_schemes[0]:$[];
+    }
+}
+
+global void StoreScheme () {
+    if (current_scheme_index == -1)
+    {
+	current_schemes = add (current_schemes, current_scheme);
+    }
+    else
+    {
+	current_schemes[current_scheme_index] = current_scheme;
+    }
 }
 
 /* EOF */

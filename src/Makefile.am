@@ -10,7 +10,9 @@ ynclude_DATA =			\
 	helps.ycp		\
 	wizards.ycp		\
 	dialogs.ycp		\
-	widgets.ycp
+	widgets.ycp		\
+	commandline.ycp		\
+	misc.ycp
 
 desktop_DATA =			\
 	power-management.desktop
