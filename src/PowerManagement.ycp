@@ -102,7 +102,7 @@ global map scheme_desciptions = $[
     "Scheme optimized to let maximum power savings take place." :
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let maximum power savings take place."),
-    "Scheme optimized to let machine run as quietly as possible." :
+    "Scheme optimized to let machine run as quiet as possible." :
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let machine run as quietly as possible."),
 ];

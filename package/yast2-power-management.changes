@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Sep 29 14:56:29 CEST 2004 - jsrain@suse.cz
+
+- fixed translating of the acoustic scheme description (#46403)
+
+-------------------------------------------------------------------
 Wed Sep 22 12:21:56 CEST 2004 - jsrain@suse.cz
 
 - fixed creating schemes during autoinstallation (#45740)
