@@ -282,15 +282,20 @@ global boolean Write() {
     Progress::NextStage();
 
     // copy new scheme files
-    foreach (string src, string dst, new_schemes, ``{
-	stage_success = (0 == SCR::Execute (.target.bash, sformat (
-	    "/bin/cp /etc/sysconfig/powersave/scheme_%1 \
-	     /etc/sysconfig/powersave/scheme_%2",
-	    src, dst))) && stage_success;
+    foreach (string dst, string src, new_schemes, ``{
+	if (dst != "")
+	{
+	    stage_success = (0 == SCR::Execute (.target.bash, sformat (
+		"cat /etc/sysconfig/powersave/scheme_%1 | awk '
+/^## Path:.*$/ { printf (\"## Path: System/Powermanagement/Scheme/%2\\n\");
+next }
+// {print $0;}' >  /etc/sysconfig/powersave/scheme_%2",
+		src, dst))) && stage_success;
+	}
     });
 
     // remove deleted schemes
-    list<string> old = (list<string>)SCR::Dir (.sysconfig.powersave.schemes);
+    list<string> old = (list<string>)SCR::Dir (.sysconfig.powersave.schemes.section);
     list<string> current = maplist (map<string,string> s, schemes, ``(
 	s["_scheme_id"]:""
     ));

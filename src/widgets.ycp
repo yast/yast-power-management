@@ -427,6 +427,9 @@ define symbol SchemesHandle (string key, map event) {
 	PowerManagement::current_scheme_index = -1;
 	PowerManagement::current_scheme
 	    = PowerManagement::current_schemes[found]:$[];
+	PowerManagement::current_scheme["_scheme_id"] = "";
+	PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"] = "";
+	PowerManagement::new_schemes[""] = selected;
 	return `add;
     }
     else if (event_id == `edit)
@@ -447,6 +450,9 @@ define symbol SchemesHandle (string key, map event) {
 	SchemesRedraw ();
 	UI::ChangeWidget (`id (`schemes), `CurrentItem,
 	    PowerManagement::current_schemes[0, "_scheme_id"]:"");
+	if (haskey (PowerManagement::new_schemes, selected))
+	    PowerManagement::new_schemes = (map<string,string>)remove (
+		PowerManagement::new_schemes, selected);
     }
     selected = (string)UI::QueryWidget (`id (`schemes), `CurrentItem);
     boolean enabled = true;
@@ -566,6 +572,8 @@ define void SchemeNameStore (string key, map event) {
 	    scheme_id = sformat ("%1_%2", scheme_id, index);
 	}
 	PowerManagement::current_scheme["_scheme_id"] = scheme_id;
+	PowerManagement::new_schemes[scheme_id]
+	    = PowerManagement::new_schemes[""]:"";
     }
 }
 
