@@ -85,16 +85,19 @@ To adjust operations to perform when an ACPI button is pressed, use
 <b>ACPI Settings</b>.</p>"),
 
 
-    // Schemes list dialog 1/2
+    // Schemes list dialog 1/3
     "schemes_list" : _("<p><b><big>Scheme Setup</big></b><br>
 Here, adjust the energy saving schemes. To modify a scheme, select
 it and click <b>Edit</b>.</p>")
     +
-    // Schemes list dialog 2/2
+    // Schemes list dialog 2/3
     _("<p>To add a new scheme, select a scheme to clone then click
 <b>Add</b>. To delete existing scheme, select it and click 
-<b>Delete</b>.</p>"),
-
+<b>Delete</b>.</p>")
+    +
+    // Schemes list dialog 3/3
+    _("<p>Assign schemes in the main dialog to take place if you either
+work on battery or on AC power.</p>"),
 
     // Scheme editation dialog 1 help 1/3
     "scheme_name" : _("<p><b><big>Scheme Name</big></b><br>

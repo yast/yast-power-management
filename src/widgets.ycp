@@ -330,6 +330,18 @@ define void SchemeSelectionInit (string key) {
 }
 
 /**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void SchemeSelectionStore (string key) {
+    PowerManagement::common_settings["POWERSAVE_BATTERY_SCHEME"]
+	= (string)UI::QueryWidget (`id (`dc_scheme), `Value);
+    PowerManagement::common_settings["POWERSAVE_AC_SCHEME"]
+	= (string)UI::QueryWidget (`id (`ac_scheme), `Value);
+}
+
+/**
  * Get description map of a widget
  * @return map widget description map
  */
@@ -365,6 +377,7 @@ define map getSchemeSelectionWidget () {
 	"init" : SchemeSelectionInit,
 	"handle" : SchemeSelectionHandle,
 	"handle_events" : [`schemes_edit, `ac_scheme, `dc_scheme],
+	"store" : SchemeSelectionStore,
 	"help" : HELPS["scheme_selection"]:"",
     ];
 }
