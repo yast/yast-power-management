@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Oct 19 14:37:23 CEST 2004 - jsrain@suse.cz
+
+- stopped using duplicated text "Really Abort"
+
+-------------------------------------------------------------------
 Wed Sep 29 14:56:29 CEST 2004 - jsrain@suse.cz
 
 - fixed translating of the acoustic scheme description (#46403)

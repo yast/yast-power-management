@@ -39,8 +39,7 @@ boolean PollAbort() {
 }
 
 boolean ReadAbort () {
-    // yes-no popup
-    return PollAbort () && Popup::YesNo (_("Really abort?"));
+    return PollAbort () && AskAbort ();
 }
 
 boolean WriteAbort () {
