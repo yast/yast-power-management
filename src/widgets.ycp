@@ -434,6 +434,22 @@ define symbol SchemesHandle (string key, map event) {
     }
     else if (event_id == `edit)
     {
+	if (selected == nil)
+	{
+	    // popup message
+	    Popup::Message (_("No scheme selected."));
+	}
+	if (selected == "performance" || selected == "powersave")
+	{
+	  // FIXME update after talking to MD people
+	  if (false)
+	  {
+	    // popup message
+	    Popup::Message (_("The selected scheme cannot be modified.
+Add a new one instead."));
+	    return nil;
+	  }
+	}
 	PowerManagement::current_scheme_index = found;
 	PowerManagement::current_scheme
 	    = PowerManagement::current_schemes[found]:$[];
@@ -441,6 +457,21 @@ define symbol SchemesHandle (string key, map event) {
     }
     else if (event_id == `delete)
     {
+	if (selected == nil)
+	{
+	    // popup message
+	    Popup::Message (_("No scheme selected."));
+	}
+	if (selected == "performance" || selected == "powersave")
+	{
+	  // FIXME update after talking to MD people
+	  if (false)
+	  {
+	    // popup message
+	    Popup::Message (_("The selected scheme cannot be deleted."));
+	    return nil;
+	  }
+	}
 	PowerManagement::current_schemes = filter (
 	    map<string,string>s,
 	    PowerManagement::current_schemes,

@@ -233,6 +233,7 @@ symbol FetchSchemes () {
 
 symbol StoreSchemes () {
     PowerManagement::schemes = PowerManagement::current_schemes;
+    PowerManagement::modified = true;
     return `next;
 }
 
