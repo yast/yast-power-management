@@ -218,8 +218,7 @@ define map<string,any> getAcpiButtonsWidget () ``{
  * @param key string widget id
  */
 define void EnableSTDInit (string key) {
-    if (! UI::WidgetExists (`id ("enable_standby")))
-	UI::SetFocus (`id (key));
+    UI::SetFocus (`id (key));
     string value = PowerManagement::global_settings
 	["DISABLE_USER_SUSPEND2DISK"]:"yes";
     UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
@@ -260,7 +259,7 @@ define map<string,any> getEnableSTDWidget () {
  * @param key string widget id
  */
 define void EnableSTRInit (string key) {
-    if (! UI::WidgetExists (`id ("enable_standby")))
+    if (! UI::WidgetExists (`id ("enable_std")))
 	UI::SetFocus (`id (key));
     string value = PowerManagement::global_settings
 	["DISABLE_USER_SUSPEND2RAM"]:"yes";
@@ -280,6 +279,22 @@ define void EnableSTRStore (string key, map event) {
 }
 
 /**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol always nil
+ */
+define symbol EnableSTRHandle (string key, map event) {
+    if ((boolean)UI::QueryWidget (`id (key), `Value))
+    {
+	// help text
+	Popup::Message (_("Be careful, suspending the machine to RAM fails
+on many machines. See help for details."));
+    }
+    return nil;
+}
+
+/**
  * Get description map of a widget
  * @return map widget description map
  */
@@ -291,9 +306,20 @@ define map<string,any> getEnableSTRWidget () {
 	"help" : HELPS["enable_str"]:"",
 	"init" : EnableSTRInit,
 	"store" : EnableSTRStore,
+	"opt" : [ `notify ],
+	"handle_events" : ["enable_str"],
+	"handle" : EnableSTRHandle,
     ];
 }
 
+// warning related to STR and Stand-by
+
+define map getStrStandbyAdditionalHelp () {
+    return $[
+	"widget" : `empty,
+	"help" : HELPS["str_standby_additional_info"]:"",
+    ];
+}
 
 
 // allowing/disallowing standby
@@ -303,7 +329,8 @@ define map<string,any> getEnableSTRWidget () {
  * @param key string widget id
  */
 define void EnableStandbyInit (string key) {
-    UI::SetFocus (`id (key));
+    if (! UI::WidgetExists (`id ("enable_std")))
+	UI::SetFocus (`id (key));
     string value = PowerManagement::global_settings
 	["DISABLE_USER_STANDBY"]:"yes";
     UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
@@ -321,6 +348,21 @@ define void EnableStandbyStore (string key, map event) {
     PowerManagement::global_settings["DISABLE_USER_STANDBY"] = value;
 }
 
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol always nil
+ */
+define symbol EnableStandbyHandle (string key, map event) {
+    if ((boolean)UI::QueryWidget (`id (key), `Value))
+    {
+	// help text
+	Popup::Message (_("Be careful, putting the machine to the stand-by state
+fails on many machines. See help for details."));
+    }
+    return nil;
+}
 
 /**
  * Get description map of a widget
@@ -334,6 +376,9 @@ define map<string,any> getEnableStandbyWidget () {
 	"help" : HELPS["enable_standby"]:"",
 	"init" : EnableStandbyInit,
 	"store" : EnableStandbyStore,
+	"opt" : [ `notify ],
+	"handle_events" : ["enable_standby"],
+	"handle" : EnableStandbyHandle,
     ];
 }
 
@@ -978,6 +1023,7 @@ define map<string,any> getCoolingPolicyWidget () {
 define symbol CpuHandle (string key, map event) {
     boolean enabled = (boolean)UI::QueryWidget (`id (`allow_throt), `Value);
     UI::ChangeWidget (`id (`max_throt), `Enabled, enabled);
+    UI::ChangeWidget (`id (`always_throt), `Enabled, enabled);
     return nil;
 }
 
@@ -989,10 +1035,11 @@ define void CpuInit (string key) {
     UI::ChangeWidget (`id (`scaling), `Value,
 	PowerManagement::current_scheme["CPUFREQUENCY"]:"dynamic");
     UI::ChangeWidget (`id (`allow_throt), `Value,
-	PowerManagement::current_scheme["ALLOW_THROTTLING"]:"yes"
-	    != "no");
+	PowerManagement::current_scheme["ALLOW_THROTTLING"]:"yes" != "no");
     UI::ChangeWidget (`id (`max_throt), `Value, tointeger (
 	PowerManagement::current_scheme["MAX_THROTTLING"]:"50"));
+    UI::ChangeWidget (`id (`always_throt), `Value,
+	PowerManagement::current_scheme["ALWAYS_THROTTLE"]:"no" != "no");
     CpuHandle (key, $[]);
 }
 
@@ -1008,6 +1055,8 @@ define void CpuStore (string key, map event) {
 	= (boolean)UI::QueryWidget (`id (`allow_throt), `Value) ? "yes" : "no";
     PowerManagement::current_scheme["MAX_THROTTLING"]
 	= sformat ("%1", (integer)UI::QueryWidget (`id (`max_throt), `Value));
+    PowerManagement::current_scheme["ALWAYS_THROTTLE"]
+	= (boolean)UI::QueryWidget (`id (`always_throt), `Value) ? "yes" : "no";
 }
 
 /**
@@ -1042,6 +1091,9 @@ define map<string,any> getCpuWidget () {
 		// integer field
 		`IntField (`id (`max_throt), _("&Max. %"), 0, 100, 50)
 	    ),
+	    `VSpacing (0.3),
+	    // check box
+	    `Left (`CheckBox (`id (`always_throt), _("Always Throttle"))),
 	    `VStretch ()
 	)),
 	"init" : CpuInit,
@@ -1296,6 +1348,7 @@ map<string,map<string,any> > widgets = $[
     "enable_std" : getEnableSTDWidget (),
     "enable_str" : getEnableSTRWidget (),
     "enable_standby" : getEnableStandbyWidget (),
+    "str_standby_additional_info" : getStrStandbyAdditionalHelp (),
     "battery_warning_button" : getBatteryWarningButton (),
     "acpi_settings_button" : getAcpiSettingsButton (),
     "enable_suspend_button" : getEnableSuspendButton (),

@@ -58,26 +58,32 @@ To assign an event to perform when the lid of the laptop or notebook is
 closed, use <b>Laptop's Lid Closing</b>.</p>"),
 
 
-    // enabling standby/suspend dialog help 1/3
-    "enable_standby" : _("<p><b><big>Switching to Stand-by Mode</big></b><br>
-To allow users to switch the computer to the stand-by power saving mode
-(ACPI mode 1), set
-<b>Allow Switching to Stand-by Mode</b>.</p>"),
-
-    // enabling standby/suspend dialog help 2/3
-    "enable_str" : _("<p><b><big>Suspend to RAM</big></b><br>
-To allow users to suspend the computer to the RAM (ACPI mode 3), set
-<b>Allow Suspending to RAM</b>.
-Note that computer suspended to RAM still consumes electric energy and
-if disconnected (or battery gets empty) unsaved data will be lost.</p>"),
-
-    // enabling standby/suspend dialog help 3/3
+    // enabling standby/suspend dialog help 1/4
     "enable_std" : _("<p><b><big>Suspending do Disk</big></b><br>
 To allow users to suspend the computer to the disk (ACPI mode 4), set
 <b>Allow Suspending to Disk</b>.
 Note that resuming after suspending to disk takes longer time than resuming
 after suspending to RAM.</p>"),
 
+    // enabling standby/suspend dialog help 2/4
+    "enable_str" : _("<p><b><big>Suspend to RAM</big></b><br>
+To allow users to suspend the computer to the RAM (ACPI mode 3), set
+<b>Allow Suspending to RAM</b>.
+Note that computer suspended to RAM still consumes electric energy and
+if disconnected (or battery gets empty) unsaved data will be lost.</p>"),
+
+    // enabling standby/suspend dialog help 3/4
+    "enable_standby" : _("<p><b><big>Switching to Stand-by Mode</big></b><br>
+To allow users to switch the computer to the stand-by power saving mode
+(ACPI mode 1), set
+<b>Allow Switching to Stand-by Mode</b>.</p>"),
+
+    // enabling standby/suspend dialog help 3/4
+    "str_standby_additional_info" : _("<p><b><big>Warning</big></b><br>
+Depending on your hardware Suspend to RAM or Stand-by could fail and you may 
+need to push the reset button to reboot your computer. This could lead to 
+possible data losses.
+See <i>/usr/share/doc/packages/powersave/README.suspend</i> for details).</p>"),
 
     // Main dialog help 1/6
     "scheme_selection" : _("<p><b><big>Energy Saving Schemes</big></b><br>
@@ -125,23 +131,32 @@ it and click <b>Edit</b>.</p>")
     _("<p>Assign schemes in the main dialog to take place if you either
 work on battery or on AC power.</p>"),
 
-    // Scheme editation dialog 1 help 1/4
+    // Scheme editation dialog 1 help 1/5
     "scheme_name" : _("<p><b><big>Scheme Name</big></b><br>
 Enter the name of the energy saving scheme.</p>"),
 
-    // Scheme editation dialog 1 help 2/4
+    // Scheme editation dialog 1 help 2/5
     "scheme_descr" : _("<p><b><big>Scheme Description</big></b><br>
 Optionally enter a description of this energy saving scheme.</p>"),
 
-    // Scheme editation dialog 1 help 3/4
+    // Scheme editation dialog 1 help 3/5
     "cpu" : _("<p><b><big>CPU settings</big></b><br>
 Use <b>Frequency Scaling</b> to adjust the frequency of the CPU. If you set it
 to <b>Dynamic Frequency Scaling</b>, the CPU frequency is adjusted automatically
 according to current CPU load.</p>")
     +
-    // Scheme editation dialog 1 help 4/4
+    // Scheme editation dialog 1 help 4/5
     _("<p>Set <b>Allow Throttling</b> to turn CPU throttling on and adjust
-<b>Max %</b> to set maximum CPU throttling.</p>"),
+<b>Max %</b> to set maximum CPU throttling. Throttling is supported
+only on ACPI machines.</p>")
+    +
+    // Scheme editation dialog 1 help 5/5
+    _("<p>If your processor does not support CPU frequency scaling 
+(SpeedStep/PowerNow!) you may want to let your processor be constantly 
+slowed down when working on battery to save power. To do it, set
+<b>Always Throttle</b>.  This setting 
+might be useful on long-distance trips where you do not need the whole 
+performance of your machine.</p>"),
 
     // Scheme editation dialog 2 help 1/2
     "hard_disk" : _("<p><b><big>Hard Disk Settings</big></b><br>

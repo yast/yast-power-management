@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Aug 19 15:15:38 CEST 2004 - jsrain@suse.cz
+
+- rearranged check box for allowing STD/STR/StdBy
+- added warning if enabling StdBy/STR, reordered the check boxes
+- added possibility to throttle always
+
+-------------------------------------------------------------------
 Thu Aug 12 15:12:22 CEST 2004 - jsrain@suse.cz
 
 - adapted to changes in powersave package

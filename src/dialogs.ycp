@@ -191,11 +191,11 @@ symbol EnableSuspendDialog () {
 	    `HStretch (),
 	    `VBox (
 		`VStretch (),
-		`Left ("enable_standby"),
+		`Left ("enable_std"),
 		`VStretch (),
 		`Left ("enable_str"),
 		`VStretch (),
-		`Left ("enable_std"),
+		`Left ("enable_standby"),
 		`VStretch ()
 	    ),
 	    `HStretch ()
@@ -207,7 +207,8 @@ symbol EnableSuspendDialog () {
     string caption = _("Allow Users to Suspend the Computer");
 
     return CWM::ShowAndRun ($[
-	"widget_names" : ["enable_standby", "enable_str", "enable_std"],
+	"widget_names" : ["enable_std", "enable_str", "enable_standby",
+	    "str_standby_additional_info"],
 	"widget_descr" : widgets,
 	"contents" : contents,
 	"caption" : caption,

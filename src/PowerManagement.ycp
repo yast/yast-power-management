@@ -33,6 +33,7 @@ map<string,string> scheme_options_mapping = $[
     "CPUFREQUENCY"		: "POWERSAVE_CPUFREQUENCY",
     "ALLOW_THROTTLING"		: "POWERSAVE_ALLOW_THROTTLING",
     "MAX_THROTTLING"		: "POWERSAVE_MAX_THROTTLING",
+    "ALWAYS_THROTTLE"		: "POWERSAVE_ALWAYS_THROTTLE",
     "DISK_STANDBY_MODE"		: "POWERSAVE_DISK_STANDBY_MODE",
     "DISK_ACOUSTIC"		: "POWERSAVE_DISK_ACOUSTIC",
     "COOLING_POLICY"		: "POWERSAVE_COOLING_POLICY",
@@ -285,8 +286,8 @@ global boolean Read() {
 
     modified = false;
 
-    y2error ("Global settings: %1", global_settings);
-    y2error ("Power saving schemes: %1", schemes);
+    y2debug ("Global settings: %1", global_settings);
+    y2debug ("Power saving schemes: %1", schemes);
 
     return success;
 }
