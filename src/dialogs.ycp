@@ -317,7 +317,7 @@ symbol SchemeDialog3 () {
 
     term contents = `HBox (`HStretch (), `VBox (
 	`VStretch (),
-	`Left ("allow_screensaver"),
+	`Left ("screensaver"),
 	`VStretch (),
 	`Left ("dpms"),
 /*	// frame
@@ -341,7 +341,7 @@ symbol SchemeDialog3 () {
 
     return CWM::ShowAndRun ($[
 	"widget_names" : [
-	    "allow_screensaver",
+	    "screensaver",
 	    "dpms",
 //	    "suspend_timeout"
 	],

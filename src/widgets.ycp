@@ -1057,13 +1057,13 @@ define map<string,any> getCpuWidget () {
  * Init function of a widget
  * @param key string widget id
  */
-define void AllowScreensaverInit (string key) {
+define void ScreensaverInit (string key) {
     boolean value = tolower ((string)
 	PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]:"")
 		== "yes"
 	? false
 	: true;
-    UI::ChangeWidget (`id (key), `Value, value);
+    UI::ChangeWidget (`id ("enable_screensaver"), `Value, value);
 }
 
 /**
@@ -1071,9 +1071,9 @@ define void AllowScreensaverInit (string key) {
  * @param key string widget id
  * @param event map event that caused storing of widget settings
  */
-define void AllowScreensaverStore (string key, map event) {
+define void ScreensaverStore (string key, map event) {
     PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]
-	= (boolean)UI::QueryWidget (`id (key), `Value)
+	= (boolean)UI::QueryWidget (`id ("enable_screensaver"), `Value)
 	    ? "no"
 	    : "yes";
 }
@@ -1082,14 +1082,27 @@ define void AllowScreensaverStore (string key, map event) {
  * Get description map of a widget
  * @return map widget description map
  */
-define map<string,any> getAllowScreensaverWidget () {
+define map<string,any> getScreensaverWidget () {
     return $[
-	"widget" : `checkbox,
-	// check box
-	"label" : _("Enable &Screen Saver"),
+	"widget" : `custom,
+	"custom_widget" : `Frame (
+	    // frame
+            _("Screen Saver Settings"),
+	    `HBox (
+		`HSpacing (2),
+		`VBox (
+		    `VSpacing (1),
+                    `Left (`CheckBox (`id ("enable_screensaver"),
+                        // check box
+			_("Enable &Screen Saver"))),
+		    `VSpacing (1)
+		),
+		`HSpacing (2)
+	    )
+        ),
 	"help" : HELPS["allow_screensaver"]:"",
-	"init" : AllowScreensaverInit,
-	"store" : AllowScreensaverStore,
+	"init" : ScreensaverInit,
+	"store" : ScreensaverStore,
     ];
 }
 
@@ -1288,7 +1301,7 @@ map<string,map<string,any> > widgets = $[
     "hard_disk" : getHardDiskWidget (),
     "cooling_policy" : getCoolingPolicyWidget (),
     "cpu" : getCpuWidget (),
-    "allow_screensaver" : getAllowScreensaverWidget (),
+    "screensaver" : getScreensaverWidget (),
     "dpms" : getDpmsWidget (),
 //    "suspend_timeout" : getSuspendTimeoutWidget ()
 ];

@@ -169,7 +169,7 @@ global boolean Read() {
 
     integer steps = 3;
 
-    integer sl = 1000;
+    integer sl = 0;
     sleep(sl);
 
     boolean success = true;
