@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Mar 23 11:12:06 CET 2005 - jsrain@suse.cz
+
+- fixed the path to scheme names translations (#61403)
+
+-------------------------------------------------------------------
 Mon Feb 28 17:26:04 CET 2005 - jsrain@suse.cz
 
 - disable DPMS settings
