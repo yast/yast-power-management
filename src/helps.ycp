@@ -171,6 +171,7 @@ Disabling the screen saver is useful for schemes used, for example, for
 presentations.</p>"),
 
     // Scheme editation dialog 3 help 2/2
+    // Display is a substantive (screen)
     "dpms" : _("<p><b><big>Display Blanking</big></b><br>
 To allow blanking the display using DPMS, set
 <b>Enable Display Power Management</b>.

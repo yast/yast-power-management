@@ -1169,6 +1169,7 @@ define map<string,any> getDpmsWidget () {
 	"widget" : `custom,
 	"custom_widget" : `Frame (
 	    // frame
+	    // Display is a substantive (screen)
 	    _("Display Power Management Settings"),
 	    `HBox (
 		`HSpacing (2),
@@ -1176,16 +1177,20 @@ define map<string,any> getDpmsWidget () {
 		    `VSpacing (1),
 		    `Left (`CheckBox (`id (`enable_dpms), `opt (`notify),
 			// check box
+			// Display is a substantive (screen)
 			_("Enable &Display Power Management"))),
 		    `VSpacing (1),
 		    `IntField (`id (`dpms_stdby),
 			// int field
+			// Display is a substantive (screen)
 			_("Display S&tand-by Time-Out (minutes)"), 0, 120, 1),
 		    `IntField (`id (`dpms_susp),
 			// int field
+			// Display is a substantive (screen)
 			_("Display &Suspend Time-Out (minutes)"), 0, 120, 2),
 		    `IntField (`id (`dpms_off),
 			// int field
+			// Display is a substantive (screen)
 			_("Display Power &Off Time-Out (minutes)"), 0, 120, 3),
 		    `VSpacing (1)
 		),

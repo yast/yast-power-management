@@ -321,6 +321,7 @@ symbol SchemeDialog3 () {
 	`VStretch (),
 	`Left ("dpms"),
 /*	// frame
+	// Display is a substantive (screen)
 	`Frame (_("Display Settings"), `HBox (
 	    `HSpacing (2),
 	    `VBox (
