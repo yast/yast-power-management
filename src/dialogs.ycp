@@ -88,7 +88,7 @@ symbol MainDialog () {
 	"battery_warning_button",
 	"acpi_settings_button"];
 
-    list<map> w = CWM::CreateWidgets (widget_names, widgets);
+    list<map<string,any> > w = CWM::CreateWidgets (widget_names, widgets);
     string help = CWM::MergeHelps (w);
     contents = CWM::PrepareDialog (contents, w);
     Wizard::SetContentsButtons (caption, contents, help,

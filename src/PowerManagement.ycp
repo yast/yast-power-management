@@ -39,7 +39,7 @@ global map<string,string> new_schemes = $[];
 
 global string apm_acpi = "";
 
-map scheme_names = $[
+global map scheme_names = $[
     // power saving scheme name, combo box and default contents of text entry
     "Performance" : _("Performance"),
     // power saving scheme name, combo box and default contents of text entry
@@ -48,7 +48,7 @@ map scheme_names = $[
     "Acoustic" : _("Acoustic"),
 ];
 
-map scheme_desciptions = $[
+global map scheme_desciptions = $[
     "Scheme optimized to let machine run on maximum performance." :
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let machine run on maximum performance."),
