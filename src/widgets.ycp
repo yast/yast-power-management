@@ -26,15 +26,15 @@ list acpi_event_handlers = [
     // combo box item
     `item (`id ("notify"), _("Notify")),
     // combo box item
-    `item (`id ("wm_shutdown"), _("Shutdown")),
+    `item (`id ("wm_shutdown"), _("Shut Down")),
     // combo box item
-    `item (`id ("wm_logout"), _("Logout")),
+    `item (`id ("wm_logout"), _("Log Out")),
     // combo box item
     `item (`id ("standby"), _("Stand-by")),
     // combo box item
     `item (`id ("suspend"), _("Suspend")),
     // combo box item
-    `item (`id ("screen_saver"), _("Start screen saver")),
+    `item (`id ("screen_saver"), _("Start Screen Saver")),
     // combo box item
     `item (`id ("ignore"), _("Ignore")),
 ];
@@ -257,7 +257,7 @@ define map getAcpiSettingsButton () {
     return $[
 	"widget" : `push_button,
 	// push button
-	"label" : _("AC&PI settings"),
+	"label" : _("AC&PI Settings"),
 	"opt" : [ `hstretch ],
 	"help" : HELPS["acpi_settings_button"]:"",
 	"handle" : AcpiSettingsButtonHandle,
@@ -289,7 +289,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 	{
 	    // fallback scheme description, displayed in a rich text
 	    // but without HTML tags!!!
-	    descr = _("No scheme description avilable");
+	    descr = _("No scheme description available");
 	}
 	UI::ChangeWidget (`id (ev_id == `ac_scheme ? `ac_descr : `dc_descr),
 	    `Value, descr);
@@ -337,7 +337,7 @@ define map getSchemeSelectionWidget () {
     return $[
 	"widget" : `custom,
 	// frame
-	"custom_widget" : `Frame (_("Energy saving schemes"), `VBox (
+	"custom_widget" : `Frame (_("Energy Saving Schemes"), `VBox (
 	    `HBox (
 		`HWeight (1, `VBox (
 		    `ReplacePoint (`id (`ac_scheme_rp),
@@ -385,7 +385,7 @@ define void SchemesRedraw () {
 	if (descr == "")
 	{
 	    // fallback scheme description, table entre
-	    descr = _("No scheme description avilable");
+	    descr = _("No scheme description available");
 	}
 	return `item (`id (scheme_id), name, descr);
     });
@@ -521,7 +521,7 @@ define boolean SchemeNameValidate (string key, map event) {
     if (contains (names, new_name))
     {
 	// popup message
-	Popup::Message (_("Specified scheme name is not unique"));
+	Popup::Message (_("The specified scheme name is not unique."));
 	return false;
     }
     return true;
@@ -796,7 +796,7 @@ define map getCpuWidget () {
 		    // combo box item
 		    `item (`id ("powersave"), _("Maximim Energy Saving")),
 		    // combo box item
-		    `item (`id ("dynamic"), _("Dynamic Frequency Scalling")),
+		    `item (`id ("dynamic"), _("Dynamic Frequency Scaling")),
 		]),
 	    `VStretch (),
 	    `HBox (

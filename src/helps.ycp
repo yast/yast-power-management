@@ -36,33 +36,33 @@ Abort the save procedure by pressing <b>Abort</b>.</p>"),
 
     // Batter warning dialog help 1/3
     "battery_warning" : _("<p><b><big>Battery Capacity Feedback</big></b><br>
-Use this dialog to set three bettery capacity levels and assign actions for
-each of these capacitly levels.</p>")
+Use this dialog to set three battery capacity levels and assign actions for
+each of these capacity levels.</p>")
     +
     // Batter warning dialog help 2/3
-    _("<p>Use <b>Warning Capacity</b>, <b>Low Capacity</b> and
+    _("<p>Use <b>Warning Capacity</b>, <b>Low Capacity</b>, and
 <b>Critical Capacity</b> to set battery levels in percent of full
 capacity.</p>")
     +
     // Batter warning dialog help 3/3
-    _("<p>Use <b>Warning Level Action</b>, <b>Low Level Action</b> and
-<b>Critical Level Action</b> to set actions that will be performed if specified
+    _("<p>Use <b>Warning Level Action</b>, <b>Low Level Action</b>, and
+<b>Critical Level Action</b> to set actions to perform if the relevant
 battery level is reached.</p>"),
 
 
     // ACPI buttons dialog help 1/1
     "acpi_buttons" : _("<p><b><big>ACPI Buttons Feedback</big></b><br>
-Use this dialog to assign events that will be performed after a button is
+Use this dialog to assign events to perform after a button is
 pressed. Events can be set for the <b>Power Button</b> and <b>Sleep Button</b>.
-To assign event to be performed when the lid of the laptop or notebook is
+To assign an event to perform when the lid of the laptop or notebook is
 closed, use <b>Laptop's Lid Closing</b>.</p>"),
 
 
     // Main dialog help 1/5
     "scheme_selection" : _("<p><b><big>Energy Saving Schemes</big></b><br>
-Use <b>AC Powered</b> to adjust energy saving scheme to be used when your
+Use <b>AC Powered</b> to adjust the energy saving scheme to use when your
 computer is AC powered.
-Use <b>Battery Powered</b> to adjust energy saving scheme to be used when your
+Use <b>Battery Powered</b> to adjust the energy saving scheme to use when your
 computer is powered by internal battery.")
     +
     // Main dialog help 2/5
@@ -76,22 +76,22 @@ use <b>Edit Schemes</b>.</p>"),
 
     // Main dialog help 4/5
     "battery_warning_button" : _("<p><b><big>Battery Warning</big></b><br>
-To adjust levels of battery status and aactions to be performed on thes levels
+To adjust levels of battery status and actions to perform on these levels
 of battery capacity, use <b>Battery Warning</b>.</p>"),
 
     // Main dialog help 5/5
     "acpi_settings_button" : _("<p><b><big>ACPI Settings</big></b><br>
-To adjust operations to be performed when an ACPI button is pressed, use
+To adjust operations to perform when an ACPI button is pressed, use
 <b>ACPI Settings</b>.</p>"),
 
 
     // Schemes list dialog 1/2
-    "schemes_list" : _("<p><b><big>Schemes Setup</big></b><br>
-Here you can adjust the energy saving schemes. To modify a scheme, select
-it, and click <b>Edit</b>.</p>")
+    "schemes_list" : _("<p><b><big>Scheme Setup</big></b><br>
+Here, adjust the energy saving schemes. To modify a scheme, select
+it and click <b>Edit</b>.</p>")
     +
     // Schemes list dialog 2/2
-    _("<p>To add a new scheme, select a scheme to clone, and click
+    _("<p>To add a new scheme, select a scheme to clone then click
 <b>Add</b>. To delete existing scheme, select it and click 
 <b>Delete</b>.</p>"),
 
@@ -106,31 +106,31 @@ Optionally enter a description of this energy saving scheme.</p>"),
 
     // Scheme editation dialog 1 help 3/3
     "hard_disk" : _("<p><b><big>Hard Disk Settings</big></b><br>
-Use <b>Stand-by Policy</b> to adjust power saving policy of the hard disks.
-Remember that more power saving means also more often waiting until the disk
+Use <b>Stand-by Policy</b> to adjust the power saving policy of the hard disks.
+Remember that more power saving also means more often waiting until the disk
 drive is ready.
-Use <b>Acoustic Policy</b> to adjust acoustic policy of the disk. The noise
-produced by the disk may be lowered by slower moving of disk heads. Not all
+Use <b>Acoustic Policy</b> to adjust the acoustic policy of the disk. The noise
+produced by the disk may be lowered by moving disk heads more slowly. Not all
 disks support this feature.</p>"),
 
 
     // Scheme editation dialog 2 help 1/3
     "cpu" : _("<p><b><big>CPU settings</big></b><br>
-Use <b>Frequency Scaling</b> to adjust frequency of the CPU. If you set it
-to <b>Dynamic Frequency Scaling</b>, CPU frequency is adjusted automatically
+Use <b>Frequency Scaling</b> to adjust the frequency of the CPU. If you set it
+to <b>Dynamic Frequency Scaling</b>, the CPU frequency is adjusted automatically
 according to current CPU load.</p>")
     +
     // Scheme editation dialog 2 help 2/3
     _("<p>Set <b>Allow Throttling</b> to turn CPU throttling on and adjust
-<b>Max %</b> to set maximal CPU throttling.</p>"),
+<b>Max %</b> to set maximum CPU throttling.</p>"),
 
     // Scheme editation dialog 2 help 3/3
     "cooling_policy" : _("<p><b><big>Cooling Policy</big></b><br>
-Use cooling policy <b>Status</b> to adjust active or passive cooling policy.
-Active means, that if system is getting overheated, cooling fan is turned on.
+Use cooling policy <b>Status</b> to adjust the active or passive cooling policy.
+Active means that, if system is getting overheated, the cooling fan is turned on.
 If the system continues getting overheated, CPU frequency and voltage is
-reduced. Passive means that the system first reduces frequency, and if
-it didn't help, then it turns the cooling fan on.</p>"),
+reduced. Passive means that the system first reduces frequency and, if
+that does not help, turns the cooling fan on.</p>"),
 
 ];
 

@@ -149,7 +149,7 @@ symbol PowerManagementSequence() {
 any PowerManagementAutoSequence() {
 
     /* Initialization dialog caption */
-    string caption = _("PowerManagement Configuration");
+    string caption = _("Power Management Configuration");
     /* Initialization dialog contents */
     term contents = `Label(_("Initializing..."));
 

@@ -135,8 +135,9 @@ global boolean Read() {
 	boolean install_ok = Require::RequireAndConflictTarget (["pwoersave"],
 	    [],
 	    // richtext, %1 is name of package
-	    _("For runnign power saving mechanisms, the powersave daemon is
-required. YaST will install package %1."));
+	    _("To use power saving mechanisms, the powersave daemon is
+required. YaST will install package %1.
+"));
 	if (! install_ok && ! Require::LastOperationCanceled ())
 	{
 	    // error popup
@@ -154,7 +155,7 @@ required. YaST will install package %1."));
     else
     {
 	// error report
-	Report::Error (_("This system supports neither ACPI nor APM"));
+	Report::Error (_("This system does not support ACPI or APM."));
 	return false;
     }
 

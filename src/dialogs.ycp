@@ -121,7 +121,7 @@ system probably does not support ACPI and uses APM."));
     ), `HStretch ());
 
     // dialog caption
-    string caption = _("Configuration of ACPI buttons");
+    string caption = _("Configuration of ACPI Buttons");
 
     return CWM::ShowAndRun (["acpi_buttons"],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
@@ -142,7 +142,7 @@ symbol BatteryWarningDialog () {
     ), `HStretch ());
 
     // dialog caption
-    string caption = _("Configuration of battery capacity feedback");
+    string caption = _("Configuration of Battery Capacity Feedback");
 
     return CWM::ShowAndRun (["battery_warning"],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
