@@ -699,7 +699,7 @@ define boolean SchemeNameValidate (string key, map event) {
     {
 	Popup::Message (
 	    // poupp message
-	    _("The scheme name must not be longer than 32 characters."));
+	    _("The scheme name must not be longer than thirty-two characters."));
 	return false;
     }
     return true;
@@ -923,7 +923,7 @@ define map<string,any> getCoolingPolicyWidget () {
 	    `ComboBox (`id (`overheat),
 		`opt (`hstretch),
 		// combo box
-		_("&Overheat Teperature Action"),
+		_("&Overheat Temperature Action"),
 		acpi_event_handlers),
 	    `ComboBox (`id (`overheat_critical),
 		`opt (`hstretch),
@@ -1137,13 +1137,13 @@ define map<string,any> getDpmsWidget () {
 		    `VSpacing (1),
 		    `IntField (`id (`dpms_stdby),
 			// int field
-			_("Display S&tand-by Timeout (minutes)"), 0, 120, 1),
+			_("Display S&tand-by Time-Out (minutes)"), 0, 120, 1),
 		    `IntField (`id (`dpms_susp),
 			// int field
-			_("Display &Suspend Timeout (minutes)"), 0, 120, 2),
+			_("Display &Suspend Time-Out (minutes)"), 0, 120, 2),
 		    `IntField (`id (`dpms_off),
 			// int field
-			_("Display Power &Off Timeout (minutes)"), 0, 120, 3),
+			_("Display Power &Off Time-Out (minutes)"), 0, 120, 3),
 		    `VSpacing (1)
 		),
 		`HSpacing (2)

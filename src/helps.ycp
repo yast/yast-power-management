@@ -60,12 +60,12 @@ closed, use <b>Laptop's Lid Closing</b>.</p>"),
 
     // enabling standby/suspend dialog help 1/2
     "enable_standby" : _("<p><b><big>Switching to Stand-by Mode</big></b><br>
-To allow users switch the computer to the Stand-by power saving mode, set
+To allow users to switch the computer to the stand-by power saving mode, set
 <b>Allow Switching to Stand-by Mode</b>.</p>"),
 
     // enabling standby/suspend dialog help 2/2
     "enable_suspend" : _("<p><b><big>Switching to Suspend Mode</big></b><br>
-To allow users switch the computer to the Suspend power saving mode, set
+To allow users to switch the computer to the suspend power saving mode, set
 <b>Allow Switching to Suspend Mode</b>.</p>"),
 
 
@@ -97,8 +97,8 @@ To adjust operations to perform when an ACPI button is pressed, use
 
     // Main dialog help 6/6
     "enable_suspend_button" : _("<p><b><big>Enabling Suspend</big></b><br>
-To set if users are allowed to switch the computer to the Stand-by or
-Suspend mode, use <b>Enable Suspend</b>.</p>"),
+To set if users are allowed to switch the computer to the stand-by or
+suspend mode, use <b>Enable Suspend</b>.</p>"),
 
 
     // Schemes list dialog 1/3
@@ -144,29 +144,29 @@ disks support this feature.</p>"),
 
     // Scheme editation dialog 2 help 2/2
     "cooling_policy" : _("<p><b><big>Cooling Policy</big></b><br>
-Use cooling policy <b>Status</b> to adjust the active or passive cooling policy.
-Active means that, if system is getting overheated, the cooling fan is
+Use the cooling policy <b>Status</b> to adjust the active or passive cooling policy.
+Active means that, if the system is overheating, the cooling fan is
 turned on.
-If the system continues getting overheated, CPU frequency and voltage is
+If the system continues overheating, the CPU frequency and voltage are
 reduced. Passive means that the system first reduces frequency and, if
 that does not help, turns the cooling fan on.</p>
-<p>To specify actions that will be performed when the system gets overheated
-ot reaches critical temperature use <b>Overheat Teperature Action</b> and
+<p>To specify actions to perform when the system overheats
+or reaches critical temperature, use <b>Overheat Temperature Action</b> and
 <b>Critical Temperature Action</b>.</p>"),
 
     // Scheme editation dialog 3 help 1/2
     "allow_screensaver" : _("<p><b><big>Enable Screen Saver</big></b><br>
 To enable the screen saver in this scheme, set <b>Enable Screen Saver</b>.
-Disabling screen saver is useful for schemes used e. g. for
+Disabling the screen saver is useful for schemes used, for example, for
 presentations.</p>"),
 
     // Scheme editation dialog 3 help 2/2
     "dpms" : _("<p><b><big>Display Blanking</big></b><br>
-To allow blanking the dislpay using DPMS, set
+To allow blanking the display using DPMS, set
 <b>Enable Display Power Management</b>.
-To set the stand-by, suspend and power off timeouts use
-<b>Display Stand-by Timeout</b>, <b>Display Suspend Timeout</b> or
-<b>Display Power Off Timeout</b>. To disable any particular timeout,
+To set the stand-by, suspend, and power off time-outs use
+<b>Display Stand-by Time-Out</b>, <b>Display Suspend Time-Out</b>, and
+<b>Display Power Off Time-Out</b>. To disable a time-out,
 set its value to <b>0</b>.</p>"),
 
     // Scheme editation dialog 3 help 3/3
