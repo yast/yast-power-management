@@ -11,6 +11,7 @@
 
 textdomain "power-management";
 
+import "Label";
 import "Sequencer";
 import "Wizard";
 
