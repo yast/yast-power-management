@@ -30,7 +30,7 @@ symbol SchemesSequence () {
 	"main"			:   ``( SchemesDialog ()),
 	"scheme1"		:   ``( SchemeDialog1 ()),
 	"scheme2"		:   ``( SchemeDialog2 ()),
-	"scheme3"		:   ``( SchemeDialog3 ()),
+//	"scheme3"		:   ``( SchemeDialog3 ()),
     ];
 
     map sequence = $[
@@ -53,12 +53,13 @@ symbol SchemesSequence () {
 	],
 	"scheme2" : $[
 	    `abort		: `abort,
-	    `next		: "scheme3",
+	    `next		: "store_scheme",
+//	    `next		: "scheme3",
 	],
-	"scheme3" : $[
+/*	"scheme3" : $[
 	    `abort		: `abort,
 	    `next		: "store_scheme",
-	],
+	],*/
 	"store_scheme" : $[
 	    `next		: "main",
 	],
