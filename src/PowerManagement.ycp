@@ -16,9 +16,9 @@ module "PowerManagement";
 textdomain "power-management";
 
 import "Mode";
+import "Package";
 import "Progress";
 import "Report";
-import "Require";
 import "Service";
 import "Summary";
 
@@ -153,15 +153,10 @@ global boolean Read() {
     Progress::NextStage();
 
     // check installed packages
-    if (! Require::AreAllPackagesInstalled (["powersave"]) || Mode::config)
+    if (! Package::Installed ("powersave") || Mode::config)
     {
-	boolean install_ok = Require::RequireAndConflictTarget (["pwoersave"],
-	    [],
-	    // richtext, %1 is name of package
-	    _("To use power saving mechanisms, the powersave daemon is
-required. YaST will install package %1.
-"));
-	if (! install_ok && ! Require::LastOperationCanceled ())
+	boolean install_ok = Package::Install ("pwoersave");
+	if (! install_ok && ! Package::LastOperationCanceled ())
 	{
 	    // error popup
 	    Report::Error (_("Installing required packages failed."));
