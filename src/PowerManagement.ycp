@@ -204,7 +204,7 @@ required. YaST will install package %1.
     list<string> r_schemes = (list<string>)
 	SCR::Dir (.sysconfig.powersave.schemes.section);
     foreach (string s, r_schemes, ``{
-	map scheme = $[
+	map<string,string> scheme = $[
 	    "_scheme_id" : s,
 	];
 	path p = add (.sysconfig.powersave.schemes.value, s);
@@ -212,7 +212,7 @@ required. YaST will install package %1.
 	    string v = (string)SCR::Read (add (p, k));
 	    scheme[k] = v;
 	});
-	schemes = add (schemes, scheme);
+	schemes = (list<map<string,string> >)add (schemes, scheme);
     });
     new_schemes = $[];
 
