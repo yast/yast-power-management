@@ -1,0 +1,517 @@
+/**
+ * File:	include/power-management/complex.ycp
+ * Package:	Configuration of power-management
+ * Summary:	Dialogs definitions
+ * Authors:	Jiri Srain <jsrain@suse.cz>
+ *
+ * $Id$
+ */
+
+{
+
+textdomain "power-management";
+
+import "Label";
+import "Popup";
+import "Wizard";
+import "Wizard_hw";
+import "PowerManagement";
+
+include "power-management/helps.ycp";
+
+// global data
+
+
+list acpi_event_handlers = [
+    // combo box item
+    `item (`id ("notify"), _("Notify")),
+    // combo box item
+    `item (`id ("wm_shutdown"), _("Shutdown")),
+    // combo box item
+    `item (`id ("wm_logout"), _("Logout")),
+    // combo box item
+    `item (`id ("standby"), _("Stand-by")),
+    // combo box item
+    `item (`id ("suspend"), _("Suspend")),
+    // combo box item
+    `item (`id ("screen_saver"), _("Start screen saver")),
+    // combo box item
+    `item (`id ("ignore"), _("Ignore")),
+];
+
+// battery warning widget
+
+define void BatteryWarningInit (string key) {
+    foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
+	string option = sformat ("POWERSAVE_EVENT_BATTERY_%1", w);
+	string widget = sformat ("A_%1", w);
+	string value = PowerManagement::common_settings[option]:"";
+	if (value == "")
+	    value = "ignore";
+	UI::ChangeWidget (`id (widget), `Value, value);
+	option = sformat ("POWERSAVED_BATTERY_%1", w);
+	value = PowerManagement::daemon_settings[option]:"";
+	if (value == "")
+	    value = "0";
+	integer i_value = tointeger (value);
+	UI::ChangeWidget (`id (w), `Value, i_value);
+    });
+    UI::SetFocus (`id ("POWER"));
+}
+
+define void BatteryWarningStore (string key, map event) {
+    foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
+	string option = sformat ("POWERSAVE_EVENT_BATTERY_%1", w);
+	string widget = sformat ("A_%1", w);
+	string value = (string)UI::QueryWidget (`id (widget), `Value);
+	PowerManagement::common_settings[option] = value;
+	option = sformat ("POWERSAVED_BATTERY_%1", w);
+	integer i_value = (integer)UI::QueryWidget (`id (w), `Value);
+	value = sformat ("%1", i_value);
+	PowerManagement::daemon_settings[option] = value;
+    });
+}
+
+define map getBatteryWarning () {
+    return $[
+	"widget" : `custom,
+	"custom_widget" : `Frame (_("Battery Capacity Feedback"), `HBox (
+	    `HSpacing (2),
+	    `VBox (
+		`VSpacing (2),
+		`IntField (`id ("WARNING"),
+		    `opt (`hstretch),
+		    // int field
+		    _("&Warning Capacity"),
+		    0, 100, 0),
+		`VSpacing (1),
+		`IntField (`id ("LOW"),
+		    `opt (`hstretch),
+		    // int field
+		    _("&Low Capacity"),
+		    0, 100, 0),
+                `VSpacing (1),
+                `IntField (`id ("CRITICAL"),
+                    `opt (`hstretch),
+		    // int field
+		    _("&Ciritical Capacity"),
+		    0, 100, 0),
+                `VSpacing (2)
+            ),
+            `HSpacing (2),
+	    `VBox (
+		`VSpacing (2),
+		// combo box
+		`ComboBox (`id ("A_WARNING"),
+		    `opt (`hstretch),
+		    _("&Warning Action"),
+		    acpi_event_handlers),
+		`VSpacing (1),
+		// combo box
+		`ComboBox (`id ("A_LOW"),
+		    `opt (`hstretch),
+		    _("L&ow Action"),
+                    acpi_event_handlers),
+                `VSpacing (1),
+                // combo box
+                `ComboBox (`id ("A_CRITICAL"),
+                    `opt (`hstretch),
+		    _("Cr&itical Action"),
+                    acpi_event_handlers),
+                `VSpacing (2)
+            ),
+	    `HSpacing (2)
+	)),
+	"help" : HELPS["battery_warning"]:"",
+	"init" : BatteryWarningInit,
+	"store" : BatteryWarningStore,
+    ];
+}
+
+// acpi buttons widget
+
+define void AcpiButtonsInit (string key) {
+    foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
+	string option = sformat ("POWERSAVE_EVENT_BUTTON_%1", w);
+	string value = PowerManagement::common_settings[option]:"";
+	if (value == "")
+	    value = "ignore";
+	UI::ChangeWidget (`id (w), `Value, value);
+    });
+    UI::SetFocus (`id ("POWER"));
+}
+
+define void AcpiButtonsStore (string key, map event) {
+    foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
+	string option = sformat ("POWERSAVE_EVENT_BUTTON_%1", w);
+	string value = (string)UI::QueryWidget (`id (w), `Value);
+	PowerManagement::common_settings[option] = value;
+    });
+}
+
+define map getAcpiButtonsWidget () ``{
+    return $[
+	"widget" : `custom,
+	"custom_widget" : `Frame (_("ACPI Button Configuration"), `HBox (
+	    `HSpacing (2),
+	    `VBox (
+		`VSpacing (2),
+		// combo box
+		`ComboBox (`id ("POWER"),
+		    `opt (`hstretch),
+		    _("&Power Button"),
+		    acpi_event_handlers),
+		`VSpacing (1),
+		// combo box
+		`ComboBox (`id ("SLEEP"),
+		    `opt (`hstretch),
+		    _("Sleep& Button"),
+		    acpi_event_handlers),
+		`VSpacing (1),
+		// combo box
+		`ComboBox (`id ("LID_CLOSED"),
+		    `opt (`hstretch),
+		    _("&Laptop's Lid Closing"),
+		    acpi_event_handlers),
+		`VSpacing (2)
+	    ),
+	    `HSpacing (2)
+	)),
+	"help" : HELPS["acpi_buttons"]:"",
+	"init" : AcpiButtonsInit,
+	"store" : AcpiButtonsStore,
+    ];
+}
+
+// battery warning button
+
+define symbol BatteryWarningHandle (string key, map event) {
+    return `battery;
+}
+
+define map getBatteryWarningButton () {
+    return $[
+	"widget" : `push_button,
+	// push button
+	"label" : _("&Battery Warning"),
+	"help" : HELPS["battery_warning_button"]:"",
+	"handle" : BatteryWarningHandle,
+	"handle_events" : [ "battery_warning_button" ],
+    ];
+}
+
+define symbol AcpiSettingsButtonHandle (string key, map event) {
+    return `buttons;
+}
+
+define map getAcpiSettingsButton () {
+    return $[
+	"widget" : `push_button,
+	// push button
+	"label" : _("&ACPI settings"),
+	"help" : HELPS["acpi_settings_button"]:"",
+	"handle" : AcpiSettingsButtonHandle,
+	"handle_events" : [ "acpi_settings_button" ],
+    ];
+}
+
+// scheme selection widget
+
+define symbol SchemeSelectionHandle (string key, map event) {
+    return `schemes_edit;
+}
+
+define map getSchemeSelectionWidget () {
+    return $[
+	"widget" : `custom,
+	"custom_widget" : `PushButton (`id (`schemes_edit),
+	    _("Ed&it Schemes")),
+	"handle" : SchemeSelectionHandle,
+	"handle_events" : [`schemes_edit],
+    ];
+}
+
+
+// schemes list widget
+
+define void SchemesRedraw () {
+    list items = maplist (map<string,string> s,
+	PowerManagement::current_schemes,
+    {
+	return s["_scheme_id"]:"";
+    });
+    items = filter (any i, items, ``(i != ""));
+    UI::ReplaceWidget (`schemes_rp,
+	`SelectionBox (`id (`schemes), `opt (`notify),
+	    // selection box
+	    _("Available &Schemes"), items));
+    UI::SetFocus (`schemes);
+}
+
+define symbol SchemesHandle (string key, map event) {
+    any event_id = event["ID"]:nil;
+    string selected = (string)UI::QueryWidget (`id (`schemes), `CurrentItem);
+    integer index = -1;
+    integer found = -1;
+    foreach (map s, PowerManagement::current_schemes, ``{
+	index = index + 1;
+	if (PowerManagement::current_schemes[index,"_scheme_id"]:"" == selected)
+	    found = index;
+    });
+    if (event_id == `add)
+    {
+	PowerManagement::current_scheme_index = -1;
+	PowerManagement::current_scheme
+	    = PowerManagement::current_schemes[found]:$[];
+	return `add;
+    }
+    else if (event_id == `edit)
+    {
+	PowerManagement::current_scheme_index = found;
+	PowerManagement::current_scheme
+	    = PowerManagement::current_schemes[found]:$[];
+	return `edit;
+    }
+    else if (event_id == `delete)
+    {
+	PowerManagement::current_schemes = filter (
+	    map<string,string>s,
+	    PowerManagement::current_schemes,
+	{
+	    return s["_scheme_id"]:"" != selected;
+	});
+	SchemesRedraw ();
+	UI::ChangeWidget (`id (`schemes), `CurrentItem,
+	    PowerManagement::current_schemes[0, "_scheme_id"]:"");
+    }
+    selected = (string)UI::QueryWidget (`id (`schemes), `CurrentItem);
+    boolean enabled = true;
+    if (selected == "performance" || selected == "powersave")
+    {
+	enabled = false;
+    }
+    UI::ChangeWidget (`id (`delete), `Enabled, enabled);
+    return nil;
+}
+
+define void SchemesInit (string key) {
+    SchemesRedraw ();
+    SchemesHandle (key, $[]);
+    UI::ChangeWidget (`id (`schemes), `CurrentItem,
+	PowerManagement::current_schemes[0, "_scheme_id"]:"");
+}
+
+define map getSchemesListWidget () {
+    return $[
+	"widget" : `custom,
+	"custom_widget" : `VBox (
+	    `ReplacePoint (`id (`schemes_rp),
+		`SelectionBox (`id (`schemes), `opt (`notify),
+		    // selection box
+		    _("Available &Schemes"), [])
+	    ),
+	    `HBox (
+		`PushButton (`id (`add), Label::AddButton ()),
+		`PushButton (`id (`edit), Label::EditButton ()),
+		`PushButton (`id (`delete), Label::DeleteButton ()),
+		`HStretch ()
+	    )
+	),
+	"init" : SchemesInit,
+	"handle" : SchemesHandle,
+    ];
+}
+
+// scheme name widget
+
+define void SchemeNameInit (string key) {
+    return;
+}
+
+define boolean SchemeNameValidate (string key) {
+    return true;
+}
+
+define void SchemeNameStore (string key, map event) {
+    return;
+}
+
+define map getSchemeNameWidget () {
+    return $[
+	"widget" : `textentry,
+	"label" : _("Scheme &Name"),
+	"help" : HELPS["scheme_name"]:"",
+	"init" : SchemeNameInit,
+	"store" : SchemeNameStore,
+	"validate" : SchemeNameValidate,
+    ];
+}
+
+// hard disk settings widget
+
+define void HardDiskInit (string key) {
+    string value = (string)
+	PowerManagement::current_scheme["POWERSAVE_DISK_STANDBY_MODE"]:"";
+    if (value == "")
+	value = "powersave";
+    UI::ChangeWidget (`id (`standby), `Value, value);
+    value = (string)
+	PowerManagement::current_scheme["POWERSAVE_DISK_ACOUSTIC"]:"";
+    if (value == "")
+	value = "quiet";
+    UI::ChangeWidget (`id (`acoustic), `Value, value);
+}
+
+define void HardDiskStore (string key) {
+    PowerManagement::current_scheme["POWERSAVE_DISK_STANDBY_MODE"]
+	= (string)UI::QueryWidget (`id (`standby), `Value);
+    PowerManagement::current_scheme["POWERSAVE_DISK_ACOUSTIC"]
+	= (string)UI::QueryWidget (`id (`acoustic), `Value);
+}
+
+define map getHardDiskWidget () {
+    return $[
+	"widget" : `custom,
+	// frame,
+	"custom_widget" : `Frame (_("Hard Disk"), `VBox (
+	    `VStretch (),
+	    // combo box
+	    `Left (`ComboBox (`id (`standby), `opt (`hstretch),
+		// combo box
+		_("&Stand-by Policy"),
+		[
+		    `item (`id ("performance"),
+			// combo box item
+			_("Maximum Performance")),
+		    `item (`id ("powersave"),
+			// combo box item
+			_("Power Saving")),
+		    `item (`id ("aggressiv_powersave"),
+			// combo box item
+			_("Aggressive Power Saving"))
+		])),
+	    `VStretch (),
+	    `Left (`ComboBox (`id (`acoustic), `opt (`hstretch),
+		// combo box
+		_("&Acoustic Policy"),
+		[
+		    `item (`id ("performance"),
+			// combo box item
+			_("Maximum Performance")),
+		    `item (`id ("low"),
+			// combo box item
+			_("Low - FIXME")),
+		    `item (`id ("quiet"),
+			// combo box item
+			_("Maximally Quiet")),
+		])),
+	    `VStretch ()
+	)),
+	"init" : HardDiskInit,
+	"store" : HardDiskStore,
+    ];
+}
+
+// cpu cooling policy widget
+
+define void CoolingPolicyInit (string key) {
+    string value = (string)
+	PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]:"";
+    if (value == "")
+	value = "passive";
+    UI::ChangeWidget (`id (`cooling_policy), `Value, value);
+}
+
+define void CoolingPolicyStore (string key, map event) {
+    PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]
+	= (string)UI::QueryWidget (`id (`cooling_policy), `Value);
+}
+
+define map getCoolingPolicyWidget () {
+    return $[
+	"widget" : `custom,
+	// frame
+	"custom_widget" : `Frame (_("Cooling Policy"), `VBox (
+	    // combo box
+	    `ComboBox (`id (`cooling_policy), `opt (`hstretch), _("&Status"), [
+		//combo box item
+		`item (`id ("active"), _("Active")),
+		// combo box item
+		`item (`id ("passive"),_("Passive")),
+	    ])
+	)),
+	"init" : CoolingPolicyInit,
+	"store" : CoolingPolicyStore,
+    ];
+}
+
+// CPU settings widget
+
+define symbol CpuHandle (string key, map event) {
+    boolean enabled = (boolean)UI::QueryWidget (`id (`allow_throt), `Value);
+    UI::ChangeWidget (`id (`max_throt), `Enabled, enabled);
+    return void;
+}
+
+define void CpuInit (string key) {
+    return;
+
+    CpuHandle ();
+}
+
+define void CpuStore (string key, map event) {
+    return;
+}
+
+define map getCpuWidget () {
+    return $[
+	"widget" : `custom,
+	// frame
+	"custom_widget" : `Frame (_("CPU"), `VBox (
+	    `VStretch (),
+	    `ComboBox (`id (`scaling),
+		// combo box
+		_("Frequency Scaling"),
+		[
+		    // combo box item
+		    `item (`id ("performance"), _("Maximum Performance")),
+		    // combo box item
+		    `item (`id ("powersave"), _("Maximim Energy Saving")),
+		    // combo box item
+		    `item (`id ("dynamic"), _("Dynamic Frequency Scalling")),
+		]),
+	    `VStretch (),
+	    `HBox (
+		`Left (`VBox (
+		    `Label (" "),
+		    `CheckBox (`id (`allow_throt), `opt (`hstretch, `notify),
+			// check box
+			_("Allow Throttling"))
+		)),
+		`IntField (`id (`max_throt), _("&Max. %"), 0, 100, 50)
+	    ),
+	    `VStretch ()
+	)),
+	"init" : CpuInit,
+	"store" : CpuStore,
+	"handle" : CpuHandle,
+    ];
+}
+
+// general settings
+
+map widgets = $[
+    "battery_warning" : getBatteryWarning (),
+    "acpi_buttons" : getAcpiButtonsWidget (),
+    "battery_warning_button" : getBatteryWarningButton (),
+    "acpi_settings_button" : getAcpiSettingsButton (),
+    "scheme_selection" : getSchemeSelectionWidget (),
+    "schemes_list" : getSchemesListWidget (),
+    "scheme_name" : getSchemeNameWidget (),
+    "hard_disk" : getHardDiskWidget (),
+    "cooling_policy" : getCoolingPolicyWidget (),
+    "cpu" : getCpuWidget (),
+];
+
+/* EOF */
+}
