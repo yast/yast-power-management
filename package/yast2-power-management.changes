@@ -3,6 +3,7 @@ Mon Aug 30 17:42:57 CEST 2004 - jsrain@suse.cz
 
 - fixed storing of settings (due to a typo were stored after the
   powersave daemon was restarted) (#44142)
+- 2.10.5
 
 -------------------------------------------------------------------
 Fri Aug 27 15:13:17 CEST 2004 - jsrain@suse.cz
