@@ -22,3 +22,4 @@ Exec=/sbin/yast2 power-management
 
 Name=Power Management
 GenericName=Configure power management
+X-KDE-SubstituteUID=true
