@@ -426,7 +426,7 @@ map cmdline = $[
 	],
 	"operation" : $[
 	    // command line help text for an option
-	    "help"	: _("The action to perform when the specified ACPI button is preseed"),
+	    "help"	: _("The action to perform when the specified ACPI button is pressed"),
 	    "type"	: "enum",
 	    "typespec"	: ["suspend2disk", "suspend2ram", "standby"],
 	],
