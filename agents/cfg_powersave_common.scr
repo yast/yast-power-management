@@ -1,5 +1,0 @@
-.sysconfig.powersave.common
-
-`ag_ini(
-    `SysConfigFile("/etc/sysconfig/powersave/common")
-)

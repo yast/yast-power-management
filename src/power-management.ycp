@@ -21,7 +21,7 @@ textdomain "power-management";
 y2milestone ("----------------------------------------");
 y2milestone ("PowerManagement module started");
 
-import "CommandLine";
+//import "CommandLine";
 include "power-management/wizards.ycp";
 
 /*map cmdline_description = $[

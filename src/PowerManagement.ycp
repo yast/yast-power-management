@@ -16,11 +16,57 @@ module "PowerManagement";
 textdomain "power-management";
 
 import "Mode";
-import "Package";
+import "PackageSystem";
 import "Progress";
 import "Report";
 import "Service";
-import "Summary";
+
+
+/**
+ * Mapping of cheme option identifiers in the internal structure and in the
+ * created file
+ * Key is internal structure, value is scheme file
+ */
+map<string,string> scheme_options_mapping = $[
+    "SCHEME_NAME"		: "POWERSAVE_SCHEME_NAME",
+    "SCHEME_DESCRIPTION"	: "POWERSAVE_SCHEME_DESCRIPTION",
+    "CPUFREQUENCY"		: "POWERSAVE_CPUFREQUENCY",
+    "ALLOW_THROTTLING"		: "POWERSAVE_ALLOW_THROTTLING",
+    "MAX_THROTTLING"		: "POWERSAVE_MAX_THROTTLING",
+    "DISK_STANDBY_MODE"		: "POWERSAVE_DISK_STANDBY_MODE",
+    "DISK_ACOUSTIC"		: "POWERSAVE_DISK_ACOUSTIC",
+    "COOLING_POLICY"		: "POWERSAVE_COOLING_POLICY",
+    "DISABLE_SCREEN_SAVER"	: "POWERSAVE_DISABLE_SCREEN_SAVER",
+    "DISABLE_DPMS"		: "POWERSAVE_DISABLE_DPMS",
+    "DPMS_STANDBY"		: "POWERSAVE_DPMS_STANDBY",
+    "DPMS_SUSPEND"		: "POWERSAVE_DPMS_SUSPEND",
+    "DPMS_OFF"			: "POWERSAVE_DPMS_OFF",
+//    "" : "",
+];
+
+/**
+ * Mapping of global option identifiers in the internal structure and in the
+ * created file
+ * Key is internal structure, value is scheme file (2-member list, first file
+ * identifier, second variable name)
+ */
+map<string,list<string> > global_options_mapping = $[
+    "AC_SCHEME"			: ["common",	 "POWERSAVE_AC_SCHEME"],
+    "BATTERY_SCHEME"		: ["common",	 "POWERSAVE_BATTERY_SCHEME"],
+    "BATTERY_WARNING"		: ["battery",	 "POWERSAVED_BATTERY_WARNING"],
+    "BATTERY_LOW"		: ["battery",	 "POWERSAVED_BATTERY_LOW"],
+    "BATTERY_CRITICAL"		: ["battery",	 "POWERSAVED_BATTERY_CRITICAL"],
+    "EVENT_BATTERY_WARNING"	: ["events",	 "POWERSAVE_EVENT_BATTERY_WARNING"],
+    "EVENT_BATTERY_LOW"		: ["events",	 "POWERSAVE_EVENT_BATTERY_LOW"],
+    "EVENT_BATTERY_CRITICAL"	: ["events",	 "POWERSAVE_EVENT_BATTERY_CRITICAL"],
+    "EVENT_BUTTON_POWER"	: ["events",	 "POWERSAVE_EVENT_BUTTON_POWER"],
+    "EVENT_BUTTON_SLEEP"	: ["events",	 "POWERSAVE_EVENT_BUTTON_SLEEP"],
+    "EVENT_BUTTON_LID_CLOSED"	: ["events",	 "POWERSAVE_EVENT_BUTTON_LID_CLOSED"],
+    "DISABLE_USER_SUSPEND2DISK"	: ["sleep",	 "POWERSAVED_DISABLE_USER_SUSPEND2DISK"],
+    "DISABLE_USER_SUSPEND2RAM"	: ["sleep",	 "POWERSAVED_DISABLE_USER_SUSPEND2RAM"],
+    "DISABLE_USER_STANDBY"	: ["sleep",	 "POWERSAVED_DISABLE_USER_STANDBY"],
+//    ""		: ["",	 ""],
+];
 
 /**
  * Prototypes
@@ -31,9 +77,7 @@ global boolean Modified();
 
 global list<map<string,string> > schemes = [];
 
-global map<string,string> common_settings = $[];
-
-global map<string,string> daemon_settings = $[];
+global map<string,string> global_settings = $[];
 
 global map<string,string> new_schemes = $[];
 
@@ -46,6 +90,8 @@ global map scheme_names = $[
     "Powersave" : _("Powersave"),
     // power saving scheme name, combo box and default contents of text entry
     "Acoustic" : _("Acoustic"),
+    // power saving scheme name, combo box and default contents of text entry
+    "Presentation" : _("Presentation"),
 ];
 
 global map scheme_desciptions = $[
@@ -55,7 +101,7 @@ global map scheme_desciptions = $[
     "Scheme optimized to let maximum power savings take place." :
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let maximum power savings take place."),
-    "Scheme optimized to let machine run as quiet as possible." :
+    "Scheme optimized to let machine run as quietly as possible." :
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let machine run as quietly as possible."),
 ];
@@ -80,7 +126,7 @@ global boolean write_only = false;
  * Abort function
  * return boolean return true if abort
  */
-global boolean() AbortFunction = Modified;
+global boolean() AbortFunction = nil;
 
 // UI helping variables
 
@@ -115,14 +161,15 @@ global boolean Modified() {
  * @return true on success
  */
 global boolean Read() {
-    AbortFunction = nil; // FIXME check abort correctly
+    if (Mode::config)
+	AbortFunction = nil;
 
     /* PowerManagement read dialog caption */
     string caption = _("Initializing Configuration");
 
     integer steps = 3;
 
-    integer sl = 0;
+    integer sl = 1000;
     sleep(sl);
 
     boolean success = true;
@@ -154,16 +201,13 @@ global boolean Read() {
     Progress::NextStage();
 
     // check installed packages
-    if (! Package::Installed ("powersave") || Mode::config)
+    if (! Mode::test
+	&& ! PackageSystem::CheckAndInstallPackagesInteractive (["powersave"])
+    )
     {
-	boolean install_ok = Package::Install ("powersave");
-	if (! install_ok && ! Package::LastOperationCanceled ())
-	{
-	    // error popup
-	    Report::Error (_("Installing required packages failed."));
-	    return false;
-	}
+	return false;
     }
+
     // check supported APM or ACPI
     map out = (map)SCR::Execute (.target.bash_output,
 	"/usr/bin/powersave --apm-acpi");
@@ -193,18 +237,10 @@ global boolean Read() {
     if(Abort()) return false;
     Progress::NextStage();
 
-    list<string> ds_list = (list<string>)SCR::Dir (.etc.powersave.value);
-    daemon_settings = $[];
-    foreach (string k, ds_list, ``{
-	string v = (string) SCR::Read (add (.etc.powersave.value, k));
-	daemon_settings[k] = v;
-    });
-
-    list<string> ss_list = (list<string>)SCR::Dir (.sysconfig.powersave.common);
-    common_settings = $[];
-    foreach (string k, ss_list, ``{
-	string v = (string) SCR::Read (add (.sysconfig.powersave.common, k));
-	common_settings[k] = v;
+    foreach (string key, list<string> conf, global_options_mapping, {
+	string v = (string)SCR::Read (
+	    .sysconfig.powersave.global.value + conf[0]:"" + conf[1]:"");
+	global_settings[key] = v;
     });
 
     if(! stage_success)
@@ -222,16 +258,16 @@ global boolean Read() {
 
     list<string> r_schemes = (list<string>)
 	SCR::Dir (.sysconfig.powersave.schemes.section);
-    foreach (string s, r_schemes, ``{
+    schemes = maplist (string s, r_schemes, ``{
 	map<string,string> scheme = $[
 	    "_scheme_id" : s,
 	];
 	path p = add (.sysconfig.powersave.schemes.value, s);
-	foreach (string k, (list<string>)SCR::Dir (p), ``{
-	    string v = (string)SCR::Read (add (p, k));
-	    scheme[k] = v;
+	foreach (string key, string conf, scheme_options_mapping, {
+	    string v = (string)SCR::Read (add (p, conf));
+	    scheme[key] = v;
 	});
-	schemes = (list<map<string,string> >)add (schemes, scheme);
+	return scheme;
     });
     new_schemes = $[];
 
@@ -242,18 +278,15 @@ global boolean Read() {
     }
     sleep(sl);
 
-    if(Abort()) return false;
     /* Progress finished */
     Progress::NextStage();
     success = success && stage_success;
     sleep(sl);
 
-    if(Abort()) return false;
     modified = false;
 
-    y2debug ("Common settings: %1", common_settings);
-    y2debug ("Daemon settings: %1", daemon_settings);
-    y2debug ("Power saving schemes: %1", schemes);
+    y2error ("Global settings: %1", global_settings);
+    y2error ("Power saving schemes: %1", schemes);
 
     return success;
 }
@@ -263,7 +296,8 @@ global boolean Read() {
  * @return true on success
  */
 global boolean Write() {
-    AbortFunction = nil; // FIXME check abort correctly
+    if (Mode::autoinst)
+	AbortFunction = nil;
 
     /* PowerManagement read dialog caption */
     string caption = _("Saving Configuration");
@@ -325,14 +359,17 @@ next }
 	SCR::Write (add (.sysconfig.powersave.schemes.section, s), nil);
     });
 
-    // write the settings
+    // write scheme settings
     foreach (map<string,string> scheme, schemes, ``{
 	string id = scheme["_scheme_id"]:"";
 	y2milestone ("Writing scheme %1", id);
 	path p = add (.sysconfig.powersave.schemes.value, id);
-	foreach (string k, string v, scheme, ``{
-	    if (k != "_scheme_id")
-		SCR::Write (add (p, k), v);
+	foreach (string key, string conf, scheme_options_mapping, {
+	    if (key != "_scheme_id")
+	    {
+		string v = scheme[key]:nil;
+		SCR::Write (add (p, conf), v);
+	    }
 	});
     });
     SCR::Write (.sysconfig.powersave.schemes, nil);
@@ -351,17 +388,12 @@ next }
     Progress::NextStage ();
 
     y2milestone ("Writing global settings");
-    path p = .sysconfig.powersave.common;
-    foreach (string k, string v, common_settings, ``{
-	SCR::Write (add (p, k), v);
+    foreach (string key, list<string> conf, global_options_mapping, {
+	string v = global_settings[key]:nil;
+	SCR::Write (
+	    .sysconfig.powersave.global.value + conf[0]:"" + conf[1]:"", v);
     });
-    SCR::Write (p, nil);
-
-    p = .etc.powersave.value;
-    foreach (string k, string v, daemon_settings, ``{
-	SCR::Write (add (p, k), v);
-    });
-    SCR::Write (.etc.powersave, nil);
+    SCR::Write (.etc.powersave.global, nil);
 
     if(! stage_success)
     {
@@ -389,12 +421,11 @@ next }
     stage_success = true;
     sleep(sl);
 
-    if(Abort()) return false;
     /* Progress finished */
     Progress::NextStage();
     sleep(sl);
+    sleep (500);
 
-    if(Abort()) return false;
     return true;
 }
 
@@ -405,9 +436,9 @@ next }
  * @return boolean True on success
  */
 global boolean Import (map settings) {
+    y2milestone ("Importing settings: %1", settings);
     schemes = settings["schemes"]:[];
-    common_settings = settings["common_settings"]:$[];
-    daemon_settings = settings["daemon_settings"]:$[];
+    global_settings = settings["global_settings"]:$[];
     return true;
 }
 
@@ -417,49 +448,52 @@ global boolean Import (map settings) {
  * @return map Dumped settings (later acceptable by Import ())
  */
 global map Export () {
-    return $[
+    map<string,any> ret = $[
 	"schemes" : schemes,
-	"common_settings" : common_settings,
-	"daemon_settings" : daemon_settings,
+	"global_settings" : global_settings,
     ];
+    y2milestone ("Exporting settings: %1", ret);
+    return ret;
 }
 
 /**
  * Create a textual summary and a list of unconfigured cards
  * @return summary of the current configuration
  */
-global list Summary() {
+global list<string> Summary() {
     string ac_scheme = "";
     string bat_scheme = "";
-    string scheme = PowerManagement::common_settings["POWERSAVE_AC_SCHEME"]:"";
+
+    string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
     if (scheme == "")
 	scheme = "performance";
 
     foreach (map<string,string> s, schemes, ``{
 	if (s["_scheme_id"]:"" == scheme)
-	    ac_scheme = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+	    ac_scheme = s["SCHEME_DESCRIPTION"]:"";
     });
     if (ac_scheme == "")
 	ac_scheme = scheme;
 
-    UI::ChangeWidget (`id (`ac_scheme), `Value, scheme);
-    scheme = PowerManagement::common_settings["POWERSAVE_BATTERY_SCHEME"]:"";
+    scheme = PowerManagement::global_settings["BATTERY_SCHEME"]:"";
     if (scheme == "")
         scheme = "performance";
     foreach (map<string,string> s, schemes, ``{
 	if (s["_scheme_id"]:"" == scheme)
-	    bat_scheme = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+	    bat_scheme = s["SCHEME_DESCRIPTION"]:"";
     });
     if (bat_scheme == "")
 	bat_scheme = scheme;
 
-
-    return [
+    list<string> ret = [
 	// summary text, %1 is scheme name
 	sformat (_("AC Scheme: %1"), ac_scheme),
 	// summary text, %1 is scheme name
 	sformat (_("Battery Scheme: %1"), bat_scheme),
     ];
+    y2milestone ("Power management summary: %1", ret);
+
+    return ret;
 }
 
 /**

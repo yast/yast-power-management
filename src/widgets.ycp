@@ -13,14 +13,11 @@ textdomain "power-management";
 
 import "Label";
 import "Popup";
-import "Wizard";
-import "Wizard_hw";
 import "PowerManagement";
 
 include "power-management/helps.ycp";
 
 // global data
-
 
 list acpi_event_handlers = [
     // combo box item
@@ -32,7 +29,9 @@ list acpi_event_handlers = [
     // combo box item
     `item (`id ("standby"), _("Stand-by")),
     // combo box item
-    `item (`id ("suspend"), _("Suspend")),
+    `item (`id ("suspend_to_ram"), _("Suspend to RAM")),
+    // combo box item
+    `item (`id ("suspend_to_disk"), _("Suspend to Disk")),
     // combo box item
     `item (`id ("screen_saver"), _("Start Screen Saver")),
     // combo box item
@@ -47,14 +46,14 @@ list acpi_event_handlers = [
  */
 define void BatteryWarningInit (string key) {
     foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	string option = sformat ("POWERSAVE_EVENT_BATTERY_%1", w);
+	string option = sformat ("EVENT_BATTERY_%1", w);
 	string widget = sformat ("A_%1", w);
-	string value = PowerManagement::common_settings[option]:"";
+	string value = PowerManagement::global_settings[option]:"";
 	if (value == "")
 	    value = "ignore";
 	UI::ChangeWidget (`id (widget), `Value, value);
-	option = sformat ("POWERSAVED_BATTERY_%1", w);
-	value = PowerManagement::daemon_settings[option]:"";
+	option = sformat ("BATTERY_%1", w);
+	value = PowerManagement::global_settings[option]:"";
 	if (value == "")
 	    value = "0";
 	integer i_value = tointeger (value);
@@ -70,14 +69,14 @@ define void BatteryWarningInit (string key) {
  */
 define void BatteryWarningStore (string key, map event) {
     foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	string option = sformat ("POWERSAVE_EVENT_BATTERY_%1", w);
+	string option = sformat ("EVENT_BATTERY_%1", w);
 	string widget = sformat ("A_%1", w);
 	string value = (string)UI::QueryWidget (`id (widget), `Value);
-	PowerManagement::common_settings[option] = value;
-	option = sformat ("POWERSAVED_BATTERY_%1", w);
+	PowerManagement::global_settings[option] = value;
+	option = sformat ("BATTERY_%1", w);
 	integer i_value = (integer)UI::QueryWidget (`id (w), `Value);
 	value = sformat ("%1", i_value);
-	PowerManagement::daemon_settings[option] = value;
+	PowerManagement::global_settings[option] = value;
     });
 }
 
@@ -150,8 +149,8 @@ define map<string,any> getBatteryWarning () {
  */
 define void AcpiButtonsInit (string key) {
     foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	string option = sformat ("POWERSAVE_EVENT_BUTTON_%1", w);
-	string value = PowerManagement::common_settings[option]:"";
+	string option = sformat ("EVENT_BUTTON_%1", w);
+	string value = PowerManagement::global_settings[option]:"";
 	if (value == "")
 	    value = "ignore";
 	UI::ChangeWidget (`id (w), `Value, value);
@@ -166,9 +165,9 @@ define void AcpiButtonsInit (string key) {
  */
 define void AcpiButtonsStore (string key, map event) {
     foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	string option = sformat ("POWERSAVE_EVENT_BUTTON_%1", w);
+	string option = sformat ("EVENT_BUTTON_%1", w);
 	string value = (string)UI::QueryWidget (`id (w), `Value);
-	PowerManagement::common_settings[option] = value;
+	PowerManagement::global_settings[option] = value;
     });
 }
 
@@ -211,18 +210,18 @@ define map<string,any> getAcpiButtonsWidget () ``{
     ];
 }
 
-// allowing/disallowing suspend
+// allowing/disallowing suspend to disk
 
 
 /**
  * Init function of a widget
  * @param key string widget id
  */
-define void EnableSuspendInit (string key) {
+define void EnableSTDInit (string key) {
     if (! UI::WidgetExists (`id ("enable_standby")))
 	UI::SetFocus (`id (key));
-    string value = PowerManagement::daemon_settings
-	["POWERSAVED_DISABLE_USER_SUSPEND"]:"yes";
+    string value = PowerManagement::global_settings
+	["DISABLE_USER_SUSPEND2DISK"]:"yes";
     UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
 }
 
@@ -231,25 +230,67 @@ define void EnableSuspendInit (string key) {
  * @param key string widget id
  * @param event map event that caused storing of widget settings
  */
-define void EnableSuspendStore (string key, map event) {
+define void EnableSTDStore (string key, map event) {
     string value = (boolean)UI::QueryWidget (`id (key), `Value)
 	? "no"
 	: "yes";
-    PowerManagement::daemon_settings["POWERSAVED_DISABLE_USER_SUSPEND"] = value;
+    PowerManagement::global_settings["DISABLE_USER_SUSPEND2DISK"] = value;
 }
 
 /**
  * Get description map of a widget
  * @return map widget description map
  */
-define map<string,any> getEnableSuspendWidget () {
+define map<string,any> getEnableSTDWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
-	"label" : _("Allow Switching to &Suspend Mode"),
-	"help" : HELPS["enable_suspend"]:"",
-	"init" : EnableSuspendInit,
-	"store" : EnableSuspendStore,
+	"label" : _("Allow Suspending to &Disk"),
+	"help" : HELPS["enable_std"]:"",
+	"init" : EnableSTDInit,
+	"store" : EnableSTDStore,
+    ];
+}
+
+// allowing/disallowing suspend to ram
+
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void EnableSTRInit (string key) {
+    if (! UI::WidgetExists (`id ("enable_standby")))
+	UI::SetFocus (`id (key));
+    string value = PowerManagement::global_settings
+	["DISABLE_USER_SUSPEND2RAM"]:"yes";
+    UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void EnableSTRStore (string key, map event) {
+    string value = (boolean)UI::QueryWidget (`id (key), `Value)
+	? "no"
+	: "yes";
+    PowerManagement::global_settings["DISABLE_USER_SUSPEND2RAM"] = value;
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map<string,any> getEnableSTRWidget () {
+    return $[
+	"widget" : `checkbox,
+	// check box
+	"label" : _("Allow &Suspending to RAM"),
+	"help" : HELPS["enable_str"]:"",
+	"init" : EnableSTRInit,
+	"store" : EnableSTRStore,
     ];
 }
 
@@ -263,8 +304,8 @@ define map<string,any> getEnableSuspendWidget () {
  */
 define void EnableStandbyInit (string key) {
     UI::SetFocus (`id (key));
-    string value = PowerManagement::daemon_settings
-	["POWERSAVED_DISABLE_USER_STANDBY"]:"yes";
+    string value = PowerManagement::global_settings
+	["DISABLE_USER_STANDBY"]:"yes";
     UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
 }
 
@@ -277,7 +318,7 @@ define void EnableStandbyStore (string key, map event) {
     string value = (boolean)UI::QueryWidget (`id (key), `Value)
 	? "no"
 	: "yes";
-    PowerManagement::daemon_settings["POWERSAVED_DISABLE_USER_STANDBY"] = value;
+    PowerManagement::global_settings["DISABLE_USER_STANDBY"] = value;
 }
 
 
@@ -397,7 +438,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 	string descr = "";
 	foreach (map s, PowerManagement::schemes, {
 	    if (s["_scheme_id"]:"" == current)
-		descr = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+		descr = s["SCHEME_DESCRIPTION"]:"";
 	});
 	descr = PowerManagement::scheme_desciptions[descr]:descr;
 	if (descr == "")
@@ -420,7 +461,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 define void SchemeSelectionInit (string key) {
     list items = maplist (map<string,string> s, PowerManagement::schemes, {
 	string id = s["_scheme_id"]:"";
-	string name = s["POWERSAVE_SCHEME_NAME"]:id;
+	string name = s["SCHEME_NAME"]:id;
 	name = PowerManagement::scheme_names[name]:name;
 	return `item (`id (id), name);
     });
@@ -432,12 +473,11 @@ define void SchemeSelectionInit (string key) {
 	`ComboBox (`id (`dc_scheme), `opt (`hstretch, `notify),
 	    // combo box
 	    _("&Battery Powered"), items));
-
-    string scheme = PowerManagement::common_settings["POWERSAVE_AC_SCHEME"]:"";
+    string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
     if (scheme == "")
 	scheme = "performance";
     UI::ChangeWidget (`id (`ac_scheme), `Value, scheme);
-    scheme = PowerManagement::common_settings["POWERSAVE_BATTERY_SCHEME"]:"";
+    scheme = PowerManagement::global_settings["BATTERY_SCHEME"]:"";
     if (scheme == "")
 	scheme = "performance";
     UI::ChangeWidget (`id (`dc_scheme), `Value, scheme);
@@ -451,9 +491,9 @@ define void SchemeSelectionInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void SchemeSelectionStore (string key, map event) {
-    PowerManagement::common_settings["POWERSAVE_BATTERY_SCHEME"]
+    PowerManagement::global_settings["BATTERY_SCHEME"]
 	= (string)UI::QueryWidget (`id (`dc_scheme), `Value);
-    PowerManagement::common_settings["POWERSAVE_AC_SCHEME"]
+    PowerManagement::global_settings["AC_SCHEME"]
 	= (string)UI::QueryWidget (`id (`ac_scheme), `Value);
 }
 
@@ -509,9 +549,9 @@ define void SchemesRedraw () {
 	PowerManagement::current_schemes,
     {
 	string scheme_id = s["_scheme_id"]:"";
-	string name = s["POWERSAVE_SCHEME_NAME"]:scheme_id;
+	string name = s["SCHEME_NAME"]:scheme_id;
 	name = PowerManagement::scheme_names[name]:name;
-	string descr = s["POWERSAVE_SCHEME_DESCRIPTION"]:"";
+	string descr = s["SCHEME_DESCRIPTION"]:"";
 	descr = PowerManagement::scheme_desciptions[descr]:descr;
 	if (descr == "")
 	{
@@ -546,7 +586,7 @@ define symbol SchemesHandle (string key, map event) {
 	PowerManagement::current_scheme
 	    = PowerManagement::current_schemes[found]:$[];
 	PowerManagement::current_scheme["_scheme_id"] = "";
-	PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"] = "";
+	PowerManagement::current_scheme["SCHEME_NAME"] = "";
 	PowerManagement::new_schemes[""] = selected;
 	return `add;
     }
@@ -579,16 +619,6 @@ Add a new one instead."));
 	{
 	    // popup message
 	    Popup::Message (_("No scheme selected."));
-	}
-	if (selected == "performance" || selected == "powersave")
-	{
-	  // FIXME update after talking to MD people
-	  if (false)
-	  {
-	    // popup message
-	    Popup::Message (_("The selected scheme cannot be deleted."));
-	    return nil;
-	  }
 	}
 	PowerManagement::current_schemes = filter (
 	    map<string,string>s,
@@ -661,12 +691,12 @@ string original_scheme_name = "";
  */
 define void SchemeNameInit (string key) {
     string scheme_name
-	= PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"]:"";
+	= PowerManagement::current_scheme["SCHEME_NAME"]:"";
     if (scheme_name == "")
         scheme_name = PowerManagement::current_scheme["_scheme_id"]:"";
     scheme_name = PowerManagement::scheme_names[scheme_name]:scheme_name;
     original_scheme_name = PowerManagement::current_schemes[
-	PowerManagement::current_scheme_index, "POWERSAVE_SCHEME_NAME"]:"";
+	PowerManagement::current_scheme_index, "SCHEME_NAME"]:"";
     UI::ChangeWidget (`id (key), `Value, scheme_name);
 }
 
@@ -687,7 +717,7 @@ define boolean SchemeNameValidate (string key, map event) {
     if (new_name == original_scheme_name)
 	return true;
     list<string> names = maplist (map s, PowerManagement::current_schemes, {
-	return s["POWERSAVE_SCHEME_NAME"]:s["_scheme_key"]:"";
+	return s["SCHEME_NAME"]:s["_scheme_key"]:"";
     });
     if (contains (names, new_name))
     {
@@ -712,7 +742,7 @@ define boolean SchemeNameValidate (string key, map event) {
  */
 define void SchemeNameStore (string key, map event) {
     string new_name = (string)UI::QueryWidget (`id (key), `Value);
-    PowerManagement::current_scheme["POWERSAVE_SCHEME_NAME"] = new_name;
+    PowerManagement::current_scheme["SCHEME_NAME"] = new_name;
 
     if (original_scheme_name == "")
     {
@@ -761,7 +791,7 @@ define map<string,any> getSchemeNameWidget () {
  */
 define void SchemeDescrInit (string key) {
     string descr = (string)
-	(PowerManagement::current_scheme["POWERSAVE_SCHEME_DESCRIPTION"]:"");
+	(PowerManagement::current_scheme["SCHEME_DESCRIPTION"]:"");
     descr = PowerManagement::scheme_desciptions[descr]:descr;
     UI::ChangeWidget (`id (key), `Value, descr);
 }
@@ -772,7 +802,7 @@ define void SchemeDescrInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void SchemeDescrStore (string key, map event) {
-    PowerManagement::current_scheme["POWERSAVE_SCHEME_DESCRIPTION"]
+    PowerManagement::current_scheme["SCHEME_DESCRIPTION"]
 	= (string)UI::QueryWidget (`id (key), `Value);
 }
 
@@ -799,12 +829,12 @@ define map<string,any> getSchemeDescrWidget () {
  */
 define void HardDiskInit (string key) {
     string value = (string)
-	PowerManagement::current_scheme["POWERSAVE_DISK_STANDBY_MODE"]:"";
+	PowerManagement::current_scheme["DISK_STANDBY_MODE"]:"";
     if (value == "")
 	value = "powersave";
     UI::ChangeWidget (`id (`standby), `Value, value);
     value = (string)
-	PowerManagement::current_scheme["POWERSAVE_DISK_ACOUSTIC"]:"";
+	PowerManagement::current_scheme["DISK_ACOUSTIC"]:"";
     if (value == "")
 	value = "quiet";
     UI::ChangeWidget (`id (`acoustic), `Value, value);
@@ -816,9 +846,9 @@ define void HardDiskInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void HardDiskStore (string key, map event) {
-    PowerManagement::current_scheme["POWERSAVE_DISK_STANDBY_MODE"]
+    PowerManagement::current_scheme["DISK_STANDBY_MODE"]
 	= (string)UI::QueryWidget (`id (`standby), `Value);
-    PowerManagement::current_scheme["POWERSAVE_DISK_ACOUSTIC"]
+    PowerManagement::current_scheme["DISK_ACOUSTIC"]
 	= (string)UI::QueryWidget (`id (`acoustic), `Value);
 }
 
@@ -878,14 +908,14 @@ define map<string,any> getHardDiskWidget () {
  */
 define void CoolingPolicyInit (string key) {
     string value = (string)
-	PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]:"";
+	PowerManagement::current_scheme["COOLING_POLICY"]:"";
     if (value == "")
 	value = "passive";
     UI::ChangeWidget (`id (`cooling_policy), `Value, value);
-    UI::ChangeWidget (`id (`overheat), `Value,
+    UI::ChangeWidget (`id (`overheat), `Value,// FIXME
 	PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"]:
 		"notify");
-    UI::ChangeWidget (`id (`overheat_critical), `Value,
+    UI::ChangeWidget (`id (`overheat_critical), `Value, // FIXME
 	PowerManagement::current_scheme["POWERSAVE_THERMAL_CRITICAL"]:
 		"suspend");
 }
@@ -896,9 +926,9 @@ define void CoolingPolicyInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void CoolingPolicyStore (string key, map event) {
-    PowerManagement::current_scheme["POWERSAVE_COOLING_POLICY"]
+    PowerManagement::current_scheme["COOLING_POLICY"]
 	= (string)UI::QueryWidget (`id (`cooling_policy), `Value);
-    PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"]
+    PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"] // FIXME 2x
 	= (string)UI::QueryWidget (`id (`overheat), `Value);
     PowerManagement::current_scheme["POWERSAVE_THERMAL_CRITICAL"]
 	= (string)UI::QueryWidget (`id (`overheat_critical), `Value);
@@ -957,12 +987,12 @@ define symbol CpuHandle (string key, map event) {
  */
 define void CpuInit (string key) {
     UI::ChangeWidget (`id (`scaling), `Value,
-	PowerManagement::current_scheme["POWERSAVE_CPUFREQUENCY"]:"dynamic");
+	PowerManagement::current_scheme["CPUFREQUENCY"]:"dynamic");
     UI::ChangeWidget (`id (`allow_throt), `Value,
-	PowerManagement::current_scheme["POWERSAVE_ALLOW_THROTTLING"]:"yes"
+	PowerManagement::current_scheme["ALLOW_THROTTLING"]:"yes"
 	    != "no");
     UI::ChangeWidget (`id (`max_throt), `Value, tointeger (
-	PowerManagement::current_scheme["POWERSAVE_MAX_THROTTLING"]:"50"));
+	PowerManagement::current_scheme["MAX_THROTTLING"]:"50"));
     CpuHandle (key, $[]);
 }
 
@@ -972,11 +1002,11 @@ define void CpuInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void CpuStore (string key, map event) {
-    PowerManagement::current_scheme["POWERSAVE_CPUFREQUENCY"]
+    PowerManagement::current_scheme["CPUFREQUENCY"]
 	= (string)UI::QueryWidget (`id (`scaling), `Value);
-    PowerManagement::current_scheme["POWERSAVE_ALLOW_THROTTLING"]
+    PowerManagement::current_scheme["ALLOW_THROTTLING"]
 	= (boolean)UI::QueryWidget (`id (`allow_throt), `Value) ? "yes" : "no";
-    PowerManagement::current_scheme["POWERSAVE_MAX_THROTTLING"]
+    PowerManagement::current_scheme["MAX_THROTTLING"]
 	= sformat ("%1", (integer)UI::QueryWidget (`id (`max_throt), `Value));
 }
 
@@ -1029,7 +1059,7 @@ define map<string,any> getCpuWidget () {
  */
 define void AllowScreensaverInit (string key) {
     boolean value = tolower ((string)
-	PowerManagement::current_scheme["POWERSAVE_DISABLE_SCREEN_SAVER"]:"")
+	PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]:"")
 		== "yes"
 	? false
 	: true;
@@ -1042,7 +1072,7 @@ define void AllowScreensaverInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void AllowScreensaverStore (string key, map event) {
-    PowerManagement::current_scheme["POWERSAVE_DISABLE_SCREEN_SAVER"]
+    PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]
 	= (boolean)UI::QueryWidget (`id (key), `Value)
 	    ? "no"
 	    : "yes";
@@ -1085,17 +1115,17 @@ define symbol DpmsHandle (string key, map event) {
  */
 define void DpmsInit (string key) {
     boolean value = tolower ((string)
-	PowerManagement::current_scheme["POWERSAVE_DISABLE_DPMS"]:"")
+	PowerManagement::current_scheme["DISABLE_DPMS"]:"")
 		== "yes"
 	? false
 	: true;
     UI::ChangeWidget (`id (`enable_dpms), `Value, value);
     UI::ChangeWidget (`id (`dpms_stdby), `Value, tointeger (
-	PowerManagement::current_scheme["POWERSAVE_DPMS_STANDBY"]:"10"));
+	PowerManagement::current_scheme["DPMS_STANDBY"]:"10"));
     UI::ChangeWidget (`id (`dpms_susp), `Value, tointeger (
-	PowerManagement::current_scheme["POWERSAVE_DPMS_SUSPEND"]:"20"));
+	PowerManagement::current_scheme["DPMS_SUSPEND"]:"20"));
     UI::ChangeWidget (`id (`dpms_off), `Value, tointeger (
-	PowerManagement::current_scheme["POWERSAVE_DPMS_OFF"]:"30"));
+	PowerManagement::current_scheme["DPMS_OFF"]:"30"));
     DpmsHandle (key, $[]);
 }
 
@@ -1105,15 +1135,15 @@ define void DpmsInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void DpmsStore (string key, map event) {
-    PowerManagement::current_scheme["POWERSAVE_DISABLE_DPMS"]
+    PowerManagement::current_scheme["DISABLE_DPMS"]
 	= (boolean)UI::QueryWidget (`id (`enable_dpms), `Value)
 	    ? "no"
 	    : "yes";
-    PowerManagement::current_scheme["POWERSAVE_DPMS_STANDBY"]
+    PowerManagement::current_scheme["DPMS_STANDBY"]
 	= sformat ("%1", UI::QueryWidget (`id (`dpms_stdby), `Value));
-    PowerManagement::current_scheme["POWERSAVE_DPMS_SUSPEND"]
+    PowerManagement::current_scheme["DPMS_SUSPEND"]
 	= sformat ("%1", UI::QueryWidget (`id (`dpms_susp), `Value));
-    PowerManagement::current_scheme["POWERSAVE_DPMS_OFF"]
+    PowerManagement::current_scheme["DPMS_OFF"]
 	= sformat ("%1", UI::QueryWidget (`id (`dpms_off), `Value));
 }
 
@@ -1245,7 +1275,8 @@ define map<string,any> getDpmsWidget () {
 map<string,map<string,any> > widgets = $[
     "battery_warning" : getBatteryWarning (),
     "acpi_buttons" : getAcpiButtonsWidget (),
-    "enable_suspend" : getEnableSuspendWidget (),
+    "enable_std" : getEnableSTDWidget (),
+    "enable_str" : getEnableSTRWidget (),
     "enable_standby" : getEnableStandbyWidget (),
     "battery_warning_button" : getBatteryWarningButton (),
     "acpi_settings_button" : getAcpiSettingsButton (),

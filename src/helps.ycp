@@ -58,15 +58,25 @@ To assign an event to perform when the lid of the laptop or notebook is
 closed, use <b>Laptop's Lid Closing</b>.</p>"),
 
 
-    // enabling standby/suspend dialog help 1/2
+    // enabling standby/suspend dialog help 1/3
     "enable_standby" : _("<p><b><big>Switching to Stand-by Mode</big></b><br>
-To allow users to switch the computer to the stand-by power saving mode, set
+To allow users to switch the computer to the stand-by power saving mode
+(ACPI mode 1), set
 <b>Allow Switching to Stand-by Mode</b>.</p>"),
 
-    // enabling standby/suspend dialog help 2/2
-    "enable_suspend" : _("<p><b><big>Switching to Suspend Mode</big></b><br>
-To allow users to switch the computer to the suspend power saving mode, set
-<b>Allow Switching to Suspend Mode</b>.</p>"),
+    // enabling standby/suspend dialog help 2/3
+    "enable_str" : _("<p><b><big>Suspend to RAM</big></b><br>
+To allow users to suspend the computer to the RAM (ACPI mode 3), set
+<b>Allow Suspending to RAM</b>.
+Note that computer suspended to RAM still consumes electric energy and
+if disconnected (or battery gets empty) unsaved data will be lost.</p>"),
+
+    // enabling standby/suspend dialog help 3/3
+    "enable_std" : _("<p><b><big>Suspending do Disk</big></b><br>
+To allow users to suspend the computer to the disk (ACPI mode 4), set
+<b>Allow Suspending to Disk</b>.
+Note that resuming after suspending to disk takes longer time than resuming
+after suspending to RAM.</p>"),
 
 
     // Main dialog help 1/6

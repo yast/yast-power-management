@@ -38,6 +38,19 @@ boolean PollAbort() {
     return UI::PollInput() == `abort;
 }
 
+boolean ReadAbort () {
+    // yes-no popup
+    return PollAbort () && Popup::YesNo (_("Really abort?"));
+}
+
+boolean WriteAbort () {
+    // yes-no popup
+    return PollAbort () && Popup::YesNo (_("Really abort?
+
+If you abort writing now, the saved
+settings may be inconsistent."));
+}
+
 include "power-management/widgets.ycp";
 
 /**
@@ -47,7 +60,7 @@ include "power-management/widgets.ycp";
 symbol ReadDialog() {
     y2milestone ("Running read dialog");
     Wizard::RestoreHelp(HELPS["read"]:"");
-    // PowerManagement::AbortFunction = PollAbort;
+    PowerManagement::AbortFunction = ReadAbort;
     boolean ret = PowerManagement::Read();
     return ret ? `next : `abort;
 }
@@ -59,7 +72,7 @@ symbol ReadDialog() {
 symbol WriteDialog() {
     y2milestone ("Running write dialog");
     Wizard::RestoreHelp(HELPS["write"]:"");
-    // PowerManagement::AbortFunction = PollAbort;
+    PowerManagement::AbortFunction = WriteAbort;
     boolean ret = PowerManagement::Write();
     return ret ? `next : `abort;
 }
@@ -180,7 +193,9 @@ symbol EnableSuspendDialog () {
 		`VStretch (),
 		`Left ("enable_standby"),
 		`VStretch (),
-		`Left ("enable_suspend"),
+		`Left ("enable_str"),
+		`VStretch (),
+		`Left ("enable_std"),
 		`VStretch ()
 	    ),
 	    `HStretch ()
@@ -192,7 +207,7 @@ symbol EnableSuspendDialog () {
     string caption = _("Allow Users to Suspend the Computer");
 
     return CWM::ShowAndRun ($[
-	"widget_names" : ["enable_standby", "enable_suspend"],
+	"widget_names" : ["enable_standby", "enable_str", "enable_std"],
 	"widget_descr" : widgets,
 	"contents" : contents,
 	"caption" : caption,
