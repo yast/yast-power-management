@@ -211,6 +211,92 @@ define map getAcpiButtonsWidget () ``{
     ];
 }
 
+// allowing/disallowing suspend
+
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void EnableSuspendInit (string key) {
+    if (! UI::WidgetExists (`id ("enable_standby")))
+	UI::SetFocus (`id (key));
+    string value = PowerManagement::daemon_settings
+	["POWERSAVED_DISABLE_USER_SUSPEND"]:"yes";
+    UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void EnableSuspendStore (string key, map event) {
+    string value = (boolean)UI::QueryWidget (`id (key), `Value)
+	? "no"
+	: "yes";
+    PowerManagement::daemon_settings["POWERSAVED_DISABLE_USER_SUSPEND"] = value;
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getEnableSuspendWidget () {
+    return $[
+	"widget" : `checkbox,
+	// check box
+	"label" : _("Allow Switching to Suspend Mode"),
+	"help" : HELPS["enable_suspend"]:"",
+	"init" : EnableSuspendInit,
+	"store" : EnableSuspendStore,
+    ];
+}
+
+
+
+// allowing/disallowing standby
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void EnableStandbyInit (string key) {
+    UI::SetFocus (`id (key));
+    string value = PowerManagement::daemon_settings
+	["POWERSAVED_DISABLE_USER_STANDBY"]:"yes";
+    UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void EnableStandbyStore (string key, map event) {
+    string value = (boolean)UI::QueryWidget (`id (key), `Value)
+	? "no"
+	: "yes";
+    PowerManagement::daemon_settings["POWERSAVED_DISABLE_USER_STANDBY"] = value;
+}
+
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getEnableStandbyWidget () {
+    return $[
+	"widget" : `checkbox,
+	// check box
+	"label" : _("Allow Switching to Stand-by Mode"),
+	"help" : HELPS["enable_standby"]:"",
+	"init" : EnableStandbyInit,
+	"store" : EnableStandbyStore,
+    ];
+}
+
+
 // battery warning button
 
 /**
@@ -262,6 +348,34 @@ define map getAcpiSettingsButton () {
 	"help" : HELPS["acpi_settings_button"]:"",
 	"handle" : AcpiSettingsButtonHandle,
 	"handle_events" : [ "acpi_settings_button" ],
+    ];
+}
+
+// button for enabling and disabling users
+
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
+define symbol EnableSuspendButtonHandle (string key, map event) {
+    return `enable_suspend;
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getEnableSuspendButton () {
+    return $[
+	"widget" : `push_button,
+	// push button
+	"label" : _("&Enable Suspend"),
+	"opt" : [ `hstretch ],
+	"help" : HELPS["enable_suspend_button"]:"",
+	"handle" : EnableSuspendButtonHandle,
+	"handle_events" : [ "enable_suspend_button" ],
     ];
 }
 
@@ -878,13 +992,183 @@ define map getCpuWidget () {
     ];
 }
 
+// allow screen saver widget
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void AllowScreensaverInit (string key) {
+    boolean value = tolower ((string)
+	    PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]:"") == "yes"
+	? false
+	: true;
+    UI::ChangeWidget (`id (key), `Value, value);
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void AllowScreensaverStore (string key, map event) {
+    PowerManagement::current_scheme["DISABLE_SCREEN_SAVER"]
+	= (boolean)UI::QueryWidget (`id (key), `Value)
+	    ? "no"
+	    : "yes";
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getAllowScreensaverWidget () {
+    return $[
+	"widget" : `checkbox,
+	// check box
+	"label" : _("Enable &Screen Saver"),
+	"help" : HELPS["allow_screensaver"]:"",
+	"init" : AllowScreensaverInit,
+	"store" : AllowScreensaverStore,
+    ];
+}
+
+// allow DPMS widget
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void AllowDpmsInit (string key) {
+    boolean value = tolower ((string)
+	    PowerManagement::current_scheme["DISABLE_DPMS"]:"") == "yes"
+	? false
+	: true;
+    UI::ChangeWidget (`id (key), `Value, value);
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void AllowDpmsStore (string key, map event) {
+    PowerManagement::current_scheme["DISABLE_DPMS"]
+	= (boolean)UI::QueryWidget (`id (key), `Value)
+	    ? "no"
+	    : "yes";
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getAllowDpmsWidget () {
+    return $[
+	"widget" : `checkbox,
+	// check box
+	"label" : _("Enable &Display Power Management"),
+	"help" : HELPS["allow_dpms"]:"",
+	"init" : AllowDpmsInit,
+	"store" : AllowDpmsStore,
+    ];
+}
+
+// suspend timeout widget
+
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
+define symbol SuspendTimeoutHandle (string key, map event) {
+    boolean enabled = (boolean)
+	UI::QueryWidget (`id ("enable_suspend_timeout"), `Value);
+y2error ("Enabled: %1", enabled);
+    UI::ChangeWidget (`id ("suspend_timeout"), `Enabled, enabled);
+    UI::ChangeWidget (`id ("suspend_method"), `Enabled, enabled);
+    return nil;
+}/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void SuspendTimeoutInit (string key) {
+    UI::ChangeWidget (`id ("suspend_method"), `Value,
+	PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]:"stand-by");
+    string timeout_str = (string)
+	PowerManagement::current_scheme["POWERSAVE_SUSPEND_TIMEOUT"]:"";
+    if (timeout_str == "")
+	timeout_str = "1";
+    integer timeout = tointeger (timeout_str);
+    UI::ChangeWidget (`id ("enable_suspend_timeout"), `Value,
+	timeout != 0);
+    UI::ChangeWidget (`id ("suspend_timeout"), `Value, timeout);
+y2error ("STI");
+    SuspendTimeoutHandle (key, $[]);
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void SuspendTimeoutStore (string key, map event) {
+y2error ("STS");
+    boolean enabled = (boolean)
+	UI::QueryWidget (`id ("enable_suspend_timeout"), `Value);
+    PowerManagement::current_scheme["POWERSAVE_SUSPEND_TIMEOUT"] = enabled
+	? sformat ("%1", UI::QueryWidget (`id ("suspend_timeout"), `Value))
+	: "0";
+    PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]
+	= (string)UI::QueryWidget (`id ("suspend_method"), `Value);
+}
+
+/**
+ * Get description map of a widget
+ * @return map widget description map
+ */
+define map getSuspendTimeoutWidget () {
+    return $[
+	"widget" : `custom,
+	"custom_widget" : `Frame (_("Syspend Suspend Settings"), `HBox (
+	    `HSpacing (2),
+	    `VBox (
+		`VSpacing (1),
+		`Left (`CheckBox (`id ("enable_suspend_timeout"),
+		    `opt (`notify),
+		    _("Enable System Suspend Timeout"))),
+		`IntField (`id ("suspend_timeout"),
+		    _("Suspend Timeout (minutes)"), 1, 360, 1),
+		`ComboBox (`id ("suspend_method"), `opt (`hstretch),
+		    _("Suspend Method"),
+		    [
+			`item (`id ("standby"), _("Stand-by")),
+			`item (`id ("str"), _("Suspend to RAM")),
+			`item (`id ("std"), _("Suspend to disk")),
+		    ]),
+		`VSpacing (1)
+	    ),
+	    `HSpacing (2)
+	)),
+	"help" : HELPS["suspend_timeout"]:"",
+	"init" : SuspendTimeoutInit,
+	"store" : SuspendTimeoutStore,
+	"handle" : SuspendTimeoutHandle,
+	"handle_events" : ["enable_suspend_timeout"],
+    ];
+}
+
 // general settings
 
 map widgets = $[
     "battery_warning" : getBatteryWarning (),
     "acpi_buttons" : getAcpiButtonsWidget (),
+    "enable_suspend" : getEnableSuspendWidget (),
+    "enable_standby" : getEnableStandbyWidget (),
     "battery_warning_button" : getBatteryWarningButton (),
     "acpi_settings_button" : getAcpiSettingsButton (),
+    "enable_suspend_button" : getEnableSuspendButton (),
     "scheme_selection" : getSchemeSelectionWidget (),
     "schemes_list" : getSchemesListWidget (),
     "scheme_name" : getSchemeNameWidget (),
@@ -892,6 +1176,9 @@ map widgets = $[
     "hard_disk" : getHardDiskWidget (),
     "cooling_policy" : getCoolingPolicyWidget (),
     "cpu" : getCpuWidget (),
+    "allow_screensaver" : getAllowScreensaverWidget (),
+    "allow_dpms" : getAllowDpmsWidget (),
+    "suspend_timeout" : getSuspendTimeoutWidget ()
 ];
 
 /* EOF */

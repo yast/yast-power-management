@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jun 10 17:09:33 CEST 2004 - jsrain@suse.cz
+
+- added possibility to allow users suspend/standby the machine and
+  more scheme settings
+
+-------------------------------------------------------------------
 Tue May 11 16:10:04 CEST 2004 - jsrain@suse.cz
 
 - removed BuildArchitectures: noarch from spec file (#40198)

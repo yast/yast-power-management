@@ -29,6 +29,7 @@ symbol SchemesSequence () {
 	"main"			:   ``( SchemesDialog ()),
 	"scheme1"		:   ``( SchemeDialog1 ()),
 	"scheme2"		:   ``( SchemeDialog2 ()),
+	"scheme3"		:   ``( SchemeDialog3 ()),
     ];
 
     map sequence = $[
@@ -50,6 +51,10 @@ symbol SchemesSequence () {
 	    `next		: "scheme2",
 	],
 	"scheme2" : $[
+	    `abort		: `abort,
+	    `next		: "scheme3",
+	],
+	"scheme3" : $[
 	    `abort		: `abort,
 	    `next		: "store_scheme",
 	],
@@ -74,6 +79,7 @@ symbol MainSequence() {
 	"main"			:   ``( MainDialog ()),
 	"acpi_buttons"		:   ``( ACPIButtonsDialog ()),
 	"battery"		:   ``( BatteryWarningDialog ()),
+	"enable_suspend"	:   ``( EnableSuspendDialog ()),
 	"schemes_sequence"	:   ``( SchemesSequence ()),
     ];
 
@@ -85,6 +91,7 @@ symbol MainSequence() {
 	    `schemes_edit	: "schemes_sequence",
 	    `buttons		: "acpi_buttons",
 	    `battery		: "battery",
+	    `enable_suspend	: "enable_suspend",
 	],
 	"schemes_sequence" : $[
 	    `abort		: `abort,
@@ -95,6 +102,10 @@ symbol MainSequence() {
 	    `next		: "main",
 	],
 	"battery" : $[
+	    `abort		: `abort,
+	    `next		: "main",
+	],
+	"enable_suspend" : $[
 	    `abort		: `abort,
 	    `next		: "main",
 	],

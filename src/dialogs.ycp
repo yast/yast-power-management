@@ -79,6 +79,7 @@ symbol MainDialog () {
 	    `HStretch (),
 	    `HWeight (1, "battery_warning_button"),
 	    `HWeight (1, "acpi_settings_button"),
+	    `HWeight (1, "enable_suspend_button"),
 	    `HStretch ()
 	),
 	`VStretch ()
@@ -88,7 +89,8 @@ symbol MainDialog () {
     string caption = _("Power Management Settings");
     list<string> widget_names = ["scheme_selection",
 	"battery_warning_button",
-	"acpi_settings_button"];
+	"acpi_settings_button",
+	"enable_suspend_button"];
 
     list<map<string,any> > w = CWM::CreateWidgets (widget_names, widgets);
     string help = CWM::MergeHelps (w);
@@ -154,6 +156,38 @@ symbol BatteryWarningDialog () {
  * Run dialog for schemes configuration
  * @return symbol for wizard sequencer
  */
+symbol EnableSuspendDialog () {
+    y2milestone ("Running the suspend/standby allowing dialog");
+
+    term contents = `HBox (`HStretch (), `VBox (
+	`VStretch(),
+	// frame
+	`Frame (_("Allow Switching to Power-Saving Mode"), `HBox (
+	    `HStretch (),
+	    `VBox (
+		`VStretch (),
+		`Left ("enable_standby"),
+		`VStretch (),
+		`Left ("enable_suspend"),
+		`VStretch ()
+	    ),
+	    `HStretch ()
+	)),
+	`VStretch ()
+    ), `HStretch ());
+
+    // dialog caption
+    string caption = _("Allow Users to Suspend the Computer");
+
+    return CWM::ShowAndRun ([ "enable_standby", "enable_suspend"],
+	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
+	$[`abort : AskAbort ]);
+}
+
+/**
+ * Run dialog for schemes configuration
+ * @return symbol for wizard sequencer
+ */
 symbol SchemesDialog () {
     y2milestone ("Running schemes management dialog");
 
@@ -186,7 +220,7 @@ symbol SchemeDialog1 () {
 	`VStretch (),
 	`HBox (
 	    `HStretch (),
-	    "hard_disk",
+	    "cpu",
 	    `HStretch ()
 	),
 	`VStretch ()
@@ -195,7 +229,7 @@ symbol SchemeDialog1 () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["scheme_name", "scheme_descr", "hard_disk"],
+    return CWM::ShowAndRun (["scheme_name", "scheme_descr", "cpu"],
 	widgets, contents, caption, Label::BackButton (), Label::NextButton (),
 	$[`abort : AskAbort ]);
 }
@@ -209,7 +243,7 @@ symbol SchemeDialog2 () {
 
     term contents = `HBox (`HStretch (), `VBox (
 	`VStretch (),
-	"cpu",
+	"hard_disk",
 	`VStretch (),
 	"cooling_policy",
 	`VStretch ()
@@ -218,7 +252,44 @@ symbol SchemeDialog2 () {
     // dialog caption
     string caption = _("Power Management Scheme Setup");
 
-    return CWM::ShowAndRun (["cpu", "cooling_policy"],
+    return CWM::ShowAndRun (["hard_disk", "cooling_policy"],
+	widgets, contents, caption, Label::BackButton (), Label::NextButton (),
+	$[`abort : AskAbort ]);
+}
+
+/**
+ * Run dialog for single scheme configuration
+ * @return symbol for wizard sequencer
+ */
+symbol SchemeDialog3 () {
+    y2milestone ("Running single scheme management dialog part 3");
+
+    term contents = `HBox (`HStretch (), `VBox (
+	`VStretch (),
+	// frame
+	`Frame (_("Display Settings"), `HBox (
+	    `HSpacing (2),
+	    `VBox (
+		`VSpacing (1),
+		`Left ("allow_screensaver"),
+		`Left ("allow_dpms"),
+		`VSpacing (1)
+	    ),
+	    `HSpacing (2)
+	)),
+	`VStretch (),
+	"suspend_timeout",
+	`VStretch ()
+    ), `HStretch ());
+
+    // dialog caption
+    string caption = _("Power Management Scheme Setup");
+
+    return CWM::ShowAndRun ([
+	    "allow_screensaver",
+	    "allow_dpms",
+	    "suspend_timeout"
+	],
 	widgets, contents, caption, Label::BackButton (), Label::OKButton (),
 	$[`abort : AskAbort ]);
 }
