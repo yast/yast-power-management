@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Feb 24 11:07:21 CET 2005 - jsrain@suse.cz
+
+- replaced 'stand-by' in all texts with 'standby'
+
+-------------------------------------------------------------------
 Wed Feb 23 15:02:18 CET 2005 - jsrain@suse.cz
 
 - fixed some check_ycp errors

@@ -284,7 +284,7 @@ define map<string,any> getEnableSTRWidget () {
     ];
 }
 
-// warning related to STR and Stand-by
+// warning related to STR and Standby
 
 /**
  * Get description map of a widget
@@ -339,7 +339,7 @@ define symbol EnableStandbyHandle (string key, map event) {
     if ((boolean)UI::QueryWidget (`id (key), `Value))
     {
 	// popup message
-	Popup::Message (_("Use caution because putting the machine to the stand-by state
+	Popup::Message (_("Use caution because putting the machine to the standby state
 fails on many machines. See help for details.
 "));
     }
@@ -892,7 +892,7 @@ define map<string,any> getHardDiskWidget () {
 	    // combo box
 	    `Left (`ComboBox (`id (`standby), `opt (`hstretch),
 		// combo box
-		_("&Stand-by Policy"),
+		_("&Standby Policy"),
 		[
 		    `item (`id ("performance"),
 			// combo box item
@@ -1266,7 +1266,7 @@ define map<string,any> getDpmsWidget () {
  */
 /*define void SuspendTimeoutInit (string key) {
     UI::ChangeWidget (`id ("suspend_method"), `Value,
-	PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]:"stand-by");
+	PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]:"standby");
     string timeout_str = (string)
 	PowerManagement::current_scheme["POWERSAVE_SUSPEND_TIMEOUT"]:"";
     if (timeout_str == "")
@@ -1312,7 +1312,7 @@ define map<string,any> getDpmsWidget () {
 		`ComboBox (`id ("suspend_method"), `opt (`hstretch),
 		    _("Suspend Method"),
 		    [
-			`item (`id ("standby"), _("Stand-by")),
+			`item (`id ("standby"), _("Standby")),
 			`item (`id ("str"), _("Suspend to RAM")),
 			`item (`id ("std"), _("Suspend to disk")),
 		    ]),

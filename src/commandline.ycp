@@ -166,7 +166,7 @@ define boolean PrintHandler (map options) {
 	    // cmdline information about (dis)allowed operration, %1 = Yes or No
 	    "SUSPEND2RAM" : _("Suspend to RAM Allowed: %1"),
 	    // cmdline information about (dis)allowed operration, %1 = Yes or No
-	    "STANDBY" : _("Stand-by Allowed: %1"),
+	    "STANDBY" : _("Standby Allowed: %1"),
 	];
 	foreach (string w, ["SUSPEND2DISK", "SUSPEND2RAM", "STANDBY"], {
 	    string format = texts[w]:"";
