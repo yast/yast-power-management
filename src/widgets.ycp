@@ -516,7 +516,7 @@ define boolean SchemeNameValidate (string key, map event) {
     if (new_name == original_scheme_name)
 	return true;
     list<string> names = maplist (map s, PowerManagement::current_schemes, {
-	s["POWERSAVE_SCHEME_NAME"]:s["_scheme_key"]:"";
+	return s["POWERSAVE_SCHEME_NAME"]:s["_scheme_key"]:"";
     });
     if (contains (names, new_name))
     {
@@ -543,7 +543,7 @@ define void SchemeNameStore (string key, map event) {
 	if (scheme_id == "")
 	    scheme_id = "user";
 	list<string> ids = maplist (map s, PowerManagement::current_schemes, {
-	    s["_scheme_key"]:"";
+	    return s["_scheme_key"]:"";
 	});
 	if (contains (ids, scheme_id))
 	{
@@ -552,7 +552,7 @@ define void SchemeNameStore (string key, map event) {
 		index = index + 1;
 	    scheme_id = sformat ("%1_%2", scheme_id, index);
 	}
-	current_scheme["_scheme_id"] = scheme_id;
+	PowerManagement::current_scheme["_scheme_id"] = scheme_id;
     }
 }
 
