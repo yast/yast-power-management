@@ -13,6 +13,7 @@ textdomain "power-management";
 
 import "CWM";
 import "Label";
+import "Mode";
 import "Popup";
 import "PowerManagement";
 import "Wizard";
@@ -121,7 +122,7 @@ symbol MainDialog () {
 symbol ACPIButtonsDialog () {
     y2milestone ("Running ACPI buttons dialog");
 
-    if (PowerManagement::apm_acpi != "ACPI")
+    if (! (Mode::config () || PowerManagement::ACPI ()))
     {
 	// message popup
 	Popup::Message (_("Buttons can be configured only for ACPI. Your

@@ -58,28 +58,34 @@ To assign an event to perform when the lid of the laptop or notebook is
 closed, use <b>Laptop's Lid Closing</b>.</p>"),
 
 
-    // enabling standby/suspend dialog help 1/4
+    // enabling standby/suspend dialog help 1/5
     "enable_std" : _("<p><b><big>Suspending to Disk</big></b><br>
 To allow users to suspend the computer to the disk (ACPI mode 4), set
 <b>Allow Suspending to Disk</b>.
 Resuming after suspending to disk takes longer than resuming
 after suspending to RAM.</p>"),
 
-    // enabling standby/suspend dialog help 2/4
+    // enabling standby/suspend dialog help 2/5
     "enable_str" : _("<p><b><big>Suspending to RAM</big></b><br>
 To allow users to suspend the computer to the RAM (ACPI mode 3), set
 <b>Allow Suspending to RAM</b>.
 A computer suspended to RAM still consumes electricity and
 if disconnected (or the battery is drained) unsaved data will be lost.</p>"),
 
-    // enabling standby/suspend dialog help 3/4
+    // enabling standby/suspend dialog help 3/5
     "enable_standby" : _("<p><b><big>Switching to Stand-by Mode</big></b><br>
 To allow users to switch the computer to the stand-by power saving mode
 (ACPI mode 1), set
 <b>Allow Switching to Stand-by Mode</b>.</p>"),
 
-    // enabling standby/suspend dialog help 3/4
-    "str_standby_additional_info" : _("<p><b><big>Warning</big></b><br>
+    // enabling standby/suspend dialog help 4/5
+    "str_standby_additional_info" : _("<p><b><big>Power-saving Modes Support
+</big></b><br>
+Some machines do not support all power-saving modes. If a mode is not supported
+by your machine, the appropriate check box is disabled.</p>")
+
+	// enabling standby/suspend dialog help 5/5
+	+ _("<p><b><big>Warning</big></b><br>
 Depending on your hardware suspend to RAM or stand-by could fail and you may 
 need to push the reset button to reboot your computer. This could lead to 
 data loss.

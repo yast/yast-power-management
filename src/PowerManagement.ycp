@@ -82,7 +82,7 @@ global map<string,string> global_settings = $[];
 
 global map<string,string> new_schemes = $[];
 
-global string apm_acpi = "";
+string apm_acpi = "";
 
 global map scheme_names = $[
     // power saving scheme name, combo box and default contents of text entry
@@ -106,6 +106,8 @@ global map scheme_desciptions = $[
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let machine run as quietly as possible."),
 ];
+
+list<string> acpi_modes = nil;
 
 
 /**
@@ -216,7 +218,7 @@ global boolean Read() {
 	apm_acpi = "ACPI";
     else if (issubstring (out["stdout"]:"", "APM"))
 	apm_acpi = "APM";
-    else
+    else if (! Mode::config ())
     {
 	// error report
 	Report::Error (_("This system does not support ACPI or APM."));
@@ -507,6 +509,37 @@ global list<string> Summary() {
  */
 global map AutoPackages() {
     return $[ "install":["powersave"], "remove":[] ];
+}
+
+/**
+ * List all supported ACPI modes
+ * @return a list containing all supported ACPI modes
+ */
+global list<string> ACPIModes () {
+    if (acpi_modes == nil)
+    {
+	string modes = (string)SCR::Read (.target.string, "/proc/acpi/sleep");
+	list<string> spl = splitstring (modes, " \t");
+	spl = filter (string s, spl, {return s != "" && s != "\n";});
+	acpi_modes = spl;
+    }
+    return acpi_modes;
+}
+
+/**
+ * Check if ACPI is being used
+ * @return boolean true if ACPI is being used
+ */
+global boolean ACPI () {
+    return tolower (apm_acpi) == "acpi";
+}
+
+/**
+ * Check if APM is being used
+ * @return boolean true if APM is being used
+ */
+global boolean APM () {
+    return tolower (apm_acpi) == "apm";
 }
 
 /* EOF */

@@ -264,6 +264,11 @@ define void EnableSTRInit (string key) {
     string value = PowerManagement::global_settings
 	["DISABLE_USER_SUSPEND2RAM"]:"yes";
     UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+    if (PowerManagement::ACPI ()
+	&& ! contains (PowerManagement::ACPIModes (), "S3"))
+    {
+	UI::ChangeWidget (`id (key), `Enabled, false);
+    }
 }
 
 /**
@@ -335,6 +340,11 @@ define void EnableStandbyInit (string key) {
     string value = PowerManagement::global_settings
 	["DISABLE_USER_STANDBY"]:"yes";
     UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+    if (PowerManagement::ACPI ()
+	&& ! contains (PowerManagement::ACPIModes (), "S1"))
+    {
+	UI::ChangeWidget (`id (key), `Enabled, false);
+    }
 }
 
 /**

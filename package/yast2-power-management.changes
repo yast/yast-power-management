@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Nov 18 17:36:31 CET 2004 - jsrain@suse.cz
+
+- checking if power-saving modes are supported for ACPI (#48175)
+
+-------------------------------------------------------------------
 Tue Oct 26 16:02:17 CEST 2004 - jsrain@suse.cz
 
 - adapted to new Mode.ycp
