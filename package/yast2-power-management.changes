@@ -5,6 +5,7 @@ Mon Jul 12 12:56:47 CEST 2004 - jsrain@suse.cz
   and DPMS timeouts, removed system suspend settings (won't be
   ready in kernel)
 - minor updates
+- 2.10.1
 
 -------------------------------------------------------------------
 Thu Jun 10 17:09:33 CEST 2004 - jsrain@suse.cz
