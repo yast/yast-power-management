@@ -57,7 +57,7 @@ global map scheme_desciptions = $[
 	_("Scheme optimized to let maximum power savings take place."),
     "Scheme optimized to let machine run as quiet as possible." :
 	// pwer saving scheme description, contents of text entry
-	_("Scheme optimized to let machine run as quiet as possible."),
+	_("Scheme optimized to let machine run as quietly as possible."),
 ];
 
 
@@ -456,9 +456,9 @@ global list Summary() {
 
     return [
 	// summary text, %1 is scheme name
-	sformat (_("AC scheme: %1"), ac_scheme),
+	sformat (_("AC Scheme: %1"), ac_scheme),
 	// summary text, %1 is scheme name
-	sformat (_("Battery scheme: %1"), bat_scheme),
+	sformat (_("Battery Scheme: %1"), bat_scheme),
     ];
 }
 

@@ -1,7 +1,19 @@
 -------------------------------------------------------------------
+Tue May 11 16:10:04 CEST 2004 - jsrain@suse.cz
+
+- removed BuildArchitectures: noarch from spec file (#40198)
+- 2.9.10
+
+-------------------------------------------------------------------
+Tue May  4 09:05:52 CEST 2004 - jsrain@suse.cz
+
+- merged texts from proofreading
+
+-------------------------------------------------------------------
 Mon May  3 08:09:37 CEST 2004 - jsrain@suse.cz
 
 - fixed typo in package name (#39441)
+- 2.9.9
 
 -------------------------------------------------------------------
 Fri Apr  2 16:09:53 CEST 2004 - jsrain@suse.de

@@ -4,8 +4,6 @@
 @HEADER@
 Requires:	yast2
 
-BuildArchitectures:	noarch
-
 Summary:	Configuration of power-management
 
 %description
