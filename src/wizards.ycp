@@ -134,7 +134,7 @@ symbol PowerManagementSequence() {
     ];
 
     Wizard::CreateDialog();
-
+    Wizard::SetDesktopIcon("power-management");
     symbol ret = Sequencer::Run(aliases, sequence);
 
     UI::CloseDialog();
@@ -154,6 +154,7 @@ any PowerManagementAutoSequence() {
     term contents = `Label(_("Initializing..."));
 
     Wizard::CreateDialog();
+    Wizard::SetDesktopIcon("power-management");
     Wizard::SetContentsButtons(caption, contents, "",
 	    Label::BackButton(), Label::NextButton());
 
