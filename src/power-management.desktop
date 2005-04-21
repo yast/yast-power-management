@@ -17,7 +17,7 @@ X-SuSE-YaST-Geometry=
 X-SuSE-YaST-SortKey=
 X-SuSE-YaST-AutoInstResource=power-management
 
-Icon=power-management
+Icon=yast-power-management
 Exec=/sbin/yast2 power-management 
 
 Name=Power Management
