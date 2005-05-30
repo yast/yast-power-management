@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon May 30 12:43:55 CEST 2005 - jsrain@suse.cz
+
+- don't save translated texts to sysconfig unless user modified
+  the texts (scheme name and description) (#85611)
+
+-------------------------------------------------------------------
 Wed Mar 23 11:12:06 CET 2005 - jsrain@suse.cz
 
 - fixed the path to scheme names translations (#61403)

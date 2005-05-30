@@ -711,6 +711,7 @@ define map<string,any> getSchemesListWidget () {
 // scheme name widget
 
 string original_scheme_name = "";
+string widget_init_scheme_name = "";
 
 /**
  * Init function of a widget
@@ -725,6 +726,7 @@ define void SchemeNameInit (string key) {
     original_scheme_name = PowerManagement::current_schemes[
 	PowerManagement::current_scheme_index, "SCHEME_NAME"]:"";
     UI::ChangeWidget (`id (key), `Value, scheme_name);
+    widget_init_scheme_name = scheme_name;
 }
 
 /**
@@ -769,7 +771,8 @@ define boolean SchemeNameValidate (string key, map event) {
  */
 define void SchemeNameStore (string key, map event) {
     string new_name = (string)UI::QueryWidget (`id (key), `Value);
-    PowerManagement::current_scheme["SCHEME_NAME"] = new_name;
+    if (new_name != widget_init_scheme_name)
+	PowerManagement::current_scheme["SCHEME_NAME"] = new_name;
 
     if (original_scheme_name == "")
     {
@@ -812,6 +815,8 @@ define map<string,any> getSchemeNameWidget () {
 
 // scheme description widget
 
+string widget_init_scheme_descr = "";
+
 /**
  * Init function of a widget
  * @param key string widget id
@@ -821,6 +826,7 @@ define void SchemeDescrInit (string key) {
 	(PowerManagement::current_scheme["SCHEME_DESCRIPTION"]:"");
     descr = PowerManagement::TranslateSchemeDescription (descr);
     UI::ChangeWidget (`id (key), `Value, descr);
+    widget_init_scheme_descr = descr;
 }
 
 /**
@@ -829,8 +835,9 @@ define void SchemeDescrInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void SchemeDescrStore (string key, map event) {
-    PowerManagement::current_scheme["SCHEME_DESCRIPTION"]
-	= (string)UI::QueryWidget (`id (key), `Value);
+    string descr = (string)UI::QueryWidget (`id (key), `Value);
+    if (widget_init_scheme_descr != descr)
+	PowerManagement::current_scheme["SCHEME_DESCRIPTION"] = descr;
 }
 
 /**
