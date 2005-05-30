@@ -1,0 +1,21 @@
+.sysconfig.powersave.schemes
+
+`ag_ini(
+    `IniAgent( [ "/etc/sysconfig/powersave/scheme_*" ],
+	$[
+	    /* values at the top level, allow comments after value */
+	    "options"	: [ "global_values" ],
+	    /* empty lines, comments after value and whole-line comments */
+	    "comments"	: [ "^[ \t]*$", "[ \t]*#.*$", "^[ \t]*#.*$" ],
+	    /* matching rules */
+	    "params"	: [
+		/* VAR1="val1" */
+		$[ "match" : [ "^[ \t]*([^ \t=]+)[ \t]*=[ \t]*\"([^\"]*)\"",
+		    "%s=\"%s\"" ] ],
+	    ],
+	    /* matching rules */
+	    "rewrite"	: [
+		[ "/etc/sysconfig/powersave/scheme_(.*)", "/etc/sysconfig/powersave/scheme_%s" ],
+	    ],
+	]
+))
