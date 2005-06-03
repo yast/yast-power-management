@@ -499,7 +499,7 @@ global list<string> Summary() {
 	sformat (_("AC Scheme: %1"), ac_scheme),
 	// summary text, %1 is scheme name
 	sformat (_("Battery Scheme: %1"), bat_scheme),
-    ];
+     ];
     y2milestone ("Power management summary: %1", ret);
 
     return ret;
