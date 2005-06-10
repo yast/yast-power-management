@@ -1,0 +1,181 @@
+/**
+ * File:	include/power-management/wizards.ycp
+ * Package:	Configuration of power-management
+ * Summary:	Wizards definitions
+ * Authors:	Jiri Srain <jsrain@suse.cz>
+ *
+ * $Id$
+ */
+
+{
+
+textdomain "power-management";
+
+import "Label";
+import "Sequencer";
+import "Wizard";
+
+include "power-management/dialogs.ycp";
+
+/**
+ * Schemes management workflow of the power management configuration
+ * @return sequence result
+ */
+symbol SchemesSequence () {
+
+    map aliases = $[
+	"fetch"			: [ ``( FetchSchemes ()), true ],
+	"store"			: [ ``( StoreSchemes ()), true ],
+	"store_scheme"		: [ ``( StoreScheme ()), true ],
+	"main"			:   ``( SchemesDialog ()),
+	"scheme1"		:   ``( SchemeDialog1 ()),
+	"scheme2"		:   ``( SchemeDialog2 ()),
+//	"scheme3"		:   ``( SchemeDialog3 ()),
+    ];
+
+    map sequence = $[
+	"ws_start" : "fetch",
+	"fetch" : $[
+	    `next		: "main",
+	],
+	"main" : $[
+	    `abort		: `abort,
+	    `next		: "store",
+	    `add		: "scheme1",
+	    `edit		: "scheme1",
+	],
+	"store" : $[
+	    `next		: `next,
+	],
+	"scheme1" : $[
+	    `abort		: `abort,
+	    `next		: "scheme2",
+	],
+	"scheme2" : $[
+	    `abort		: `abort,
+	    `next		: "store_scheme",
+//	    `next		: "scheme3",
+	],
+/*	"scheme3" : $[
+	    `abort		: `abort,
+	    `next		: "store_scheme",
+	],*/
+	"store_scheme" : $[
+	    `next		: "main",
+	],
+    ];
+
+    symbol ret = Sequencer::Run(aliases, sequence);
+
+    return ret;
+}
+
+
+/**
+ * Main workflow of the power-management configuration
+ * @return sequence result
+ */
+symbol MainSequence() {
+
+    map aliases = $[
+	"main"			:   ``( MainDialog ()),
+	"acpi_buttons"		:   ``( ACPIButtonsDialog ()),
+	"battery"		:   ``( BatteryWarningDialog ()),
+	"enable_suspend"	:   ``( EnableSuspendDialog ()),
+	"schemes_sequence"	:   ``( SchemesSequence ()),
+    ];
+
+    map sequence = $[
+	"ws_start" : "main",
+	"main" : $[
+	    `abort		: `abort,
+	    `next		: `next,
+	    `schemes_edit	: "schemes_sequence",
+	    `buttons		: "acpi_buttons",
+	    `battery		: "battery",
+	    `enable_suspend	: "enable_suspend",
+	],
+	"schemes_sequence" : $[
+	    `abort		: `abort,
+	    `next		: "main",
+	],
+	"acpi_buttons" : $[
+	    `abort		: `abort,
+	    `next		: "main",
+	],
+	"battery" : $[
+	    `abort		: `abort,
+	    `next		: "main",
+	],
+	"enable_suspend" : $[
+	    `abort		: `abort,
+	    `next		: "main",
+	],
+    ];
+
+    symbol ret = Sequencer::Run(aliases, sequence);
+
+    return ret;
+}
+
+/**
+ * Whole configuration of power-management
+ * @return sequence result
+ */
+symbol PowerManagementSequence() {
+
+    map aliases = $[
+	"read"	: [ ``( ReadDialog() ), true ],
+	"main"	:   ``( MainSequence() ),
+	"write"	: [ ``( WriteDialog() ), true ]
+    ];
+
+    map sequence = $[
+	"ws_start" : "read",
+	"read" : $[
+	    `abort	: `abort,
+	    `next	: "main"
+	],
+	"main" : $[
+	    `abort	: `abort,
+	    `next	: "write"
+	],
+	"write" : $[
+	    `abort	: `abort,
+	    `next	: `next
+	]
+    ];
+
+    Wizard::CreateDialog();
+    Wizard::SetDesktopIcon("power-management");
+    symbol ret = Sequencer::Run(aliases, sequence);
+
+    UI::CloseDialog();
+    return ret;
+}
+
+/**
+ * Whole configuration of power-management but without reading and writing.
+ * For use with autoinstallation.
+ * @return sequence result
+ */
+any PowerManagementAutoSequence() {
+
+    /* Initialization dialog caption */
+    string caption = _("Power Management Configuration");
+    /* Initialization dialog contents */
+    term contents = `Label(_("Initializing..."));
+
+    Wizard::CreateDialog();
+    Wizard::SetDesktopIcon("power-management");
+    Wizard::SetContentsButtons(caption, contents, "",
+	    Label::BackButton(), Label::NextButton());
+
+    symbol ret = MainSequence();
+
+    UI::CloseDialog();
+    return ret;
+}
+
+/* EOF */
+}

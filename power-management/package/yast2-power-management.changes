@@ -1,0 +1,244 @@
+-------------------------------------------------------------------
+Fri Jun 10 11:07:06 CEST 2005 - jsrain@suse.cz
+
+- merged texts update by rwalter
+- 2.12.1
+
+-------------------------------------------------------------------
+Mon May 30 12:43:55 CEST 2005 - jsrain@suse.cz
+
+- don't save translated texts to sysconfig unless user modified
+  the texts (scheme name and description) (#85611)
+- 2.12.0
+
+-------------------------------------------------------------------
+Wed Mar 23 11:12:06 CET 2005 - jsrain@suse.cz
+
+- fixed the path to scheme names translations (#61403)
+
+-------------------------------------------------------------------
+Mon Feb 28 17:26:04 CET 2005 - jsrain@suse.cz
+
+- disable DPMS settings
+
+-------------------------------------------------------------------
+Thu Feb 24 11:07:21 CET 2005 - jsrain@suse.cz
+
+- replaced 'stand-by' in all texts with 'standby'
+
+-------------------------------------------------------------------
+Wed Feb 23 15:02:18 CET 2005 - jsrain@suse.cz
+
+- fixed some check_ycp errors
+
+-------------------------------------------------------------------
+Fri Feb 18 15:08:09 CET 2005 - jsrain@suse.cz
+
+- fixed comments for translators
+- fixed comments in the code
+- 2.11.4
+
+-------------------------------------------------------------------
+Mon Feb  7 16:12:15 CET 2005 - jsrain@suse.cz
+
+- merged texts from proofread
+- 2.11.3
+
+-------------------------------------------------------------------
+Mon Jan 31 15:58:36 CET 2005 - jsrain@suse.cz
+
+- translate scheme names and descriptions, added gettext to
+  required packages
+- 2.11.2
+
+-------------------------------------------------------------------
+Tue Dec 21 11:17:28 CET 2004 - jsrain@suse.cz
+
+- added support for the commandline interface
+- 2.11.1
+
+-------------------------------------------------------------------
+Tue Dec 14 11:25:47 CET 2004 - jsrain@suse.cz
+
+- get scheme names and descriptions translatinos from kpowersave.po
+  (#46186, #46403)
+
+-------------------------------------------------------------------
+Thu Nov 18 17:36:31 CET 2004 - jsrain@suse.cz
+
+- checking if power-saving modes are supported for ACPI (#48175)
+
+-------------------------------------------------------------------
+Tue Oct 26 16:02:17 CEST 2004 - jsrain@suse.cz
+
+- adapted to new Mode.ycp
+- 2.11.0
+
+-------------------------------------------------------------------
+Tue Oct 19 14:37:23 CEST 2004 - jsrain@suse.cz
+
+- stopped using duplicated text "Really Abort"
+
+-------------------------------------------------------------------
+Wed Sep 29 14:56:29 CEST 2004 - jsrain@suse.cz
+
+- fixed translating of the acoustic scheme description (#46403)
+- 2.10.9
+
+-------------------------------------------------------------------
+Wed Sep 22 12:21:56 CEST 2004 - jsrain@suse.cz
+
+- fixed creating schemes during autoinstallation (#45740)
+- 2.10.8
+
+-------------------------------------------------------------------
+Fri Sep 17 10:09:13 CEST 2004 - jsrain@suse.cz
+
+- added possibility not to modify disk parameters (#45456)
+- 2.10.7
+
+-------------------------------------------------------------------
+Fri Sep  3 14:31:53 CEST 2004 - jsrain@suse.cz
+
+- added GetModified and SetModified functions to _auto client
+- 2.10.6
+
+-------------------------------------------------------------------
+Mon Aug 30 17:42:57 CEST 2004 - jsrain@suse.cz
+
+- fixed storing of settings (due to a typo were stored after the
+  powersave daemon was restarted) (#44142)
+- 2.10.5
+
+-------------------------------------------------------------------
+Fri Aug 27 15:13:17 CEST 2004 - jsrain@suse.cz
+
+- merged texts from proofread
+
+-------------------------------------------------------------------
+Thu Aug 19 15:15:38 CEST 2004 - jsrain@suse.cz
+
+- rearranged check box for allowing STD/STR/StdBy
+- added warning if enabling StdBy/STR, reordered the check boxes
+- added possibility to throttle always
+- 2.10.4
+
+-------------------------------------------------------------------
+Thu Aug 12 15:12:22 CEST 2004 - jsrain@suse.cz
+
+- adapted to changes in powersave package
+- enabled autoisntallation support
+- updated dialog layout
+- 2.10.3
+
+-------------------------------------------------------------------
+Tue Aug 10 09:28:10 CEST 2004 - jsrain@suse.cz
+
+- merged texts from proofread
+
+-------------------------------------------------------------------
+Mon Aug  9 15:47:09 CEST 2004 - jsrain@suse.cz
+
+- adapted to the changed interface of CWM
+- 2.10.2
+
+-------------------------------------------------------------------
+Mon Jul 12 12:56:47 CEST 2004 - jsrain@suse.cz
+
+- added possibility to set actions to be processed when overheating
+  and DPMS timeouts, removed system suspend settings (won't be
+  ready in kernel)
+- minor updates
+- 2.10.1
+
+-------------------------------------------------------------------
+Thu Jun 10 17:09:33 CEST 2004 - jsrain@suse.cz
+
+- added possibility to allow users suspend/standby the machine and
+  more scheme settings
+
+-------------------------------------------------------------------
+Tue May 11 16:10:04 CEST 2004 - jsrain@suse.cz
+
+- removed BuildArchitectures: noarch from spec file (#40198)
+- 2.9.10
+
+-------------------------------------------------------------------
+Tue May  4 09:05:52 CEST 2004 - jsrain@suse.cz
+
+- merged texts from proofreading
+
+-------------------------------------------------------------------
+Mon May  3 08:09:37 CEST 2004 - jsrain@suse.cz
+
+- fixed typo in package name (#39441)
+- 2.9.9
+
+-------------------------------------------------------------------
+Fri Apr  2 16:09:53 CEST 2004 - jsrain@suse.de
+
+- changed license to GPL
+- 2.9.8
+
+-------------------------------------------------------------------
+Mon Mar 29 15:08:44 CEST 2004 - jsrain@suse.de
+
+- fixed summary displaying (#37242)
+- 2.9.7
+
+-------------------------------------------------------------------
+Mon Mar 29 08:38:17 CEST 2004 - jsrain@suse.de
+
+- fixed aborting of saving process (#37205)
+- display scheme names and descriptions localized in main dialog
+- 2.9.6
+
+-------------------------------------------------------------------
+Wed Mar 17 10:24:32 CET 2004 - jsrain@suse.cz
+
+- added missing texts
+- 2.9.5
+
+-------------------------------------------------------------------
+Mon Mar 15 12:19:53 CET 2004 - jsrain@suse.cz
+
+- moved to the System group of control center
+- 2.9.4
+
+-------------------------------------------------------------------
+Tue Mar  9 09:38:38 CET 2004 - jsrain@suse.de
+
+- Require -> Package
+
+-------------------------------------------------------------------
+Mon Mar  8 18:25:16 CET 2004 - jsrain@suse.de
+
+- set icon
+- 2.9.3
+
+-------------------------------------------------------------------
+Mon Mar  8 16:41:21 CET 2004 - jsrain@suse.de
+
+- syntax fixes
+- 2.9.2
+
+-------------------------------------------------------------------
+Thu Mar  4 10:19:03 CET 2004 - jsrain@suse.de
+
+- fixed saving of new schemes
+- restarting powersave daemon after configuration files are saved
+- scheme names are localized now
+- providing meaningful summary for AutoYaST
+
+-------------------------------------------------------------------
+Mon Mar  1 12:54:26 CET 2004 - jsrain@suse.de
+
+- merged texts from proofread
+- fixed saving selected power saving scheme
+- more strict data types
+- 2.9.1
+
+-------------------------------------------------------------------
+Wed Feb 25 14:12:11 CET 2004 - jsrain@suse.de
+
+- initial version

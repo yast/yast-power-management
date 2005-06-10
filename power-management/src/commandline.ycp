@@ -1,0 +1,504 @@
+/**
+ * File:	include/power-management/commandline.ycp
+ * Package:	Configuration of power-management
+ * Summary:	Command-line interface
+ * Authors:	Jiri Srain <jsrain@suse.cz>
+ *
+ * $Id$
+ *
+ */
+
+{
+
+import "CommandLine";
+import "PowerManagement";
+
+textdomain "power-management";
+
+include "power-management/misc.ycp";
+
+
+/**
+  * Handler for command line interface
+  * @param options map options from the command line
+  * @return boolean true if settings have been changed
+  */
+define boolean PrintHandler (map options) {
+    boolean print_all = false;
+    boolean printed = false;
+    if (! (haskey (options, "battery")
+	|| haskey (options, "buttons")
+	|| haskey (options, "allowed_actions")
+	|| haskey (options, "selected_schemes")
+	|| haskey (options, "scheme")))
+    {
+	print_all = true;
+    }
+    if (print_all || haskey (options, "scheme"))
+    {
+	string scheme = options["scheme"]:"";
+	boolean all_schemes = print_all || scheme == "";
+	foreach (map<string,string> s, PowerManagement::schemes, {
+	    if (all_schemes || s["SCHEME_NAME"]:"" == scheme)
+	    {
+		if (printed)
+		    CommandLine::Print ("\n");
+		// cmdline output, %1 is scheme name
+		CommandLine::Print (sformat (_("Scheme Name: %1"),
+		    s["SCHEME_NAME"]:""));
+		// cmdline output, %1 is scheme description
+		CommandLine::Print (sformat (_("Scheme Description: %1"),
+		    s["SCHEME_DESCRIPTION"]:""));
+		foreach (string k, string v, s, {
+		    if (k != "SCHEME_NAME" && k != "SCHEME_DESCRIPTION"
+			&& substring (k, 0, 1) != "_")
+		    {
+			CommandLine::Print (sformat ("%1: %2", k, v));
+
+		    }
+		});
+		printed = true;
+	    }
+	});
+    }
+    if (print_all || haskey (options, "selected_schemes"))
+    {
+	if (printed)
+	    CommandLine::Print ("\n");
+	// header for commandline output
+	CommandLine::Print (_("Power Saving Schemes:\n"));
+	string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
+	if (scheme == "")
+	    scheme = "performance";
+	foreach (map<string,string> s, PowerManagement::schemes, {
+	    if (s["_scheme_id"]:"" == scheme)
+	    {
+		scheme = s["SCHEME_NAME"]:scheme;
+		return;
+	    }
+	});
+	scheme = PowerManagement::TranslateSchemeName (scheme);
+	CommandLine::Print (sformat (_("AC Scheme: %1"), scheme));
+	scheme = PowerManagement::global_settings["BATTERY_SCHEME"]:"";
+	if (scheme == "")
+	    scheme = "performance";
+	foreach (map<string,string> s, PowerManagement::schemes, {
+	    if (s["_scheme_id"]:"" == scheme)
+	    {
+		scheme = s["SCHEME_NAME"]:scheme;
+		return;
+	    }
+	});
+	scheme = PowerManagement::TranslateSchemeName (scheme);
+	CommandLine::Print (sformat (_("Battery Scheme: %1"), scheme));
+	list<string> available = maplist (map<string,string> s,
+	    PowerManagement::schemes,
+	{
+	    return PowerManagement::TranslateSchemeName (s["SCHEME_NAME"]:nil);
+	});
+	available = filter (string s, available, {return s != nil;});
+	// cmdline about power saving schemes, %1 is list of schemes,
+	CommandLine::Print (sformat (_("Available Schemes: %1"),
+	    mergestring (available, ", ")));
+	printed = true;
+    }
+    if (print_all || haskey (options, "battery"))
+    {
+	if (printed)
+	    CommandLine::Print ("\n");
+	// header for commandline output
+	CommandLine::Print (_("Battery Capacity Feedback:\n"));
+	map<string,string> texts = $[
+	    // cmdline about battery feedback, %1 is capacity level,
+	    // %2 is the action if level reached (e.g., suspend to disk)
+	    "WARNING" : _("Warning Capacity: %1%%, Action: %2"),
+	    // cmdline about battery feedback, %1 is capacity level,
+	    // %2 is the action if level reached (e.g., suspend to disk)
+	    "LOW" : _("Low Capacity: %1%%, Action: %2"),
+	    // cmdline about batter feedback, %1 is capacity level,
+	    // %2 is the action if level reached (e.g., suspend to disk)
+	    "CRITICAL" : _("Critical Capacity: %1%%, Action: %2"),
+	];
+	foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
+	    string format = texts[w]:"";
+	    string event = GetBatteryStatusAction (w);
+	    event = acpi_event_labels[event]:event;
+	    CommandLine::Print (sformat (format,
+		GetBatteryStatusCapacity (w),
+		event));
+	});
+	printed = true;
+    }
+    if (print_all || haskey (options, "buttons"))
+    {
+	if (printed)
+	    CommandLine::Print ("\n");
+	// header for commandline output
+	CommandLine::Print (_("ACPI Button Actions:\n"));
+	map<string,string> texts = $[
+	    // cmdline information about actions to be done if event occurs
+	    // %1 is the action (e.g., suspend to disk)
+	    "POWER" : _("Power Button Action: %1"),
+	    // cmdline information about actions to be done if event occurs
+	    // %1 is the action (e.g., suspend to disk)
+	    "SLEEP" : _("Sleep Button Action: %1"),
+	    // cmdline information about actions to be done if event occurs
+	    // %1 is the action (e.g., suspend to disk)
+	    "LID_CLOSED" : _("Laptop Lid Closed Action: %1"),
+	];
+	foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
+	    string format = texts[w]:"";
+	    string event = GetAcpiButtonAction (w);
+	    event = acpi_event_labels[event]:event;
+	    CommandLine::Print (sformat (format, event));
+	});
+	printed = true;
+    }
+    if (print_all || haskey (options, "allowed_actions"))
+    {
+	if (printed)
+	    CommandLine::Print ("\n");
+	// header for commandline output
+	CommandLine::Print (_("Actions Allowed for Users:\n"));
+	map <string,string> texts = $[
+	    // cmdline information about operation permission, %1 = Yes or No
+	    "SUSPEND2DISK" : _("Suspend to Disk Allowed: %1"),
+	    // cmdline information about operation permission, %1 = Yes or No
+	    "SUSPEND2RAM" : _("Suspend to RAM Allowed: %1"),
+	    // cmdline information about operation permission, %1 = Yes or No
+	    "STANDBY" : _("Standby Allowed: %1"),
+	];
+	foreach (string w, ["SUSPEND2DISK", "SUSPEND2RAM", "STANDBY"], {
+	    string format = texts[w]:"";
+	    string allowed = GetActionAllowed (w)
+		// label to be put to messages like Suspend to Disk Allowed: %1
+		? _("Yes")
+		// label to be put to messages like Suspend to Disk Allowed: %1
+		: _("No");
+	    CommandLine::Print (sformat (format, allowed));
+	});
+	printed = true;
+    }
+    return false;
+}
+
+/**
+  * Handler for command line interface
+  * @param options map options from the command line
+  * @return boolean true if settings have been changed
+  */
+boolean SetHandler (map options) {
+    if (haskey (options, "battery_feedback"))
+    {
+	if (! haskey (options, "capacity"))
+	{
+	    // error report
+	    CommandLine::Error (_("Battery capacity not specified."));
+	    return false;
+	}
+	if (! haskey (options, "action"))
+	{
+	    // error report
+	    CommandLine::Error (_("Action not specified."));
+	    return false;
+	}
+	string level = toupper (options["battery_feedback"]:"");
+	string action = options["action"]:"";
+	integer capacity = options["capacity"]:0;
+	if (capacity < 0 || capacity > 100)
+	{
+	    // error report
+	    CommandLine::Error (_("Capacity must be higher than 0%% and lower than 100%%."));
+	    return false;
+	}
+	SetBatteryStatusAction (level, action);
+	SetBatteryStatusCapacity (level, capacity);
+	return true;
+    }
+    if (haskey (options, "button"))
+    {
+	if (! haskey (options, "action"))
+	{
+	    // error report
+	    CommandLine::Error (_("Action not specified."));
+	    return false;
+	}
+	string button = toupper (options["button"]:"");
+	string action = options["action"]:"";
+	SetAcpiButtonAction (button, action);
+	return true;
+    }
+    if (haskey (options, "operation"))
+    {
+	if (! haskey (options, "allowed"))
+	{
+	    // error report
+	    CommandLine::Error (_("Specify whether the operation should be allowed."));
+	    return false;
+	}
+	string operation = toupper (options["operation"]:"");
+	boolean allowed = options["allowed"]:false;
+	SetActionAllowed (operation, allowed);
+	return true;
+    }
+    if (haskey (options, "ac_scheme") || haskey (options, "battery_scheme"))
+    {
+	string ac = options["ac_scheme"]:"";
+	string bat = options["battery_scheme"]:"";
+	string ac_id = nil;
+	string bat_id = nil;
+	boolean ret = false;
+	foreach (map<string,string> s, PowerManagement::schemes, {
+	    if (s["SCHEME_NAME"]:nil == ac)
+		ac_id = s["_scheme_id"]:"";
+	    if (s["SCHEME_NAME"]:nil == bat)
+		bat_id = s["_scheme_id"]:"";
+	});
+	if (bat_id != nil)
+	{
+	    PowerManagement::global_settings["BATTERY_SCHEME"] = bat_id;
+	    ret = true;
+	}
+	else if (bat != "")
+	{
+	    // error report
+	    CommandLine::Error (_("Specified battery scheme not found."));
+	}
+	if (ac_id != nil)
+	{
+	    PowerManagement::global_settings["AC_SCHEME"] = ac_id;
+	    ret = true;
+	}
+	else if (ac != "")
+	{
+	    // error report
+	    CommandLine::Error (_("Specified AC scheme not found."));
+	}
+	return ret;
+    }
+    return false;
+}
+
+/**
+  * Handler for command line interface
+  * @param options map options from the command line
+  * @return boolean true if settings have been changed
+  */
+boolean SchemeHandler (map options) {
+    boolean s_add = haskey (options, "add");
+    boolean s_edit = haskey (options, "edit");
+    boolean s_delete = haskey (options, "delete");
+    if (! (s_add || s_edit || s_delete))
+    {
+	// error report
+	CommandLine::Error (_("Operation with the scheme not specified."));
+	return false;
+    }
+    if (! haskey (options, "name"))
+    {
+	// error report
+	CommandLine::Error (_("Scheme name not specified."));
+	return false;
+    }
+    string scheme_name = options["name"]:"";
+    if (s_delete)
+    {
+	PowerManagement::schemes = filter (map<string,string> s,
+	    PowerManagement::schemes,
+	{
+	    return s["SCHEME_NAME"]:"" != scheme_name;
+	});
+	return true;
+    }
+
+    PowerManagement::FetchSchemes ();
+    if (s_add)
+    {
+	string original_scheme = scheme_name;
+	if (! haskey (options, "clone"))
+	{
+	    original_scheme = PowerManagement::schemes[0, "SCHEME_NAME"]:"";
+	}
+	else
+	{
+	    original_scheme = options["clone"]:"";
+	}
+	PowerManagement::FetchScheme (-1,
+	    PowerManagement::FindScheme (original_scheme));
+	PowerManagement::current_scheme["SCHEME_NAME"] = scheme_name;
+    }
+    else
+    {
+	PowerManagement::FetchScheme (
+	    PowerManagement::FindScheme (scheme_name),
+	    nil);
+    }
+    if (haskey (options, "description"))
+    {
+	PowerManagement::current_scheme["SCHEME_DESCRIPTION"]
+	    = options["description"]:"";
+    }
+    if (haskey (options, "rename"))
+    {
+	PowerManagement::current_scheme["SCHEME_NAME"]
+	    = options["rename"]:"";
+    }
+    if (haskey (options, "option") && haskey (options, "value"))
+    {
+	PowerManagement::current_scheme[options["option"]:""]
+	    = options["value"]:"";
+    }
+
+    PowerManagement::StoreScheme ();
+    PowerManagement::StoreSchemes ();
+    return true;
+}
+
+map cmdline = $[
+   "id"			: "power-management",
+    // command line help text for power management module
+    "help"		: _("Power management configuration module"),
+    "guihandler"	: GuiHandler,
+    "initialize"	: PowerManagement::Read,
+    "finish"		: PowerManagement::Write,
+    "actions" : $[
+	"print" : $[
+	    "handler"	: PrintHandler,
+	    // command line help text for an action
+	    "help"	: _("Display current settings"),
+	],
+	"set" : $[
+	    "handler"	: SetHandler,
+	    // command line help text for an action
+	    "help"	: _("Set general settings"),
+	],
+	"scheme" : $[
+	    "handler"	: SchemeHandler,
+	    // command line help text for an action
+	    "help"	: _("Set options of a scheme"),
+	],
+    ],
+
+    "options"       : $[
+	"scheme" : $[
+	    "type"	: "string",
+	    // command line help text for an option
+	    "help"	: _("Display only specified scheme"),
+	],
+	"battery" : $[
+	    // command line help text for an option
+	    "help"	: _("Display only battery feedback configuration"),
+	],
+	"buttons" : $[
+	    // command line help text for an option
+	    "help"	: _("Display only ACPI button configuration"),
+	],
+	"allowed_actions" : $[
+	    // command line help text for an option
+	    "help"	: _("Display only actions allowed for users"),
+	],
+	"selected_schemes" : $[
+	    // command line help text for an option
+	    "help"	: _("Display only schemes selected for AC and battery power"),
+	],
+	"battery_feedback" : $[
+	    // command line help text for an option
+	    "help"	: _("The battery capacity level"),
+	    "type"	: "enum",
+	    "typespec"	: ["warning", "low", "critical"],
+	],
+	"capacity" : $[
+	    // command line help text for an option
+	    "help"	: _("The capacity of the battery for the level (in percent)"),
+	    "type"	: "integer",
+	],
+	"action" : $[
+	    // command line help text for an option
+	    "help"	: _("The action to perform when the specified capacity level is reached"),
+	    "type"	: "enum",
+	    "typespec"	: acpi_actions,
+	],
+	"button" : $[
+	    // command line help text for an option
+	    "help"	: _("The ACPI button to set the action for"),
+	    "type"	: "enum",
+	    "typespec"	: ["power", "sleep", "lid_closed"],
+	],
+	"operation" : $[
+	    // command line help text for an option
+	    "help"	: _("The action to perform when the specified ACPI button is pressed"),
+	    "type"	: "enum",
+	    "typespec"	: ["suspend2disk", "suspend2ram", "standby"],
+	],
+	"allowed" : $[
+	    // command line help text for an option
+	    "help"	: _("Sets whether the specified operation should be allowed for users"),
+	    "type"	: "boolean",
+	],
+	"ac_scheme" : $[
+	    // command line help text for an option
+	    "help"	: _("Scheme to use when running on AC power source"),
+	    "type"	: "string",
+	],
+	"battery_scheme" : $[
+	    // command line help text for an option
+	    "help"	: _("Scheme to use when running on battery power"),
+	    "type"	: "string",
+	],
+	"name" : $[
+	    // command line help text for an option
+	    "help"	: _("The scheme name"),
+	    "type"	: "string",
+	],
+	"add" : $[
+	    // command line help text for an option
+	    "help"	: _("Add a new scheme"),
+	],
+	"edit" : $[
+	    // command line help text for an option
+	    "help"	: _("Edit an existing scheme"),
+	],
+	"delete" : $[
+	    // command line help text for an option
+	    "help"	: _("Remove an existing scheme"),
+	],
+	"description" : $[
+	    // command line help text for an option
+	    "help"	: _("The description of the scheme"),
+	    "type"	: "string",
+	],
+	"clone" : $[
+	    // command line help text for an option
+	    "help"	: _("The scheme to clone"),
+	    "type"	: "string",
+	],
+	"option" : $[
+	    // command line help text for an option
+	    "help"	: _("Option of a scheme to modify"),
+	    "type"	: "string",
+	],
+	"value" : $[
+	    // command line help text for an option
+	    "help"	: _("Value of the specified option to set"),
+	    "type"	: "string",
+	],
+	"rename" : $[
+	    // command line help text for an option
+	    "help"	: _("New name of the scheme to rename"),
+	    "type"	: "string",
+	],
+    ],
+
+    "mappings"      : $[
+	"print"		: ["battery", "buttons", "allowed_actions",
+				"selected_schemes", "scheme", ],
+	"set"		: ["battery_feedback", "capacity", "action", "button",
+				"operation", "allowed", "ac_scheme",
+				"battery_scheme" ],
+	"scheme"	: ["add", "edit", "delete", "name", "description",
+				"clone", "option", "value", "rename"],
+    ],
+];
+
+/* EOF */
+}
