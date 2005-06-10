@@ -164,7 +164,7 @@ define map<string,any> getAcpiButtonsWidget () ``{
 		`ComboBox (`id ("LID_CLOSED"),
 		    `opt (`hstretch),
 		    // combo box
-		    _("&Laptop's Lid Closing"),
+		    _("&Laptop Lid Closing"),
 		    GetAcpiEventHandlers ()),
 		`VSpacing (2)
 	    ),
@@ -210,7 +210,7 @@ define map<string,any> getEnableSTDWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
-	"label" : _("Allow Suspending to &Disk"),
+	"label" : _("Suspend to &Disk"),
 	"help" : HELPS["enable_std"]:"",
 	"init" : EnableSTDInit,
 	"store" : EnableSTDStore,
@@ -260,7 +260,7 @@ define symbol EnableSTRHandle (string key, map event) {
     {
 	// popup message
 	Popup::Message (_("Use caution because suspending the machine to RAM fails
-on many machines. See help for details.
+on many machines. See the help for details.
 "));
     }
     return nil;
@@ -274,7 +274,7 @@ define map<string,any> getEnableSTRWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
-	"label" : _("Allow &Suspending to RAM"),
+	"label" : _("&Suspend to RAM"),
 	"help" : HELPS["enable_str"]:"",
 	"init" : EnableSTRInit,
 	"store" : EnableSTRStore,
@@ -294,6 +294,19 @@ define map<string,any> getStrStandbyAdditionalHelp () {
     return $[
 	"widget" : `empty,
 	"help" : HELPS["str_standby_additional_info"]:"",
+    ];
+}
+
+// common info for suspend/standby
+
+/**
+ * Get description map of a widget
+ * @return a map widget description map
+ */
+map<string,any> getSuspendPreword () {
+    return $[
+	"widget" : `empty,
+	"help" : HELPS["suspend_preword"]:"",
     ];
 }
 
@@ -340,7 +353,7 @@ define symbol EnableStandbyHandle (string key, map event) {
     {
 	// popup message
 	Popup::Message (_("Use caution because putting the machine to the standby state
-fails on many machines. See help for details.
+fails on many machines. See the help for details.
 "));
     }
     return nil;
@@ -354,7 +367,7 @@ define map<string,any> getEnableStandbyWidget () {
     return $[
 	"widget" : `checkbox,
 	// check box
-	"label" : _("Allow Switching to S&tand-by Mode"),
+	"label" : _("S&tandby Mode"),
 	"help" : HELPS["enable_standby"]:"",
 	"init" : EnableStandbyInit,
 	"store" : EnableStandbyStore,
@@ -384,8 +397,8 @@ define symbol BatteryWarningHandle (string key, map event) {
 define map<string,any> getBatteryWarningButton () {
     return $[
 	"widget" : `push_button,
-	// push button
-	"label" : _("Batt&ery Warning"),
+	// push button, opens battery capacity feedback dialog
+	"label" : _("Batt&ery Warning..."),
 	"opt" : [ `hstretch ],
 	"help" : HELPS["battery_warning_button"]:"",
 	"handle" : BatteryWarningHandle,
@@ -410,8 +423,8 @@ define symbol AcpiSettingsButtonHandle (string key, map event) {
 define map<string,any> getAcpiSettingsButton () {
     return $[
 	"widget" : `push_button,
-	// push button
-	"label" : _("AC&PI Settings"),
+	// push button, opens ACPI button configuration dialog
+	"label" : _("AC&PI Settings..."),
 	"opt" : [ `hstretch ],
 	"help" : HELPS["acpi_settings_button"]:"",
 	"handle" : AcpiSettingsButtonHandle,
@@ -438,8 +451,8 @@ define symbol EnableSuspendButtonHandle (string key, map event) {
 define map<string,any> getEnableSuspendButton () {
     return $[
 	"widget" : `push_button,
-	// push button
-	"label" : _("&Enable Suspend"),
+	// push button, opens 
+	"label" : _("&Suspend Permissions..."),
 	"opt" : [ `hstretch ],
 	"help" : HELPS["enable_suspend_button"]:"",
 	"handle" : EnableSuspendButtonHandle,
@@ -757,8 +770,8 @@ define boolean SchemeNameValidate (string key, map event) {
     if (size (new_name) > 32)
     {
 	Popup::Message (
-	    // poupp message
-	    _("The scheme name must not be longer than thirty-two characters."));
+	    // pop-up message
+	    _("The scheme name must not be longer than 32 characters."));
 	return false;
     }
     return true;
@@ -1071,7 +1084,7 @@ define map<string,any> getCpuWidget () {
 		    // combo box item
 		    `item (`id ("performance"), _("Maximum Performance")),
 		    // combo box item
-		    `item (`id ("powersave"), _("Maximim Energy Saving")),
+		    `item (`id ("powersave"), _("Maximum Energy Saving")),
 		    // combo box item
 		    `item (`id ("dynamic"), _("Dynamic Frequency Scaling")),
 		]),
@@ -1230,7 +1243,7 @@ define map<string,any> getDpmsWidget () {
 		    `IntField (`id (`dpms_stdby),
 			// int field
 			// Display is a substantive (screen)
-			_("Display S&tand-by Time-Out (minutes)"), 0, 120, 1),
+			_("Display S&tandby Time-Out (minutes)"), 0, 120, 1),
 		    `IntField (`id (`dpms_susp),
 			// int field
 			// Display is a substantive (screen)
@@ -1340,6 +1353,7 @@ define map<string,any> getDpmsWidget () {
 map<string,map<string,any> > widgets = $[
     "battery_warning" : getBatteryWarning (),
     "acpi_buttons" : getAcpiButtonsWidget (),
+    "suspend_preword" : getSuspendPreword (),
     "enable_std" : getEnableSTDWidget (),
     "enable_str" : getEnableSTRWidget (),
     "enable_standby" : getEnableStandbyWidget (),

@@ -66,7 +66,7 @@ define boolean PrintHandler (map options) {
 	if (printed)
 	    CommandLine::Print ("\n");
 	// header for commandline output
-	CommandLine::Print (_("Power Saving Schemes\n"));
+	CommandLine::Print (_("Power Saving Schemes:\n"));
 	string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
 	if (scheme == "")
 	    scheme = "performance";
@@ -97,7 +97,7 @@ define boolean PrintHandler (map options) {
 	    return PowerManagement::TranslateSchemeName (s["SCHEME_NAME"]:nil);
 	});
 	available = filter (string s, available, {return s != nil;});
-	// cmdline about batter feedback, %1 is capacity level,
+	// cmdline about power saving schemes, %1 is list of schemes,
 	CommandLine::Print (sformat (_("Available Schemes: %1"),
 	    mergestring (available, ", ")));
 	printed = true;
@@ -107,16 +107,16 @@ define boolean PrintHandler (map options) {
 	if (printed)
 	    CommandLine::Print ("\n");
 	// header for commandline output
-	CommandLine::Print (_("Battery Capacity Feedback\n"));
+	CommandLine::Print (_("Battery Capacity Feedback:\n"));
 	map<string,string> texts = $[
-	    // cmdline about batter feedback, %1 is capacity level,
-	    // %2 is the action if level reached (eg. suspend to disk)
+	    // cmdline about battery feedback, %1 is capacity level,
+	    // %2 is the action if level reached (e.g., suspend to disk)
 	    "WARNING" : _("Warning Capacity: %1%%, Action: %2"),
-	    // cmdline about batter feedback, %1 is capacity level,
-	    // %2 is the action if level reached (eg. suspend to disk)
+	    // cmdline about battery feedback, %1 is capacity level,
+	    // %2 is the action if level reached (e.g., suspend to disk)
 	    "LOW" : _("Low Capacity: %1%%, Action: %2"),
 	    // cmdline about batter feedback, %1 is capacity level,
-	    // %2 is the action if level reached (eg. suspend to disk)
+	    // %2 is the action if level reached (e.g., suspend to disk)
 	    "CRITICAL" : _("Critical Capacity: %1%%, Action: %2"),
 	];
 	foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
@@ -134,16 +134,16 @@ define boolean PrintHandler (map options) {
 	if (printed)
 	    CommandLine::Print ("\n");
 	// header for commandline output
-	CommandLine::Print (_("ACPI Button Actions\n"));
+	CommandLine::Print (_("ACPI Button Actions:\n"));
 	map<string,string> texts = $[
-	    // cmdline information about actions to be done if event occurres
-	    // %1 is the action (eg. suspend to disk)
+	    // cmdline information about actions to be done if event occurs
+	    // %1 is the action (e.g., suspend to disk)
 	    "POWER" : _("Power Button Action: %1"),
-	    // cmdline information about actions to be done if event occurres
-	    // %1 is the action (eg. suspend to disk)
+	    // cmdline information about actions to be done if event occurs
+	    // %1 is the action (e.g., suspend to disk)
 	    "SLEEP" : _("Sleep Button Action: %1"),
-	    // cmdline information about actions to be done if event occurres
-	    // %1 is the action (eg. suspend to disk)
+	    // cmdline information about actions to be done if event occurs
+	    // %1 is the action (e.g., suspend to disk)
 	    "LID_CLOSED" : _("Laptop Lid Closed Action: %1"),
 	];
 	foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
@@ -159,13 +159,13 @@ define boolean PrintHandler (map options) {
 	if (printed)
 	    CommandLine::Print ("\n");
 	// header for commandline output
-	CommandLine::Print (_("Actions Allowed for Users\n"));
+	CommandLine::Print (_("Actions Allowed for Users:\n"));
 	map <string,string> texts = $[
-	    // cmdline information about (dis)allowed operration, %1 = Yes or No
+	    // cmdline information about operation permission, %1 = Yes or No
 	    "SUSPEND2DISK" : _("Suspend to Disk Allowed: %1"),
-	    // cmdline information about (dis)allowed operration, %1 = Yes or No
+	    // cmdline information about operation permission, %1 = Yes or No
 	    "SUSPEND2RAM" : _("Suspend to RAM Allowed: %1"),
-	    // cmdline information about (dis)allowed operration, %1 = Yes or No
+	    // cmdline information about operation permission, %1 = Yes or No
 	    "STANDBY" : _("Standby Allowed: %1"),
 	];
 	foreach (string w, ["SUSPEND2DISK", "SUSPEND2RAM", "STANDBY"], {
@@ -208,7 +208,7 @@ boolean SetHandler (map options) {
 	if (capacity < 0 || capacity > 100)
 	{
 	    // error report
-	    CommandLine::Error (_("Capacity must be higher than 0%% and lower than 100%%"));
+	    CommandLine::Error (_("Capacity must be higher than 0%% and lower than 100%%."));
 	    return false;
 	}
 	SetBatteryStatusAction (level, action);
@@ -356,8 +356,8 @@ boolean SchemeHandler (map options) {
 
 map cmdline = $[
    "id"			: "power-management",
-    // command line help text for NTP client module
-    "help"		: _("Power management configuration module."),
+    // command line help text for power management module
+    "help"		: _("Power management configuration module"),
     "guihandler"	: GuiHandler,
     "initialize"	: PowerManagement::Read,
     "finish"		: PowerManagement::Write,
@@ -395,7 +395,7 @@ map cmdline = $[
 	],
 	"allowed_actions" : $[
 	    // command line help text for an option
-	    "help"	: _("Display only which actions are allowed for users"),
+	    "help"	: _("Display only actions allowed for users"),
 	],
 	"selected_schemes" : $[
 	    // command line help text for an option

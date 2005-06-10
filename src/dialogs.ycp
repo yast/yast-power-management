@@ -65,10 +65,9 @@ boolean ReadAbort () {
  */
 boolean WriteAbort () {
     // yes-no popup
-    return PollAbort () && Popup::YesNo (_("Really abort?
-
-If you abort writing now, the saved
-settings may be inconsistent."));
+    return PollAbort () && Popup::YesNo (_("If you abort writing now, the saved
+settings may be inconsistent.
+Really abort?"));
 }
 
 include "power-management/widgets.ycp";
@@ -157,7 +156,7 @@ system probably does not support ACPI and uses APM."));
     ), `HStretch ());
 
     // dialog caption
-    string caption = _("Configuration of ACPI Buttons");
+    string caption = _("ACPI Buttons");
 
     return CWM::ShowAndRun ($[
 	"widget_names" : ["acpi_buttons"],
@@ -184,7 +183,7 @@ symbol BatteryWarningDialog () {
     ), `HStretch ());
 
     // dialog caption
-    string caption = _("Configuration of Battery Capacity Feedback");
+    string caption = _("Battery Capacity Feedback");
 
     return CWM::ShowAndRun ($[
 	"widget_names" : ["battery_warning"],
@@ -207,7 +206,7 @@ symbol EnableSuspendDialog () {
     term contents = `HBox (`HStretch (), `VBox (
 	`VStretch(),
 	// frame
-	`Frame (_("Allow Switching to Power-Saving Mode"), `HBox (
+	`Frame (_("Power-Saving Modes to Allow"), `HBox (
 	    `HStretch (),
 	    `VBox (
 		`VStretch (),
@@ -224,7 +223,7 @@ symbol EnableSuspendDialog () {
     ), `HStretch ());
 
     // dialog caption
-    string caption = _("Allow Users to Suspend the Computer");
+    string caption = _("Modes Permitted for Users");
 
     return CWM::ShowAndRun ($[
 	"widget_names" : ["enable_std", "enable_str", "enable_standby",

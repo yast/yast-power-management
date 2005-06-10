@@ -42,7 +42,7 @@ include "power-management/commandline.ycp";
 /*map cmdline_description = $[
     "id"	: "power-management",
     // Command line help text for the Xpower-management module
-    "help"	: _("Configuration of power-management"),
+    "help"	: _("Configuration of power management"),
     "guihandler"        : PowerManagementSequence,
     "initialize"        : PowerManagement::Read,
     "finish"            : PowerManagement::Write,

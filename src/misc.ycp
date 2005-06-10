@@ -26,7 +26,7 @@ map acpi_event_labels = $[
     // combo box item
     "wm_logout" : _("Log Out"),
     // combo box item
-    "standby" : _("Standby"),
+    "standby" : _("Switch to Standby"),
     // combo box item
     "suspend_to_ram" : _("Suspend to RAM"),
     // combo box item
