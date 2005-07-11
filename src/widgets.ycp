@@ -965,11 +965,11 @@ define void CoolingPolicyInit (string key) {
     if (value == "")
 	value = "passive";
     UI::ChangeWidget (`id (`cooling_policy), `Value, value);
-    UI::ChangeWidget (`id (`overheat), `Value,// FIXME
-	PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"]:
+    UI::ChangeWidget (`id (`overheat), `Value,
+	PowerManagement::current_scheme["THERMAL_HOT_ACTION"]:
 		"notify");
-    UI::ChangeWidget (`id (`overheat_critical), `Value, // FIXME
-	PowerManagement::current_scheme["POWERSAVE_THERMAL_CRITICAL"]:
+    UI::ChangeWidget (`id (`overheat_critical), `Value,
+	PowerManagement::current_scheme["THERMAL_CRITICAL_ACTION"]:
 		"suspend");
 }
 
@@ -981,9 +981,9 @@ define void CoolingPolicyInit (string key) {
 define void CoolingPolicyStore (string key, map event) {
     PowerManagement::current_scheme["COOLING_POLICY"]
 	= (string)UI::QueryWidget (`id (`cooling_policy), `Value);
-    PowerManagement::current_scheme["POWERSAVE_THERMAL_HOT_ACTION"] // FIXME 2x
+    PowerManagement::current_scheme["THERMAL_HOT_ACTION"]
 	= (string)UI::QueryWidget (`id (`overheat), `Value);
-    PowerManagement::current_scheme["POWERSAVE_THERMAL_CRITICAL"]
+    PowerManagement::current_scheme["THERMAL_CRITICAL_ACTION"]
 	= (string)UI::QueryWidget (`id (`overheat_critical), `Value);
 }
 
@@ -1286,9 +1286,9 @@ define map<string,any> getDpmsWidget () {
  */
 /*define void SuspendTimeoutInit (string key) {
     UI::ChangeWidget (`id ("suspend_method"), `Value,
-	PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]:"standby");
+	PowerManagement::current_scheme["SUSPEND_METHOD"]:"standby");
     string timeout_str = (string)
-	PowerManagement::current_scheme["POWERSAVE_SUSPEND_TIMEOUT"]:"";
+	PowerManagement::current_scheme["SUSPEND_TIMEOUT"]:"";
     if (timeout_str == "")
 	timeout_str = "1";
     integer timeout = tointeger (timeout_str);
@@ -1306,10 +1306,10 @@ define map<string,any> getDpmsWidget () {
 /*define void SuspendTimeoutStore (string key, map event) {
     boolean enabled = (boolean)
 	UI::QueryWidget (`id ("enable_suspend_timeout"), `Value);
-    PowerManagement::current_scheme["POWERSAVE_SUSPEND_TIMEOUT"] = enabled
+    PowerManagement::current_scheme["SUSPEND_TIMEOUT"] = enabled
 	? sformat ("%1", UI::QueryWidget (`id ("suspend_timeout"), `Value))
 	: "0";
-    PowerManagement::current_scheme["POWERSAVE_SUSPEND_METHOD"]
+    PowerManagement::current_scheme["SUSPEND_METHOD"]
 	= (string)UI::QueryWidget (`id ("suspend_method"), `Value);
 }
 
