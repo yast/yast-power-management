@@ -97,7 +97,7 @@ See <tt>/usr/share/doc/packages/powersave/README.suspend</tt> for details.</p>")
 Use <b>AC Powered</b> to adjust the energy saving scheme to use when your
 computer is AC powered.
 Use <b>Battery Powered</b> to adjust the energy saving scheme to use when your
-computer is powered by internal battery.")
+computer is powered by internal battery.</p>")
     +
     // Main dialog help 2/6
     _("<p>Below the selected schemes, descriptions of both selected schemes
@@ -141,11 +141,11 @@ work on battery or AC power.</p>"),
     // Scheme editation dialog 1 help 1/5
     "scheme_name" : _("<p><big><b>Scheme Setup</b></big>
 Configure the settings of the scheme. Enter its name in <b>Scheme Name</b>
-and optionally a description in <b>Scheme Description</b>."),
+and optionally a description in <b>Scheme Description</b>.</p>"),
 
     // Scheme editation dialog 1 help 2/5
     // rwalter merged content into previous. sorry.
-    "scheme_descr" : _(""),
+    "scheme_descr" : "",
 
     // Scheme editation dialog 1 help 3/5
     "cpu" : _("<p><big><b>CPU Settings</b></big><br>

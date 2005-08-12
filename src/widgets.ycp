@@ -1079,7 +1079,7 @@ define map<string,any> getCpuWidget () {
 	    `VStretch (),
 	    `ComboBox (`id (`scaling),
 		// combo box
-		_("Frequency Scaling"),
+		_("&Frequency Scaling"),
 		[
 		    // combo box item
 		    `item (`id ("performance"), _("Maximum Performance")),
@@ -1094,14 +1094,14 @@ define map<string,any> getCpuWidget () {
 		    `Label (" "),
 		    `CheckBox (`id (`allow_throt), `opt (`hstretch, `notify),
 			// check box
-			_("Allow Throttling"))
+			_("&Allow Throttling"))
 		)),
 		// integer field
 		`IntField (`id (`max_throt), _("&Max. %"), 0, 100, 50)
 	    ),
 	    `VSpacing (0.3),
 	    // check box
-	    `Left (`CheckBox (`id (`always_throt), _("Always Throttle"))),
+	    `Left (`CheckBox (`id (`always_throt), _("A&lways Throttle"))),
 	    `VStretch ()
 	)),
 	"init" : CpuInit,
