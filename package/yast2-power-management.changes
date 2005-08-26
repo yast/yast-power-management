@@ -3,6 +3,7 @@ Fri Aug 26 13:51:42 CEST 2005 - jsrain@suse.cz
 
 - handle correctly empty values in powersave configuration files
   (#105301)
+- 2.12.3
 
 -------------------------------------------------------------------
 Mon Jul 11 08:45:54 CEST 2005 - jsrain@suse.cz
