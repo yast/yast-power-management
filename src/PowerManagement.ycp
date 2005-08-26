@@ -20,6 +20,7 @@ import "PackageSystem";
 import "Progress";
 import "Report";
 import "Service";
+import "String";
 
 
 /**
@@ -84,6 +85,8 @@ global list<map<string,string> > schemes = [];
 global map<string,string> global_settings = $[];
 
 global map<string,string> new_schemes = $[];
+
+map<string,string> default_values = $[];
 
 string apm_acpi = "";
 
@@ -249,6 +252,24 @@ global boolean Read() {
     foreach (string key, list<string> conf, global_options_mapping, {
 	string v = (string)SCR::Read (
 	    .sysconfig.powersave.global.value + conf[0]:"" + conf[1]:"");
+	string comment = (string)SCR::Read (
+	    .sysconfig.powersave.global.value_comment
+		+ conf[0]:"" + conf[1]:"");
+	if (comment != nil && comment != "")
+	{
+	    map<string,string> parsed =
+		String::ParseSysconfigComment (comment);
+	    comment = parsed["Default"]:"";
+	    if (regexpmatch (comment, "^\".*\"$"))
+		comment = regexpsub (comment, "^\"(.*)\"$", "\\1");
+	    else if (regexpmatch (comment, "^'.*'$"))
+		comment = regexpsub (comment, "^'(.*)'$", "\\1");
+	    default_values[key] = comment;
+	}
+	if (v == nil || v == "")
+	{
+	    v = comment;
+	}
 	global_settings[key] = v;
     });
 
@@ -400,6 +421,11 @@ next }
     Progress::NextStage ();
 
     y2milestone ("Writing global settings");
+    global_settings = mapmap (string k, string v, global_settings, {
+	if (default_values[k]:"" == v)
+	    v = "";
+	return $[ k : v ];
+    });
     foreach (string key, list<string> conf, global_options_mapping, {
 	string v = global_settings[key]:nil;
 	SCR::Write (
