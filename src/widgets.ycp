@@ -122,6 +122,12 @@ define void AcpiButtonsInit (string key) {
 	string value = GetAcpiButtonAction (w);
 	UI::ChangeWidget (`id (w), `Value, value);
     });
+    UI::ChangeWidget (`id ("POWER"), `Enabled,
+	PowerManagement::power_available);
+    UI::ChangeWidget (`id ("SLEEP"), `Enabled,
+	PowerManagement::sleep_available);
+    UI::ChangeWidget (`id ("LID_CLOSED"), `Enabled,
+	PowerManagement::lid_available);
     UI::SetFocus (`id ("POWER"));
 }
 

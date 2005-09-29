@@ -144,6 +144,9 @@ global list<map<string,string> > current_schemes = [];
 global integer current_scheme_index = -1;
 global map<string,string> current_scheme = $[];
 
+global boolean power_available = true;
+global boolean sleep_available = true;
+global boolean lid_available = true;
 
 /**
  * Abort function
@@ -234,6 +237,18 @@ global boolean Read() {
     }
 
     y2milestone ("Dected saving mehanism: %1", apm_acpi);
+
+    if (apm_acpi == "ACPI" && ! Mode::config ())
+    {
+	power_available = 0 == (integer)SCR::Execute (.target.bash,
+	    "hal-find-by-property --key button.type --string power");
+	sleep_available = 0 == (integer)SCR::Execute (.target.bash,
+	    "hal-find-by-property --key button.type --string sleep");
+	lid_available = 0 == (integer)SCR::Execute (.target.bash,
+	    "hal-find-by-property --key button.type --string lid");
+	y2milestone ("Available buttons: Power: %1, Sleep: %2, Lid: %3",
+	    power_available, sleep_available, lid_available);
+    }
 
 // stage always successful
 //    if(! stage_success)
