@@ -384,85 +384,50 @@ define map<string,any> getEnableStandbyWidget () {
 }
 
 
-// battery warning button
+// menu button for setting global options
 
 /**
  * Handle function of a widget
  * @param key string widget id
  * @param event map event that will be handled
- * @return symbol for wizard sequencer
+ * @return symbol always nil
  */
-define symbol BatteryWarningHandle (string key, map event) {
-    return `battery;
+symbol OtherSettingsMenuButtonHandle (string key, map event) {
+    any id = event["ID"]:nil;
+    if (id == "battery_warning_button")
+	return `battery;
+    if (id == "acpi_settings_button")
+	return `buttons;
+    if (id == "enable_suspend_button")
+	return `enable_suspend;
+    return nil;
 }
 
 /**
  * Get description map of a widget
  * @return a map widget description map
  */
-define map<string,any> getBatteryWarningButton () {
+map<string,any> getOtherSettingsMenuButton () {
     return $[
-	"widget" : `push_button,
-	// push button, opens battery capacity feedback dialog
-	"label" : _("Batt&ery Warning..."),
-	"opt" : [ `hstretch ],
-	"help" : HELPS["battery_warning_button"]:"",
-	"handle" : BatteryWarningHandle,
-	"handle_events" : [ "battery_warning_button" ],
-    ];
-}
-
-/**
- * Handle function of a widget
- * @param key string widget id
- * @param event map event that will be handled
- * @return symbol for wizard sequencer
- */
-define symbol AcpiSettingsButtonHandle (string key, map event) {
-    return `buttons;
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getAcpiSettingsButton () {
-    return $[
-	"widget" : `push_button,
-	// push button, opens ACPI button configuration dialog
-	"label" : _("AC&PI Settings..."),
-	"opt" : [ `hstretch ],
-	"help" : HELPS["acpi_settings_button"]:"",
-	"handle" : AcpiSettingsButtonHandle,
-	"handle_events" : [ "acpi_settings_button" ],
-    ];
-}
-
-// button for enabling and disabling users
-
-/**
- * Handle function of a widget
- * @param key string widget id
- * @param event map event that will be handled
- * @return symbol for wizard sequencer
- */
-define symbol EnableSuspendButtonHandle (string key, map event) {
-    return `enable_suspend;
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getEnableSuspendButton () {
-    return $[
-	"widget" : `push_button,
-	// push button, opens 
-	"label" : _("&Suspend Permissions..."),
-	"opt" : [ `hstretch ],
-	"help" : HELPS["enable_suspend_button"]:"",
-	"handle" : EnableSuspendButtonHandle,
-	"handle_events" : [ "enable_suspend_button" ],
+	"widget" : `custom,
+	"custom_widget" : `MenuButton (`id ("other_settings_menu_button"),
+	    // menu button
+	    _("Other Settings..."),
+	    [
+		`item (`id ("battery_warning_button"),
+		    _("Batt&ery Warning...")),
+		`item (`id ("acpi_settings_button"),
+		    _("AC&PI Settings...")),
+		`item (`id ("enable_suspend_button"),
+		    _("&Suspend Permissions...")),
+	    ]),
+	"help" : HELPS["other_settings_menu_button"]:"",
+	"handle" : OtherSettingsMenuButtonHandle,
+	"handle_events" : [
+	    "battery_warning_button",
+	    "acpi_settings_button",
+	    "enable_suspend_button",
+	],
     ];
 }
 
@@ -1364,9 +1329,7 @@ map<string,map<string,any> > widgets = $[
     "enable_str" : getEnableSTRWidget (),
     "enable_standby" : getEnableStandbyWidget (),
     "str_standby_additional_info" : getStrStandbyAdditionalHelp (),
-    "battery_warning_button" : getBatteryWarningButton (),
-    "acpi_settings_button" : getAcpiSettingsButton (),
-    "enable_suspend_button" : getEnableSuspendButton (),
+    "other_settings_menu_button" : getOtherSettingsMenuButton (),
     "scheme_selection" : getSchemeSelectionWidget (),
     "schemes_list" : getSchemesListWidget (),
     "scheme_name" : getSchemeNameWidget (),

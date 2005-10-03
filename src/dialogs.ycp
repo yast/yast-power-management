@@ -109,9 +109,7 @@ symbol MainDialog () {
 	`VStretch (),
 	`HBox (
 	    `HStretch (),
-	    `HWeight (1, "battery_warning_button"),
-	    `HWeight (1, "acpi_settings_button"),
-	    `HWeight (1, "enable_suspend_button"),
+	    "other_settings_menu_button",
 	    `HStretch ()
 	),
 	`VStretch ()
@@ -120,9 +118,8 @@ symbol MainDialog () {
     // dialog caption
     string caption = _("Power Management Settings");
     list<string> widget_names = ["scheme_selection",
-	"battery_warning_button",
-	"acpi_settings_button",
-	"enable_suspend_button"];
+	"other_settings_menu_button",
+    ];
 
     list<map<string,any> > w = CWM::CreateWidgets (widget_names, widgets);
     string help = CWM::MergeHelps (w);
