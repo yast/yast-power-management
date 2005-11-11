@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Nov 11 12:52:06 CET 2005 - jsrain@suse.cz
+
+- added "Ignore Niced Processes" check box to scheme settings
+  (#95003)
+
+-------------------------------------------------------------------
 Mon Oct  3 18:11:36 CEST 2005 - jsrain@suse.cz
 
 - move global power management settings under a menu button

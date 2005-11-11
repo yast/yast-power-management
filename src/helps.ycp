@@ -130,34 +130,38 @@ it and click <b>Edit</b>.</p>")
     _("<p>In the main dialog, assign schemes to use when you 
 work on battery or AC power.</p>"),
 
-    // Scheme editation dialog 1 help 1/5
+    // Scheme editation dialog 1 help 1/6
     "scheme_name" : _("<p><big><b>Scheme Setup</b></big>
 Configure the settings of the scheme. Enter its name in <b>Scheme Name</b>
 and optionally a description in <b>Scheme Description</b>.</p>"),
 
-    // Scheme editation dialog 1 help 2/5
+    // Scheme editation dialog 1 help 2/6
     // rwalter merged content into previous. sorry.
     "scheme_descr" : "",
 
-    // Scheme editation dialog 1 help 3/5
+    // Scheme editation dialog 1 help 3/6
     "cpu" : _("<p><big><b>CPU Settings</b></big><br>
 Use <b>Frequency Scaling</b> to adjust the frequency of the CPU. If you set it
 to <b>Dynamic Frequency Scaling</b>, the CPU frequency is adjusted automatically
 according to the current CPU load.</p>")
     +
-    // Scheme editation dialog 1 help 4/5
+    // Scheme editation dialog 1 help 4/6
     _("<p>Set <b>Allow Throttling</b> to turn CPU throttling on and adjust
 <b>Max %</b> to set the maximum CPU throttling. Throttling is supported
 only on ACPI machines.</p>")
     +
-    // Scheme editation dialog 1 help 5/5
+    // Scheme editation dialog 1 help 5/6
     _("<p>If your processor does not support CPU frequency scaling, 
 you may want to let your processor be constantly 
 slowed down when working on battery to save power. To do this, set
 <b>Always Throttle</b>.  This setting 
 might be useful on long-distance trips where you do not need the entire 
 performance of your machine.</p>
-"),
+")
+    +
+    // Scheme editation dialog 1 help 6/6
+    _("<p>To ignore processes with low priority when adjusting the CPU
+frequency, set <b>Ignore Niced Processes</b>.</p>"),
 
     // Scheme editation dialog 2 help 1/2
     "hard_disk" : _("<p><b><big>Hard Disk Settings</big></b><br>

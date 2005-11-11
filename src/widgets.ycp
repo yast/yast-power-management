@@ -1019,6 +1019,8 @@ define void CpuInit (string key) {
 	PowerManagement::current_scheme["MAX_THROTTLING"]:"50"));
     UI::ChangeWidget (`id (`always_throt), `Value,
 	PowerManagement::current_scheme["ALWAYS_THROTTLE"]:"no" != "no");
+    UI::ChangeWidget (`id (`ignore_nice), `Value,
+	PowerManagement::current_scheme["CONSIDER_NICE"]:"no" == "no");
     CpuHandle (key, $[]);
 }
 
@@ -1036,6 +1038,8 @@ define void CpuStore (string key, map event) {
 	= sformat ("%1", (integer)UI::QueryWidget (`id (`max_throt), `Value));
     PowerManagement::current_scheme["ALWAYS_THROTTLE"]
 	= (boolean)UI::QueryWidget (`id (`always_throt), `Value) ? "yes" : "no";
+    PowerManagement::current_scheme["CONSIDER_NICE"]
+	= (boolean)UI::QueryWidget (`id (`ignore_nice), `Value) ? "no" : "yes";
 }
 
 /**
@@ -1073,6 +1077,9 @@ define map<string,any> getCpuWidget () {
 	    `VSpacing (0.3),
 	    // check box
 	    `Left (`CheckBox (`id (`always_throt), _("A&lways Throttle"))),
+	    `VSpacing (0.3),
+	    // check box
+	    `Left (`CheckBox (`id (`ignore_nice), _("&Ignore Niced Processes"))),
 	    `VStretch ()
 	)),
 	"init" : CpuInit,
