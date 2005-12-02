@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Dec  2 09:49:19 CET 2005 - jsrain@suse.cz
+
+- updated desktop file (#135803)
+
+-------------------------------------------------------------------
 Fri Nov 11 12:52:06 CET 2005 - jsrain@suse.cz
 
 - added "Ignore Niced Processes" check box to scheme settings
