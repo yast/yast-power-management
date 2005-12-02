@@ -1,7 +1,8 @@
 -------------------------------------------------------------------
-Fri Dec  2 09:49:19 CET 2005 - jsrain@suse.cz
+Fri Dec  2 10:26:44 CET 2005 - jsrain@suse.cz
 
 - updated desktop file (#135803)
+- fixed path in help text (#136068)
 
 -------------------------------------------------------------------
 Fri Nov 11 12:52:06 CET 2005 - jsrain@suse.cz

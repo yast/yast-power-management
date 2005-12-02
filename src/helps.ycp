@@ -86,11 +86,13 @@ by your machine, the appropriate check box is disabled.</p>
 ")
 
 	// enabling standby/suspend dialog help 6/6
-	+ _("<p><b><big>Warning</big></b><br>
+	// %1 is file path
+	+ sformat (_("<p><b><big>Warning</big></b><br>
 Depending on your hardware, suspend to RAM or standby could fail and you may 
 need to push the reset button to reboot your computer. This could lead to 
 data loss.
-See <tt>/usr/share/doc/packages/powersave/README.suspend</tt> for details.</p>"),
+See <tt>%1</tt> for details.</p>"),
+	    "/usr/share/doc/packages/powersave/powersave_manual.html"),
 
     // Main dialog help 1/4
     "scheme_selection" : _("<p><b><big>Energy Saving Schemes</big></b><br>
