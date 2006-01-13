@@ -41,6 +41,7 @@ map acpi_event_labels = $[
  * ACPI event items
  */
 list acpi_event_handlers = nil;
+list acpi_thermal_event_handlers = nil;
 
 /**
  * Known ACPI actions
@@ -64,6 +65,23 @@ define list GetAcpiEventHandlers () {
 	});
     }
     return acpi_event_handlers;
+}
+
+/**
+ * Get ACPI event items (to combo box) for thermal management
+ * @return list of items
+ */
+define list GetAcpiThermalEventHandlers () {
+    if (acpi_thermal_event_handlers == nil)
+    {
+	list<string> actions = [ "notify", "wm_shutdown",
+	    "standby", "suspend_to_ram", "suspend_to_disk",
+	    "ignore" ];
+	acpi_thermal_event_handlers = maplist (string a, actions, {
+	    return `item (`id (a), acpi_event_labels[a]:a);
+	});
+    }
+    return acpi_thermal_event_handlers;
 }
 
 

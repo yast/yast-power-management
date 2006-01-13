@@ -978,12 +978,12 @@ define map<string,any> getCoolingPolicyWidget () {
 		`opt (`hstretch),
 		// combo box
 		_("&Overheat Temperature Action"),
-		GetAcpiEventHandlers ()),
+		GetAcpiThermalEventHandlers ()),
 	    `ComboBox (`id (`overheat_critical),
 		`opt (`hstretch),
 		// combo box
 		_("&Critical Temperature Action"),
-		GetAcpiEventHandlers ())
+		GetAcpiThermalEventHandlers ())
 	)),
 	"init" : CoolingPolicyInit,
 	"store" : CoolingPolicyStore,
