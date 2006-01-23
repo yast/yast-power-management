@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Jan 23 17:50:52 CET 2006 - jsrain@suse.cz
+
+- merged texts from proofread
+- 2.13.4
+
+-------------------------------------------------------------------
 Fri Jan 13 17:48:02 CET 2006 - jsrain@suse.cz
 
 - on overheat, don't offer actions which do not make sense (logout,
