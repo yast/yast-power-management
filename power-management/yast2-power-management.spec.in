@@ -1,0 +1,29 @@
+@HEADER-COMMENT@
+
+@HEADER@
+BuildRequires:	yast2-devel-packages
+Requires:	yast2 gettext
+
+Summary:	Configuration of power-management
+
+%description
+-
+
+@PREP@
+
+@BUILD@
+
+@INSTALL@
+
+@CLEAN@
+
+%files
+%defattr(-,root,root)
+%dir @yncludedir@/power-management
+@yncludedir@/power-management/*
+@clientdir@/power-management.ycp
+@clientdir@/power-management_*.ycp
+@moduledir@/PowerManagement.*
+@desktopdir@/power-management.desktop
+@scrconfdir@/*
+%doc @docdir@

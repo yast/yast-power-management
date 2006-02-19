@@ -1,0 +1,185 @@
+/**
+ * File:	include/power-management/misc.ycp
+ * Package:	Configuration of power-management
+ * Summary:	Dialogs definitions
+ * Authors:	Jiri Srain <jsrain@suse.cz>
+ *
+ * $Id$
+ */
+
+{
+
+textdomain "power-management";
+
+import "Label";
+import "Popup";
+import "PowerManagement";
+
+/**
+ * Labels of ACPI events
+ */
+map acpi_event_labels = $[
+    // combo box item
+    "notify" : _("Notify"),
+    // combo box item
+    "wm_shutdown" : _("Shut Down"),
+    // combo box item
+    "wm_logout" : _("Log Out"),
+    // combo box item
+    "standby" : _("Switch to Standby"),
+    // combo box item
+    "suspend_to_ram" : _("Suspend to RAM"),
+    // combo box item
+    "suspend_to_disk" : _("Suspend to Disk"),
+    // combo box item
+    "screen_saver" : _("Start Screen Saver"),
+    // combo box item
+    "ignore" : _("Ignore"),
+];
+
+/**
+ * ACPI event items
+ */
+list acpi_event_handlers = nil;
+list acpi_thermal_event_handlers = nil;
+
+/**
+ * Known ACPI actions
+ */
+list acpi_actions = [ "notify", "wm_shutdown", "wm_logout",
+    "standby", "suspend_to_ram", "suspend_to_disk",
+    "screen_saver", "ignore" ];
+
+/**
+ * Get ACPI event items (to combo box)
+ * @return list of items
+ */
+define list GetAcpiEventHandlers () {
+    if (acpi_event_handlers == nil)
+    {
+	list<string> actions = [ "notify", "wm_shutdown", "wm_logout",
+	    "standby", "suspend_to_ram", "suspend_to_disk",
+	    "screen_saver", "ignore" ];
+	acpi_event_handlers = maplist (string a, actions, {
+	    return `item (`id (a), acpi_event_labels[a]:a);
+	});
+    }
+    return acpi_event_handlers;
+}
+
+/**
+ * Get ACPI event items (to combo box) for thermal management
+ * @return list of items
+ */
+define list GetAcpiThermalEventHandlers () {
+    if (acpi_thermal_event_handlers == nil)
+    {
+	list<string> actions = [ "notify", "wm_shutdown",
+	    "standby", "suspend_to_ram", "suspend_to_disk",
+	    "ignore" ];
+	acpi_thermal_event_handlers = maplist (string a, actions, {
+	    return `item (`id (a), acpi_event_labels[a]:a);
+	});
+    }
+    return acpi_thermal_event_handlers;
+}
+
+
+/**
+ * Set battery status action
+ * @param status the battery status
+ * @return string the action
+ */
+string GetBatteryStatusAction (string status) {
+    string option = sformat ("EVENT_BATTERY_%1", status);
+    string value = PowerManagement::global_settings[option]:"";
+    if (value == "")
+	value = "ignore";
+    return value;
+}
+
+/**
+ * Set battery status action
+ * @param status the battery status
+ * @param action string the action
+ */
+void SetBatteryStatusAction (string status, string action) {
+    string option = sformat ("EVENT_BATTERY_%1", status);
+    PowerManagement::global_settings[option] = action;
+}
+
+/**
+ * Get battery status capacity
+ * @param status the battery status
+ * @return integer the capacity
+ */
+integer GetBatteryStatusCapacity (string status) {
+    string option = sformat ("BATTERY_%1", status);
+    string value = PowerManagement::global_settings[option]:"";
+    if (value == "")
+	value = "0";
+    integer i_value = tointeger (value);
+    return i_value;
+}
+
+/**
+ * Set battery status capacity
+ * @param status the battery status
+ * @param capacity integer the capacity
+ */
+void SetBatteryStatusCapacity (string status, integer capacity) {
+    string option = sformat ("BATTERY_%1", status);
+    string value = sformat ("%1", capacity);
+    PowerManagement::global_settings[option] = value;
+}
+
+/**
+ * Get ACPI button action
+ * @param button string the ACPI button
+ * @return string the action
+ */
+string GetAcpiButtonAction (string button) {
+    string option = sformat ("EVENT_BUTTON_%1", button);
+    string value = PowerManagement::global_settings[option]:"";
+    if (value == "")
+	value = "ignore";
+    return value;
+}
+
+/**
+ * Set ACPI button action
+ * @param button string the ACPI button
+ * @param action string the action
+ */
+void SetAcpiButtonAction (string button, string action) {
+    string option = sformat ("EVENT_BUTTON_%1", button);
+    PowerManagement::global_settings[option] = action;
+}
+
+/**
+ * Get if action is to be allowed
+ * @param action string the action
+ * @return boolean true if should be allowed
+ */
+boolean GetActionAllowed (string action) {
+    string key = sformat ("DISABLE_USER_%1", action);
+    string value = PowerManagement::global_settings
+        [key]:"yes";
+    return tolower (value) == "no";
+}
+
+/**
+ * Set if action is to be allowed
+ * @param action string the action
+ * @param allowed boolean true if should be allowed
+ */
+void SetActionAllowed (string action, boolean allowed) {
+    string value = allowed
+	? "no"
+	: "yes";
+    string option = sformat ("DISABLE_USER_%1", action);
+    PowerManagement::global_settings[option] = value;
+}
+
+/* EOF */
+}

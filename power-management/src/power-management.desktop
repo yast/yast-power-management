@@ -1,0 +1,52 @@
+[Desktop Entry]
+Type=Application
+Categories=Qt;X-SuSE-YaST;X-SuSE-YaST-Misc;
+
+X-KDE-ModuleType=Library
+X-KDE-RootOnly=true
+X-KDE-HasReadOnlyMode=true
+X-KDE-Library=yast2
+X-SuSE-YaST-Call=power-management
+
+X-SuSE-YaST-Group=System
+X-SuSE-YaST-Argument=
+X-SuSE-YaST-RootOnly=true
+X-SuSE-YaST-AutoInst=all
+X-SuSE-YaST-AutoInstClonable=true
+X-SuSE-YaST-Geometry=
+X-SuSE-YaST-SortKey=
+X-SuSE-YaST-AutoInstResource=power-management
+
+Icon=yast-power-management
+Exec=/sbin/yast2 power-management 
+
+Name=Power Management
+GenericName=Configure power management
+
+Name[bg]=Name(power-management.desktop): Управление на енергията
+GenericName[bg]=GenericName(power-management.desktop): Настройване управлението на енергията
+Name[cs]=Správa napájení
+GenericName[cs]=Nastavit správu napájení
+Name[de]=Power- Management
+GenericName[de]=Power-Management konfigurieren
+Name[es]=Gestión de energía
+GenericName[es]=Configurar la gestión de energía
+Name[fr]=Gestion de l'alimentation
+GenericName[fr]=Configurer la gestion de l'alimentation
+Name[hu]=Energiakezelés
+GenericName[hu]=Energiagazdálkodás beállítása
+Name[it]=Power Management
+GenericName[it]=Configura power management
+Name[ja]=電源管理
+GenericName[ja]=電源管理を設定
+Name[pl]=Zarządzanie zasilaniem
+GenericName[pl]=Konfiguruj zarządzanie energią
+Name[pt_BR]=Gerenciamento de Energia
+GenericName[pt_BR]=Configurar gerenciamento de energia
+Name[sk]=Správa napájania
+GenericName[sk]=Konfigurácia správy napájania
+Name[zh_CN]=电源管理
+GenericName[zh_CN]=配置电源管理
+Name[zh_TW]=電源管理
+GenericName[zh_TW]=設定電源管理
+X-SuSE-translate=true

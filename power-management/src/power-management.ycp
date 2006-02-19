@@ -1,0 +1,69 @@
+/**
+ * File:	clients/power-management.ycp
+ * Package:	Configuration of power-management
+ * Summary:	Main file
+ * Authors:	Jiri Srain <jsrain@suse.cz>
+ *
+ * $Id$
+ *
+ * Main file for power-management configuration. Uses all other files.
+ */
+
+{
+
+/***
+ * <h3>Configuration of power-management</h3>
+ */
+
+textdomain "power-management";
+
+/* The main () */
+y2milestone ("----------------------------------------");
+y2milestone ("PowerManagement module started");
+
+import "CommandLine";
+include "power-management/wizards.ycp";
+
+
+/**
+  * CommandLine handler for running GUI
+  * @return boolean true if settings were saved
+  */
+define boolean GuiHandler () {
+    symbol ret = PowerManagementSequence();
+    if (ret == `abort || ret == `back || ret == `nil)
+	return false;
+    return true;
+}
+
+include "power-management/commandline.ycp";
+
+
+/*map cmdline_description = $[
+    "id"	: "power-management",
+    // Command line help text for the Xpower-management module
+    "help"	: _("Configuration of power management"),
+    "guihandler"        : PowerManagementSequence,
+    "initialize"        : PowerManagement::Read,
+    "finish"            : PowerManagement::Write,
+    "actions"           : $[
+    ],
+    "options"		: $[
+    ],
+    "mapping"		: $[
+    ]
+];*/
+
+/* main ui function */
+//any ret = PowerManagementSequence ();
+any ret = CommandLine::Run(cmdline);
+y2debug("ret=%1", ret);
+
+/* Finish */
+y2milestone("PowerManagement module finished");
+y2milestone("----------------------------------------");
+
+return ret;
+
+/* EOF */
+}
