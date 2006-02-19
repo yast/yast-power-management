@@ -2,6 +2,7 @@
 Sun Feb 19 23:18:14 CET 2006 - jsrain@suse.de
 
 - translate empty string as empty string (#148641)
+- 2.13.5
 
 -------------------------------------------------------------------
 Mon Jan 23 17:50:52 CET 2006 - jsrain@suse.cz
