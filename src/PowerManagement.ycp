@@ -597,6 +597,8 @@ global boolean APM () {
  * @return string translated text
  */
 global string TranslatePowersaveText (string text) {
+    if (text == "")
+	return text;
     map out = (map)SCR::Execute (.target.bash_output, sformat (
 	"TEXTDOMAINDIR=/usr/share/locale/ gettext power-management \"%1\"",
 	text));
