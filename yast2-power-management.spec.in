@@ -1,7 +1,7 @@
 @HEADER-COMMENT@
 
 @HEADER@
-BuildRequires:	yast2-devel-packages
+BuildRequires:	update-desktop-files yast2-devtools yast2-testsuite perl-XML-Writer yast2
 Requires:	yast2 gettext
 
 Summary:	Configuration of power-management

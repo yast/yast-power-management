@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Mar 27 16:17:28 CEST 2006 - jsrain@suse.de
+
+- updated BuildRequires
+- 2.13.6
+
+-------------------------------------------------------------------
 Sun Feb 19 23:18:14 CET 2006 - jsrain@suse.de
 
 - translate empty string as empty string (#148641)
