@@ -2,6 +2,7 @@
 Thu May 25 14:40:46 CEST 2006 - jsrain@suse.cz
 
 - do not restart powersaved during autoinstallation (#177706)
+- 2.13.7
 
 -------------------------------------------------------------------
 Mon Mar 27 16:17:28 CEST 2006 - jsrain@suse.de
