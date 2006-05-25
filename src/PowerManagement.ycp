@@ -463,7 +463,8 @@ next }
     Progress::NextStage ();
 
     y2milestone ("Restarting powersave daemon");
-    stage_success = Service::Restart ("powersaved");
+    if (! write_only)
+	stage_success = Service::Restart ("powersaved");
     stage_success = Service::Enable ("powersaved") && stage_success;
 
     if(! stage_success)
