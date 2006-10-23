@@ -2,7 +2,10 @@
 
 @HEADER@
 BuildRequires:	update-desktop-files yast2-devtools yast2-testsuite perl-XML-Writer yast2
-Requires:	yast2 gettext
+Requires:	gettext
+
+# .etc.policykit agent
+Requires:	yast2 >= 2.14.7
 
 Summary:	Configuration of power-management
 

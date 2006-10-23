@@ -31,10 +31,6 @@ import "String";
 map<string,string> scheme_options_mapping = $[
     "SCHEME_NAME"		: "SCHEME_NAME",
     "SCHEME_DESCRIPTION"	: "SCHEME_DESCRIPTION",
-    "CPUFREQUENCY"		: "CPUFREQUENCY",
-    "ALLOW_THROTTLING"		: "ALLOW_THROTTLING",
-    "MAX_THROTTLING"		: "MAX_THROTTLING",
-    "ALWAYS_THROTTLE"		: "ALWAYS_THROTTLE",
     "DISK_STANDBY_MODE"		: "DISK_STANDBY_MODE",
     "DISK_ACOUSTIC"		: "DISK_ACOUSTIC",
     "COOLING_POLICY"		: "COOLING_POLICY",
@@ -67,9 +63,6 @@ map<string,list<string> > global_options_mapping = $[
     "EVENT_BUTTON_POWER"	: ["events",	 "EVENT_BUTTON_POWER"],
     "EVENT_BUTTON_SLEEP"	: ["events",	 "EVENT_BUTTON_SLEEP"],
     "EVENT_BUTTON_LID_CLOSED"	: ["events",	 "EVENT_BUTTON_LID_CLOSED"],
-    "DISABLE_USER_SUSPEND2DISK"	: ["sleep",	 "DISABLE_USER_SUSPEND2DISK"],
-    "DISABLE_USER_SUSPEND2RAM"	: ["sleep",	 "DISABLE_USER_SUSPEND2RAM"],
-    "DISABLE_USER_STANDBY"	: ["sleep",	 "DISABLE_USER_STANDBY"],
 //    ""		: ["",	 ""],
 ];
 
@@ -84,6 +77,14 @@ global boolean Modified();
 global list<map<string,string> > schemes = [];
 
 global map<string,string> global_settings = $[];
+
+map<string,string> global_permissions = $[];
+list<string> permissions_actions =
+[
+    "hal-power-hibernate",	// suspend to disk
+    "hal-power-suspend",	// suspend to ram
+    "hal-power-standby"		// standby
+];
 
 global map<string,string> new_schemes = $[];
 
@@ -168,7 +169,38 @@ global boolean Modified() {
     return modified;
 }
 
+global list<string> GetActions()
+{
+    return permissions_actions;
+}
 
+global string GetPermission(string action)
+{
+    return global_permissions[action]:nil;
+}
+
+global boolean SetPermission(string action, string permission)
+{
+    if (!contains(permissions_actions, action))
+    {
+	y2error("Unknown action '%1', supported: %2", action, permissions_actions);
+	return false;
+    }
+    else if (permission == nil)
+    {
+	y2error("Invalid permission: %1", permission);
+    }
+    else
+    {
+	if (global_permissions[action]:nil != permission)
+	{
+	    modified = true;
+	}
+
+	global_permissions[action] = permission;
+	return true;
+    }
+}
 
 /**
  * Read all power-management settings
@@ -265,6 +297,8 @@ global boolean Read() {
     if(Abort()) return false;
     Progress::NextStage();
 
+    // TODO change permissions here, remove from global options
+
     foreach (string key, list<string> conf, global_options_mapping, {
 	string v = (string)SCR::Read (
 	    .sysconfig.powersave.global.value + conf[0]:"" + conf[1]:"");
@@ -288,6 +322,21 @@ global boolean Read() {
 	}
 	global_settings[key] = v;
     });
+
+    // Read permission settings here
+    string std_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-hibernate.privilege".Privilege.RequiredPrivileges);
+    string str_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-suspend.privilege".Privilege.RequiredPrivileges);
+    string standby_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-standby.privilege".Privilege.RequiredPrivileges);
+
+    y2milestone("Required privilege for Suspend to disk: %1", std_permission);
+    y2milestone("Required privilege for Suspend to RAM: %1", str_permission);
+    y2milestone("Required privilege for Stand by: %1", standby_permission);
+
+    // set the permissions
+    global_permissions["hal-power-hibernate"] = std_permission;
+    global_permissions["hal-power-suspend"] = str_permission;
+    global_permissions["hal-power-standby"] = standby_permission;
+
 
     if(! stage_success)
     {
@@ -448,6 +497,34 @@ next }
 	    .sysconfig.powersave.global.value + conf[0]:"" + conf[1]:"", v);
     });
     SCR::Write (.sysconfig.powersave.global, nil);
+
+    // write permissions
+    y2milestone("Writing permissions");
+    string permission = global_permissions["hal-power-hibernate"]:nil;
+
+    if (permission != nil)
+    {
+	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-hibernate.privilege: RequiredPrivileges=%1", permission);
+	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-hibernate.privilege".Privilege.RequiredPrivileges, permission);
+    }
+
+    permission = global_permissions["hal-power-suspend"]:nil;
+    if (permission != nil)
+    {
+	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-suspend.privilege: RequiredPrivileges=%1", permission);
+	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-suspend.privilege".Privilege.RequiredPrivileges, permission);
+    }
+
+    permission = global_permissions["hal-power-standby"]:nil;
+    if (permission != nil)
+    {
+	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-standby.privilege: RequiredPrivileges=%1", permission);
+	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-standby.privilege".Privilege.RequiredPrivileges, permission);
+    }
+
+    // flush the changes
+    stage_success = SCR::Write(.etc.policykit, nil);
+
 
     if(! stage_success)
     {

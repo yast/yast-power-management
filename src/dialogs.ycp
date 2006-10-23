@@ -273,12 +273,6 @@ symbol SchemeDialog1 () {
 	"scheme_name",
 	`VSpacing (1),
 	"scheme_descr",
-	`VStretch (),
-	`HBox (
-	    `HStretch (),
-	    "cpu",
-	    `HStretch ()
-	),
 	`VStretch ()
     ), `HSpacing (2));
 
@@ -286,7 +280,7 @@ symbol SchemeDialog1 () {
     string caption = _("Power Management Scheme Setup");
 
     return CWM::ShowAndRun ($[
-	"widget_names" : ["scheme_name", "scheme_descr", "cpu"],
+	"widget_names" : ["scheme_name", "scheme_descr"],
 	"widget_descr" : widgets,
 	"contents" : contents,
 	"caption" : caption,

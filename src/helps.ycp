@@ -94,28 +94,33 @@ data loss.
 See <tt>%1</tt> for details.</p>"),
 	    "/usr/share/doc/packages/powersave/powersave_manual.html"),
 
-    // Main dialog help 1/4
+    // Main dialog help 1/5
     "scheme_selection" : _("<p><b><big>Energy Saving Schemes</big></b><br>
 Use <b>AC Powered</b> to adjust the energy saving scheme to use when your
 computer is AC powered.
 Use <b>Battery Powered</b> to adjust the energy saving scheme to use when your
 computer is powered by internal battery.</p>")
     +
-    // Main dialog help 2/4
+    // Main dialog help 2/5
     _("<p>Below the selected schemes, descriptions of both selected schemes
 are displayed.</p>")
     +
-    // Main dialog help 3/4
+    // Main dialog help 3/5
     _("<p><b><big>Adjusting Energy Saving Schemes</big></b><br>
 To adjust energy saving schemes, delete existing ones, or create new ones,
 use <b>Edit Schemes</b>.</p>"),
 
-    // Main dialog help 4/4
+    // Main dialog help 4/5
     "other_settings_menu_button" : _("<p><b><big>Other Settings</big></b><br>
-To adjust levels of battery status, actions to perform on these levels
-of battery capacity, operations to perform when an ACPI button is pressed, or
-whether users are allowed to switch the computer to the standby or
-suspend mode, use <b>Other Settings</b>.</p>\n"),
+To adjust whether users are allowed to switch the computer to the standby or
+suspend mode, use <b>Other Settings</b>.</p>\n")+
+
+    // Main dialog help 5/5
+_("<p>Beginning with openSUSE 10.2, a lot of configuration options have been
+removed from the Power Management YaST module. All vanished settings have to be
+configured with a graphical client such as <tt>gnome-power-manager</tt> or
+<tt>kpowersave</tt>.</p>")
+,
 
 
     // Schemes list dialog 1/3
@@ -140,30 +145,6 @@ and optionally a description in <b>Scheme Description</b>.</p>"),
     // Scheme editation dialog 1 help 2/6
     // rwalter merged content into previous. sorry.
     "scheme_descr" : "",
-
-    // Scheme editation dialog 1 help 3/6
-    "cpu" : _("<p><big><b>CPU Settings</b></big><br>
-Use <b>Frequency Scaling</b> to adjust the frequency of the CPU. If you set it
-to <b>Dynamic Frequency Scaling</b>, the CPU frequency is adjusted automatically
-according to the current CPU load.</p>")
-    +
-    // Scheme editation dialog 1 help 4/6
-    _("<p>Set <b>Allow Throttling</b> to turn CPU throttling on and adjust
-<b>Max %</b> to set the maximum CPU throttling. Throttling is supported
-only on ACPI machines.</p>")
-    +
-    // Scheme editation dialog 1 help 5/6
-    _("<p>If your processor does not support CPU frequency scaling, 
-you may want to let your processor be constantly 
-slowed down when working on battery to save power. To do this, set
-<b>Always Throttle</b>.  This setting 
-might be useful on long-distance trips where you do not need the entire 
-performance of your machine.</p>
-")
-    +
-    // Scheme editation dialog 1 help 6/6
-    _("<p>To ignore processes with low priority when adjusting the CPU
-frequency, set <b>Ignore Niced Processes</b>.</p>"),
 
     // Scheme editation dialog 2 help 1/2
     "hard_disk" : _("<p><b><big>Hard Disk Settings</big></b><br>

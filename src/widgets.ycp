@@ -191,9 +191,7 @@ define map<string,any> getAcpiButtonsWidget () ``{
  */
 define void EnableSTDInit (string key) {
     UI::SetFocus (`id (key));
-    string value = PowerManagement::global_settings
-	["DISABLE_USER_SUSPEND2DISK"]:"yes";
-    UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+    UI::ChangeWidget (`id (key), `Value, PowerManagement::GetPermission("hal-power-hibernate") == "desktop-console");
 }
 
 /**
@@ -202,10 +200,8 @@ define void EnableSTDInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void EnableSTDStore (string key, map event) {
-    string value = (boolean)UI::QueryWidget (`id (key), `Value)
-	? "no"
-	: "yes";
-    PowerManagement::global_settings["DISABLE_USER_SUSPEND2DISK"] = value;
+    string value = (boolean)UI::QueryWidget (`id (key), `Value) ? "desktop-console" : "";
+    PowerManagement::SetPermission("hal-power-hibernate", value);
 }
 
 /**
@@ -233,9 +229,9 @@ define map<string,any> getEnableSTDWidget () {
 define void EnableSTRInit (string key) {
     if (! UI::WidgetExists (`id ("enable_std")))
 	UI::SetFocus (`id (key));
-    string value = PowerManagement::global_settings
-	["DISABLE_USER_SUSPEND2RAM"]:"yes";
-    UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+
+    UI::ChangeWidget (`id (key), `Value, PowerManagement::GetPermission("hal-power-suspend") == "desktop-console");
+
     if (PowerManagement::ACPI ()
 	&& ! contains (PowerManagement::ACPIModes (), "S3"))
     {
@@ -249,10 +245,8 @@ define void EnableSTRInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void EnableSTRStore (string key, map event) {
-    string value = (boolean)UI::QueryWidget (`id (key), `Value)
-	? "no"
-	: "yes";
-    PowerManagement::global_settings["DISABLE_USER_SUSPEND2RAM"] = value;
+    string value = (boolean)UI::QueryWidget (`id (key), `Value) ? "desktop-console" : "";
+    PowerManagement::SetPermission("hal-power-suspend", value);
 }
 
 /**
@@ -326,9 +320,9 @@ map<string,any> getSuspendPreword () {
 define void EnableStandbyInit (string key) {
     if (! UI::WidgetExists (`id ("enable_std")))
 	UI::SetFocus (`id (key));
-    string value = PowerManagement::global_settings
-	["DISABLE_USER_STANDBY"]:"yes";
-    UI::ChangeWidget (`id (key), `Value, tolower (value) == "no");
+
+    UI::ChangeWidget (`id (key), `Value, PowerManagement::GetPermission("hal-power-standby") == "desktop-console");
+
     if (PowerManagement::ACPI ()
 	&& ! contains (PowerManagement::ACPIModes (), "S1"))
     {
@@ -342,10 +336,8 @@ define void EnableStandbyInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void EnableStandbyStore (string key, map event) {
-    string value = (boolean)UI::QueryWidget (`id (key), `Value)
-	? "no"
-	: "yes";
-    PowerManagement::global_settings["DISABLE_USER_STANDBY"] = value;
+    string value = (boolean)UI::QueryWidget (`id (key), `Value) ? "desktop-console" : "";
+    PowerManagement::SetPermission("hal-power-standby", value);
 }
 
 /**
@@ -394,10 +386,6 @@ define map<string,any> getEnableStandbyWidget () {
  */
 symbol OtherSettingsMenuButtonHandle (string key, map event) {
     any id = event["ID"]:nil;
-    if (id == "battery_warning_button")
-	return `battery;
-    if (id == "acpi_settings_button")
-	return `buttons;
     if (id == "enable_suspend_button")
 	return `enable_suspend;
     return nil;
@@ -414,18 +402,12 @@ map<string,any> getOtherSettingsMenuButton () {
 	    // menu button
 	    _("Other Settings..."),
 	    [
-		`item (`id ("battery_warning_button"),
-		    _("Batt&ery Warning...")),
-		`item (`id ("acpi_settings_button"),
-		    _("AC&PI Settings...")),
 		`item (`id ("enable_suspend_button"),
 		    _("&Suspend Permissions...")),
 	    ]),
 	"help" : HELPS["other_settings_menu_button"]:"",
 	"handle" : OtherSettingsMenuButtonHandle,
 	"handle_events" : [
-	    "battery_warning_button",
-	    "acpi_settings_button",
 	    "enable_suspend_button",
 	],
     ];
@@ -991,104 +973,6 @@ define map<string,any> getCoolingPolicyWidget () {
     ];
 }
 
-// CPU settings widget
-
-/**
- * Handle function of a widget
- * @param key string widget id
- * @param event map event that will be handled
- * @return symbol for wizard sequencer
- */
-define symbol CpuHandle (string key, map event) {
-    boolean enabled = (boolean)UI::QueryWidget (`id (`allow_throt), `Value);
-    UI::ChangeWidget (`id (`max_throt), `Enabled, enabled);
-    UI::ChangeWidget (`id (`always_throt), `Enabled, enabled);
-    return nil;
-}
-
-/**
- * Init function of a widget
- * @param key string widget id
- */
-define void CpuInit (string key) {
-    UI::ChangeWidget (`id (`scaling), `Value,
-	PowerManagement::current_scheme["CPUFREQUENCY"]:"dynamic");
-    UI::ChangeWidget (`id (`allow_throt), `Value,
-	PowerManagement::current_scheme["ALLOW_THROTTLING"]:"yes" != "no");
-    UI::ChangeWidget (`id (`max_throt), `Value, tointeger (
-	PowerManagement::current_scheme["MAX_THROTTLING"]:"50"));
-    UI::ChangeWidget (`id (`always_throt), `Value,
-	PowerManagement::current_scheme["ALWAYS_THROTTLE"]:"no" != "no");
-    UI::ChangeWidget (`id (`ignore_nice), `Value,
-	PowerManagement::current_scheme["CONSIDER_NICE"]:"no" == "no");
-    CpuHandle (key, $[]);
-}
-
-/**
- * Store settings of a widget
- * @param key string widget id
- * @param event map event that caused storing of widget settings
- */
-define void CpuStore (string key, map event) {
-    PowerManagement::current_scheme["CPUFREQUENCY"]
-	= (string)UI::QueryWidget (`id (`scaling), `Value);
-    PowerManagement::current_scheme["ALLOW_THROTTLING"]
-	= (boolean)UI::QueryWidget (`id (`allow_throt), `Value) ? "yes" : "no";
-    PowerManagement::current_scheme["MAX_THROTTLING"]
-	= sformat ("%1", (integer)UI::QueryWidget (`id (`max_throt), `Value));
-    PowerManagement::current_scheme["ALWAYS_THROTTLE"]
-	= (boolean)UI::QueryWidget (`id (`always_throt), `Value) ? "yes" : "no";
-    PowerManagement::current_scheme["CONSIDER_NICE"]
-	= (boolean)UI::QueryWidget (`id (`ignore_nice), `Value) ? "no" : "yes";
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getCpuWidget () {
-    return $[
-	"widget" : `custom,
-	// frame
-	"custom_widget" : `Frame (_("CPU"), `VBox (
-	    `VStretch (),
-	    `ComboBox (`id (`scaling),
-		// combo box
-		_("&Frequency Scaling"),
-		[
-		    // combo box item
-		    `item (`id ("performance"), _("Maximum Performance")),
-		    // combo box item
-		    `item (`id ("powersave"), _("Maximum Energy Saving")),
-		    // combo box item
-		    `item (`id ("dynamic"), _("Dynamic Frequency Scaling")),
-		]),
-	    `VStretch (),
-	    `HBox (
-		`Left (`VBox (
-		    `Label (" "),
-		    `CheckBox (`id (`allow_throt), `opt (`hstretch, `notify),
-			// check box
-			_("&Allow Throttling"))
-		)),
-		// integer field
-		`IntField (`id (`max_throt), _("&Max. %"), 0, 100, 50)
-	    ),
-	    `VSpacing (0.3),
-	    // check box
-	    `Left (`CheckBox (`id (`always_throt), _("A&lways Throttle"))),
-	    `VSpacing (0.3),
-	    // check box
-	    `Left (`CheckBox (`id (`ignore_nice), _("&Ignore Niced Processes"))),
-	    `VStretch ()
-	)),
-	"init" : CpuInit,
-	"store" : CpuStore,
-	"handle" : CpuHandle,
-	"help" : HELPS["cpu"]:"",
-    ];
-}
-
 // allow screen saver widget
 
 /**
@@ -1343,7 +1227,6 @@ map<string,map<string,any> > widgets = $[
     "scheme_descr" : getSchemeDescrWidget (),
     "hard_disk" : getHardDiskWidget (),
     "cooling_policy" : getCoolingPolicyWidget (),
-    "cpu" : getCpuWidget (),
     "screensaver" : getScreensaverWidget (),
     "dpms" : getDpmsWidget (),
 //    "suspend_timeout" : getSuspendTimeoutWidget ()
