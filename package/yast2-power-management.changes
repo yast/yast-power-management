@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Oct 26 15:35:14 CEST 2006 - lslezak@suse.cz
+
+- UI change - use a push button instead of the menu button with
+  just one item, the help text has been adapted (#215280)
+- 2.14.1
+
+-------------------------------------------------------------------
 Mon Oct 23 17:33:05 CEST 2006 - lslezak@suse.cz
 
 - adapted to the new powermanagement implementation (fate #301180,

@@ -395,16 +395,10 @@ symbol OtherSettingsMenuButtonHandle (string key, map event) {
  * Get description map of a widget
  * @return a map widget description map
  */
-map<string,any> getOtherSettingsMenuButton () {
+map<string,any> getOtherSettingsButton () {
     return $[
 	"widget" : `custom,
-	"custom_widget" : `MenuButton (`id ("other_settings_menu_button"),
-	    // menu button
-	    _("Other Settings..."),
-	    [
-		`item (`id ("enable_suspend_button"),
-		    _("&Suspend Permissions...")),
-	    ]),
+	"custom_widget" : `PushButton (`id("enable_suspend_button"), _("&Suspend Permissions...")),
 	"help" : HELPS["other_settings_menu_button"]:"",
 	"handle" : OtherSettingsMenuButtonHandle,
 	"handle_events" : [
@@ -1220,7 +1214,7 @@ map<string,map<string,any> > widgets = $[
     "enable_str" : getEnableSTRWidget (),
     "enable_standby" : getEnableStandbyWidget (),
     "str_standby_additional_info" : getStrStandbyAdditionalHelp (),
-    "other_settings_menu_button" : getOtherSettingsMenuButton (),
+    "other_settings_menu_button" : getOtherSettingsButton (),
     "scheme_selection" : getSchemeSelectionWidget (),
     "schemes_list" : getSchemesListWidget (),
     "scheme_name" : getSchemeNameWidget (),
