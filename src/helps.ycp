@@ -111,9 +111,9 @@ To adjust energy saving schemes, delete existing ones, or create new ones,
 use <b>Edit Schemes</b>.</p>"),
 
     // Main dialog help 4/5
-    "other_settings_menu_button" : _("<p><b><big>Other Settings</big></b><br>
+    "other_settings_menu_button" : _("<p><b><big>Permissions</big></b><br>
 To adjust whether users are allowed to switch the computer to the standby or
-suspend mode, use <b>Other Settings</b>.</p>\n")+
+suspend mode, use <b>Suspend Permissions</b> button.</p>\n")+
 
     // Main dialog help 5/5
 _("<p>Beginning with openSUSE 10.2, a lot of configuration options have been
