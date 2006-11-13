@@ -324,9 +324,9 @@ global boolean Read() {
     });
 
     // Read permission settings here
-    string std_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-hibernate.privilege".Privilege.RequiredPrivileges);
-    string str_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-suspend.privilege".Privilege.RequiredPrivileges);
-    string standby_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-standby.privilege".Privilege.RequiredPrivileges);
+    string std_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-hibernate.privilege".Privilege.SufficientPrivileges);
+    string str_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-suspend.privilege".Privilege.SufficientPrivileges);
+    string standby_permission = (string)SCR::Read(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-standby.privilege".Privilege.SufficientPrivileges);
 
     y2milestone("Required privilege for Suspend to disk: %1", std_permission);
     y2milestone("Required privilege for Suspend to RAM: %1", str_permission);
@@ -504,22 +504,22 @@ next }
 
     if (permission != nil)
     {
-	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-hibernate.privilege: RequiredPrivileges=%1", permission);
-	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-hibernate.privilege".Privilege.RequiredPrivileges, permission);
+	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-hibernate.privilege: SufficientPrivileges=%1", permission);
+	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-hibernate.privilege".Privilege.SufficientPrivileges, permission);
     }
 
     permission = global_permissions["hal-power-suspend"]:nil;
     if (permission != nil)
     {
-	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-suspend.privilege: RequiredPrivileges=%1", permission);
-	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-suspend.privilege".Privilege.RequiredPrivileges, permission);
+	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-suspend.privilege: SufficientPrivileges=%1", permission);
+	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-suspend.privilege".Privilege.SufficientPrivileges, permission);
     }
 
     permission = global_permissions["hal-power-standby"]:nil;
     if (permission != nil)
     {
-	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-standby.privilege: RequiredPrivileges=%1", permission);
-	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-standby.privilege".Privilege.RequiredPrivileges, permission);
+	y2milestone("Writing /etc/PolicyKit/privilege.d/hal-power-standby.privilege: SufficientPrivileges=%1", permission);
+	SCR::Write(.etc.policykit.value."/etc/PolicyKit/privilege.d/hal-power-standby.privilege".Privilege.SufficientPrivileges, permission);
     }
 
     // flush the changes
