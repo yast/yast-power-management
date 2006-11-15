@@ -14,6 +14,7 @@ textdomain "power-management";
 import "Label";
 import "Popup";
 import "PowerManagement";
+import "String";
 
 include "power-management/helps.ycp";
 include "power-management/misc.ycp";
@@ -761,11 +762,12 @@ define void SchemeNameStore (string key, map event) {
     if (original_scheme_name == "")
     {
 	string scheme_id = new_name;
-	scheme_id = filterchars (scheme_id, "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	// allow only ASCII characters + numbers in the file name
+	scheme_id = filterchars (scheme_id, String::CAlnum());
 	if (scheme_id == "")
 	    scheme_id = "user";
 	list<string> ids = maplist (map s, PowerManagement::current_schemes, {
-	    return s["_scheme_key"]:"";
+	    return s["_scheme_id"]:"";
 	});
 	if (contains (ids, scheme_id))
 	{

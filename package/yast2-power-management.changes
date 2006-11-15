@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Nov 15 13:01:54 CET 2006 - lslezak@suse.cz
+
+- fixed check for already existing scheme, do not overwrite
+  existing schema (#218656)
+
+-------------------------------------------------------------------
 Thu May 25 14:40:46 CEST 2006 - jsrain@suse.cz
 
 - do not restart powersaved during autoinstallation (#177706)
