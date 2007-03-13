@@ -26,4 +26,5 @@ Summary:	Configuration of power-management
 @moduledir@/PowerManagement.*
 @desktopdir@/power-management.desktop
 @scrconfdir@/*
+@schemadir@/autoyast/rnc/power-management.rnc
 %doc @docdir@
