@@ -16,6 +16,7 @@ X-SuSE-YaST-AutoInstClonable=true
 X-SuSE-YaST-Geometry=
 X-SuSE-YaST-SortKey=
 X-SuSE-YaST-AutoInstResource=power-management
+X-SuSE-YaST-AutoInstSchema=power-management.rnc
 
 Icon=yast-power-management
 Exec=/sbin/yast2 power-management 
