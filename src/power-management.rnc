@@ -1,0 +1,38 @@
+default namespace = "http://www.suse.com/1.0/yast2ns"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace config = "http://www.suse.com/1.0/configns"
+
+power-management = element power-management {
+    element global_settings {
+        element AC_SCHEME { text }? &
+        element BATTERY_CRITICAL { text }? &
+        element BATTERY_LOW { text }? &
+        element BATTERY_SCHEME { text }? &
+        element BATTERY_WARNING { text }? &
+        element DISABLE_USER_STANDBY { text }? &
+        element DISABLE_USER_SUSPEND2DISK { text }? &
+        element DISABLE_USER_SUSPEND2RAM { text }? &
+        element EVENT_BATTERY_CRITICAL { text }? &
+        element EVENT_BATTERY_LOW { text }? &
+        element EVENT_BATTERY_WARNING { text }? &
+        element EVENT_BUTTON_LID_CLOSED { text }? &
+        element EVENT_BUTTON_POWER { text }? &
+        element EVENT_BUTTON_SLEEP { text }?
+    }? &
+    element schemes {
+        LIST,
+        element schema {
+            element ALLOW_THROTTLING { text }? &
+            element ALWAYS_THROTTLE { text }? &
+            element CONSIDER_NICE { text }? &
+            element COOLING_POLICY { text }? &
+            element CPUFREQUENCY { text }? &
+            element DISK_ACOUSTIC { text }? &
+            element DISK_STANDBY_MODE { text }? &
+            element MAX_THROTTLING { text }? &
+            element SCHEME_DESCRIPTION { text }? &
+            element SCHEME_NAME { text }?
+        }*
+    }?
+}
+

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Mar 13 14:25:01 CET 2007 - jsrain@suse.cz
+
+- added the .rnc file (#253599)
+- 2.15.0
+
+-------------------------------------------------------------------
 Wed Nov 15 13:01:54 CET 2006 - lslezak@suse.cz
 
 - fixed check for already existing scheme, do not overwrite
