@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri May 25 11:44:48 CEST 2007 - jsrain@suse.cz
+
+- removed translations from .desktop-file (#271209)
+
+-------------------------------------------------------------------
 Tue Mar 13 14:25:01 CET 2007 - jsrain@suse.cz
 
 - added the .rnc file (#253599)
