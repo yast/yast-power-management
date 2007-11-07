@@ -15,6 +15,7 @@
 module "PowerManagement";
 textdomain "power-management";
 
+import "Encoding";
 import "Mode";
 import "PackageSystem";
 import "Progress";
@@ -608,6 +609,7 @@ global string TranslatePowersaveText (string text) {
 	return text;
     }
     string translated = out["stdout"]:"";
+    translated = (string)UI::Recode (Encoding::console, "UTF-8", translated);
     return translated;
 }
 

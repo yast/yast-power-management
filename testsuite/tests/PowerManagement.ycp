@@ -3,7 +3,12 @@
 // testedfiles: PowerManagement.ycp
 
 include "testsuite.ycp";
-TESTSUITE_INIT([], nil);
+map EXEC = $[
+    "target" : $[
+	"bash_output" : $[],
+    ],
+];
+TESTSUITE_INIT([$[], $[], EXEC,], nil);
 
 import "PowerManagement";
 
