@@ -26,10 +26,7 @@ include "power-management/misc.ycp";
 define boolean PrintHandler (map options) {
     boolean print_all = false;
     boolean printed = false;
-    if (! (haskey (options, "battery")
-	|| haskey (options, "buttons")
-	|| haskey (options, "allowed_actions")
-	|| haskey (options, "selected_schemes")
+    if (! (haskey (options, "selected_scheme")
 	|| haskey (options, "scheme")))
     {
 	print_all = true;
@@ -61,13 +58,13 @@ define boolean PrintHandler (map options) {
 	    }
 	});
     }
-    if (print_all || haskey (options, "selected_schemes"))
+    if (print_all || haskey (options, "selected_scheme"))
     {
 	if (printed)
 	    CommandLine::Print ("\n");
 	// header for commandline output
 	CommandLine::Print (_("Power Saving Schemes:\n"));
-	string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
+	string scheme = PowerManagement::global_settings["SCHEME"]:"";
 	if (scheme == "")
 	    scheme = "performance";
 	foreach (map<string,string> s, PowerManagement::schemes, {
@@ -78,19 +75,7 @@ define boolean PrintHandler (map options) {
 	    }
 	});
 	scheme = PowerManagement::TranslateSchemeName (scheme);
-	CommandLine::Print (sformat (_("AC Scheme: %1"), scheme));
-	scheme = PowerManagement::global_settings["BATTERY_SCHEME"]:"";
-	if (scheme == "")
-	    scheme = "performance";
-	foreach (map<string,string> s, PowerManagement::schemes, {
-	    if (s["_scheme_id"]:"" == scheme)
-	    {
-		scheme = s["SCHEME_NAME"]:scheme;
-		return;
-	    }
-	});
-	scheme = PowerManagement::TranslateSchemeName (scheme);
-	CommandLine::Print (sformat (_("Battery Scheme: %1"), scheme));
+	CommandLine::Print (sformat (_("Selected Scheme: %1"), scheme));
 	list<string> available = maplist (map<string,string> s,
 	    PowerManagement::schemes,
 	{
@@ -102,83 +87,6 @@ define boolean PrintHandler (map options) {
 	    mergestring (available, ", ")));
 	printed = true;
     }
-    if (print_all || haskey (options, "battery"))
-    {
-	if (printed)
-	    CommandLine::Print ("\n");
-	// header for commandline output
-	CommandLine::Print (_("Battery Capacity Feedback:\n"));
-	map<string,string> texts = $[
-	    // cmdline about battery feedback, %1 is capacity level,
-	    // %2 is the action if level reached (e.g., suspend to disk)
-	    "WARNING" : _("Warning Capacity: %1%%, Action: %2"),
-	    // cmdline about battery feedback, %1 is capacity level,
-	    // %2 is the action if level reached (e.g., suspend to disk)
-	    "LOW" : _("Low Capacity: %1%%, Action: %2"),
-	    // cmdline about batter feedback, %1 is capacity level,
-	    // %2 is the action if level reached (e.g., suspend to disk)
-	    "CRITICAL" : _("Critical Capacity: %1%%, Action: %2"),
-	];
-	foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	    string format = texts[w]:"";
-	    string event = GetBatteryStatusAction (w);
-	    event = acpi_event_labels[event]:event;
-	    CommandLine::Print (sformat (format,
-		GetBatteryStatusCapacity (w),
-		event));
-	});
-	printed = true;
-    }
-    if (print_all || haskey (options, "buttons"))
-    {
-	if (printed)
-	    CommandLine::Print ("\n");
-	// header for commandline output
-	CommandLine::Print (_("ACPI Button Actions:\n"));
-	map<string,string> texts = $[
-	    // cmdline information about actions to be done if event occurs
-	    // %1 is the action (e.g., suspend to disk)
-	    "POWER" : _("Power Button Action: %1"),
-	    // cmdline information about actions to be done if event occurs
-	    // %1 is the action (e.g., suspend to disk)
-	    "SLEEP" : _("Sleep Button Action: %1"),
-	    // cmdline information about actions to be done if event occurs
-	    // %1 is the action (e.g., suspend to disk)
-	    "LID_CLOSED" : _("Laptop Lid Closed Action: %1"),
-	];
-	foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	    string format = texts[w]:"";
-	    string event = GetAcpiButtonAction (w);
-	    event = acpi_event_labels[event]:event;
-	    CommandLine::Print (sformat (format, event));
-	});
-	printed = true;
-    }
-    if (print_all || haskey (options, "allowed_actions"))
-    {
-	if (printed)
-	    CommandLine::Print ("\n");
-	// header for commandline output
-	CommandLine::Print (_("Actions Allowed for Users:\n"));
-	map <string,string> texts = $[
-	    // cmdline information about operation permission, %1 = Yes or No
-	    "SUSPEND2DISK" : _("Suspend to Disk Allowed: %1"),
-	    // cmdline information about operation permission, %1 = Yes or No
-	    "SUSPEND2RAM" : _("Suspend to RAM Allowed: %1"),
-	    // cmdline information about operation permission, %1 = Yes or No
-	    "STANDBY" : _("Standby Allowed: %1"),
-	];
-	foreach (string w, ["SUSPEND2DISK", "SUSPEND2RAM", "STANDBY"], {
-	    string format = texts[w]:"";
-	    string allowed = GetActionAllowed (w)
-		// label to be put to messages like Suspend to Disk Allowed: %1
-		? _("Yes")
-		// label to be put to messages like Suspend to Disk Allowed: %1
-		: _("No");
-	    CommandLine::Print (sformat (format, allowed));
-	});
-	printed = true;
-    }
     return false;
 }
 
@@ -188,91 +96,24 @@ define boolean PrintHandler (map options) {
   * @return boolean true if settings have been changed
   */
 boolean SetHandler (map options) {
-    if (haskey (options, "battery_feedback"))
+    if (haskey (options, "scheme"))
     {
-	if (! haskey (options, "capacity"))
-	{
-	    // error report
-	    CommandLine::Error (_("Battery capacity not specified."));
-	    return false;
-	}
-	if (! haskey (options, "action"))
-	{
-	    // error report
-	    CommandLine::Error (_("Action not specified."));
-	    return false;
-	}
-	string level = toupper (options["battery_feedback"]:"");
-	string action = options["action"]:"";
-	integer capacity = options["capacity"]:0;
-	if (capacity < 0 || capacity > 100)
-	{
-	    // error report
-	    CommandLine::Error (_("Capacity must be higher than 0%% and lower than 100%%."));
-	    return false;
-	}
-	SetBatteryStatusAction (level, action);
-	SetBatteryStatusCapacity (level, capacity);
-	return true;
-    }
-    if (haskey (options, "button"))
-    {
-	if (! haskey (options, "action"))
-	{
-	    // error report
-	    CommandLine::Error (_("Action not specified."));
-	    return false;
-	}
-	string button = toupper (options["button"]:"");
-	string action = options["action"]:"";
-	SetAcpiButtonAction (button, action);
-	return true;
-    }
-    if (haskey (options, "operation"))
-    {
-	if (! haskey (options, "allowed"))
-	{
-	    // error report
-	    CommandLine::Error (_("Specify whether the operation should be allowed."));
-	    return false;
-	}
-	string operation = toupper (options["operation"]:"");
-	boolean allowed = options["allowed"]:false;
-	SetActionAllowed (operation, allowed);
-	return true;
-    }
-    if (haskey (options, "ac_scheme") || haskey (options, "battery_scheme"))
-    {
-	string ac = options["ac_scheme"]:"";
-	string bat = options["battery_scheme"]:"";
-	string ac_id = nil;
-	string bat_id = nil;
+	string scheme = options["scheme"]:"";
+	string scheme_id = nil;
 	boolean ret = false;
 	foreach (map<string,string> s, PowerManagement::schemes, {
-	    if (s["SCHEME_NAME"]:nil == ac)
-		ac_id = s["_scheme_id"]:"";
-	    if (s["SCHEME_NAME"]:nil == bat)
-		bat_id = s["_scheme_id"]:"";
+	    if (s["SCHEME_NAME"]:nil == scheme)
+		scheme_id = s["_scheme_id"]:"";
 	});
-	if (bat_id != nil)
+	if (scheme_id != nil)
 	{
-	    PowerManagement::global_settings["BATTERY_SCHEME"] = bat_id;
+	    PowerManagement::global_settings["SCHEME"] = scheme_id;
 	    ret = true;
 	}
-	else if (bat != "")
+	else if (scheme != "")
 	{
 	    // error report
-	    CommandLine::Error (_("Specified battery scheme not found."));
-	}
-	if (ac_id != nil)
-	{
-	    PowerManagement::global_settings["AC_SCHEME"] = ac_id;
-	    ret = true;
-	}
-	else if (ac != "")
-	{
-	    // error report
-	    CommandLine::Error (_("Specified AC scheme not found."));
+	    CommandLine::Error (_("Specified scheme not found."));
 	}
 	return ret;
     }
@@ -385,64 +226,13 @@ map cmdline = $[
 	    // command line help text for an option
 	    "help"	: _("Display only specified scheme"),
 	],
-	"battery" : $[
+	"selected_scheme" : $[
 	    // command line help text for an option
-	    "help"	: _("Display only battery feedback configuration"),
+	    "help"	: _("Display only scheme selected for being used"),
 	],
-	"buttons" : $[
-	    // command line help text for an option
-	    "help"	: _("Display only ACPI button configuration"),
-	],
-	"allowed_actions" : $[
-	    // command line help text for an option
-	    "help"	: _("Display only actions allowed for users"),
-	],
-	"selected_schemes" : $[
-	    // command line help text for an option
-	    "help"	: _("Display only schemes selected for AC and battery power"),
-	],
-	"battery_feedback" : $[
-	    // command line help text for an option
-	    "help"	: _("The battery capacity level"),
-	    "type"	: "enum",
-	    "typespec"	: ["warning", "low", "critical"],
-	],
-	"capacity" : $[
-	    // command line help text for an option
-	    "help"	: _("The capacity of the battery for the level (in percent)"),
-	    "type"	: "integer",
-	],
-	"action" : $[
-	    // command line help text for an option
-	    "help"	: _("The action to perform when the specified capacity level is reached"),
-	    "type"	: "enum",
-	    "typespec"	: acpi_actions,
-	],
-	"button" : $[
-	    // command line help text for an option
-	    "help"	: _("The ACPI button to set the action for"),
-	    "type"	: "enum",
-	    "typespec"	: ["power", "sleep", "lid_closed"],
-	],
-	"operation" : $[
-	    // command line help text for an option
-	    "help"	: _("The action to perform when the specified ACPI button is pressed"),
-	    "type"	: "enum",
-	    "typespec"	: ["suspend2disk", "suspend2ram", "standby"],
-	],
-	"allowed" : $[
-	    // command line help text for an option
-	    "help"	: _("Sets whether the specified operation should be allowed for users"),
-	    "type"	: "boolean",
-	],
-	"ac_scheme" : $[
+	"scheme" : $[
 	    // command line help text for an option
 	    "help"	: _("Scheme to use when running on AC power source"),
-	    "type"	: "string",
-	],
-	"battery_scheme" : $[
-	    // command line help text for an option
-	    "help"	: _("Scheme to use when running on battery power"),
 	    "type"	: "string",
 	],
 	"name" : $[
@@ -490,11 +280,8 @@ map cmdline = $[
     ],
 
     "mappings"      : $[
-	"print"		: ["battery", "buttons", "allowed_actions",
-				"selected_schemes", "scheme", ],
-	"set"		: ["battery_feedback", "capacity", "action", "button",
-				"operation", "allowed", "ac_scheme",
-				"battery_scheme" ],
+	"print"		: [ "selected_scheme", "scheme", ],
+	"set"		: [ "scheme", ],
 	"scheme"	: ["add", "edit", "delete", "name", "description",
 				"clone", "option", "value", "rename"],
     ],

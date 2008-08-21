@@ -36,11 +36,7 @@ define boolean GuiHandler () {
     return true;
 }
 
-any ret = GuiHandler ();
-
-
-
-//include "power-management/commandline.ycp";
+include "power-management/commandline.ycp";
 
 
 /*map cmdline_description = $[
@@ -59,8 +55,7 @@ any ret = GuiHandler ();
 ];*/
 
 /* main ui function */
-//any ret = PowerManagementSequence ();
-//any ret = CommandLine::Run(cmdline);
+any ret = CommandLine::Run(cmdline);
 y2debug("ret=%1", ret);
 
 /* Finish */

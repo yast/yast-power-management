@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Aug 21 15:35:43 CEST 2008 - jsrain@suse.cz
+
+- updated to use pm-profiler for servers (fate #302521)
+- 2.17.0
+
+-------------------------------------------------------------------
 Fri May 25 11:44:48 CEST 2007 - jsrain@suse.cz
 
 - removed translations from .desktop-file (#271209)

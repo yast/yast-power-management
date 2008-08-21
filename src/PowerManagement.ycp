@@ -62,19 +62,9 @@ global list<map<string,string> > schemes = [];
 
 global map<string,string> global_settings = $[];
 
-map<string,string> global_permissions = $[];
-list<string> permissions_actions =
-[
-    "hal-power-hibernate",	// suspend to disk
-    "hal-power-suspend",	// suspend to ram
-    "hal-power-standby"		// standby
-];
-
 global map<string,string> new_schemes = $[];
 
 map<string,string> default_values = $[];
-
-string apm_acpi = "";
 
 /* not needed any more, getting from kpowersave package
  global map scheme_names = $[
@@ -99,8 +89,6 @@ global map scheme_desciptions = $[
 	// pwer saving scheme description, contents of text entry
 	_("Scheme optimized to let machine run as quietly as possible."),
 ];*/
-
-list<string> acpi_modes = nil;
 
 
 /**
