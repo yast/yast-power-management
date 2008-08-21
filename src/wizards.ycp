@@ -79,8 +79,6 @@ symbol MainSequence() {
 
     map aliases = $[
 	"main"			:   ``( MainDialog ()),
-	"acpi_buttons"		:   ``( ACPIButtonsDialog ()),
-	"enable_suspend"	:   ``( EnableSuspendDialog ()),
 	"schemes_sequence"	:   ``( SchemesSequence ()),
     ];
 
@@ -90,18 +88,8 @@ symbol MainSequence() {
 	    `abort		: `abort,
 	    `next		: `next,
 	    `schemes_edit	: "schemes_sequence",
-	    `buttons		: "acpi_buttons",
-	    `enable_suspend	: "enable_suspend",
 	],
 	"schemes_sequence" : $[
-	    `abort		: `abort,
-	    `next		: "main",
-	],
-	"acpi_buttons" : $[
-	    `abort		: `abort,
-	    `next		: "main",
-	],
-	"enable_suspend" : $[
 	    `abort		: `abort,
 	    `next		: "main",
 	],

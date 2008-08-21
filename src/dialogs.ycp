@@ -103,22 +103,15 @@ symbol WriteDialog() {
 symbol MainDialog () {
     y2milestone ("Running main dialog");
 
-    term contents = `HBox (`HSpacing (2), `VBox (
+    term contents = `HBox (`HStretch (), `VBox (
 	`VStretch (),
 	"scheme_selection",
-	`VStretch (),
-	`HBox (
-	    `HStretch (),
-	    "other_settings_menu_button",
-	    `HStretch ()
-	),
 	`VStretch ()
-    ), `HSpacing (2));
+    ), `HStretch ());
 
     // dialog caption
     string caption = _("Power Management Settings");
     list<string> widget_names = ["scheme_selection",
-	"other_settings_menu_button",
     ];
 
     list<map<string,any> > w = CWM::CreateWidgets (widget_names, widgets);
@@ -129,109 +122,6 @@ symbol MainDialog () {
     Wizard::HideBackButton();
     Wizard::SetAbortButton(`abort, Label::CancelButton () );
     return CWM::Run (w, $[`abort : ReallyAbort ]);
-}
-
-/**
- * Run dialog for ACPI buttons behavior configuration
- * @return symbol for wizard sequencer
- */
-symbol ACPIButtonsDialog () {
-    y2milestone ("Running ACPI buttons dialog");
-
-    if (! (Mode::config () || PowerManagement::ACPI ()))
-    {
-	// message popup
-	Popup::Message (_("Buttons can be configured only for ACPI. Your
-system probably does not support ACPI and uses APM."));
-	return `back;
-    }
-
-    term contents = `HBox (`HStretch (), `VBox (
-	`VStretch(),
-	"acpi_buttons",
-	`VStretch ()
-    ), `HStretch ());
-
-    // dialog caption
-    string caption = _("ACPI Buttons");
-
-    return CWM::ShowAndRun ($[
-	"widget_names" : ["acpi_buttons"],
-	"widget_descr" : widgets,
-	"contents" : contents,
-	"caption" : caption,
-	"back_button" : Label::BackButton (),
-	"next_button" : Label::OKButton (),
-	"fallback_functions" : $[`abort : AskAbort ]
-    ]);
-}
-
-/**
- * Run dialog for battery warnings configuration
- * @return symbol for wizard sequencer
- */
-symbol BatteryWarningDialog () {
-    y2milestone ("Running battery warning dialog");
-
-    term contents = `HBox (`HStretch (), `VBox (
-	`VStretch(),
-	"battery_warning",
-	`VStretch ()
-    ), `HStretch ());
-
-    // dialog caption
-    string caption = _("Battery Capacity Feedback");
-
-    return CWM::ShowAndRun ($[
-	"widget_names" : ["battery_warning"],
-	"widget_descr" : widgets,
-	"contents" : contents,
-	"caption" : caption,
-	"back_button" : Label::BackButton (),
-	"next_button" : Label::OKButton (),
-	"fallback_functions" : $[`abort : AskAbort ]
-    ]);
-}
-
-/**
- * Run dialog for schemes configuration
- * @return symbol for wizard sequencer
- */
-symbol EnableSuspendDialog () {
-    y2milestone ("Running the suspend/standby allowing dialog");
-
-    term contents = `HBox (`HStretch (), `VBox (
-	`VStretch(),
-	// frame
-	`Frame (_("Power-Saving Modes to Allow"), `HBox (
-	    `HStretch (),
-	    `VBox (
-		`VStretch (),
-		`Left ("enable_std"),
-		`VStretch (),
-		`Left ("enable_str"),
-		`VStretch (),
-		`Left ("enable_standby"),
-		`VStretch ()
-	    ),
-	    `HStretch ()
-	)),
-	`VStretch ()
-    ), `HStretch ());
-
-    // dialog caption
-    string caption = _("Modes Permitted for Users");
-
-    return CWM::ShowAndRun ($[
-	"widget_names" : ["enable_std", "enable_str", "enable_standby",
-	    "str_standby_additional_info"],
-	"widget_descr" : widgets,
-	"contents" : contents,
-	"caption" : caption,
-	"back_button" : Label::BackButton (),
-	"next_button" : Label::OKButton (),
-	"fallback_functions" : $[`abort : AskAbort ]
-    ]);
 }
 
 /**
@@ -301,7 +191,7 @@ symbol SchemeDialog2 () {
 	`VStretch (),
 	"hard_disk",
 	`VStretch (),
-	"cooling_policy",
+	"cpu",
 	`VStretch ()
     ), `HStretch ());
 
@@ -309,7 +199,7 @@ symbol SchemeDialog2 () {
     string caption = _("Power Management Scheme Setup");
 
     return CWM::ShowAndRun ($[
-	"widget_names" : ["hard_disk", "cooling_policy"],
+	"widget_names" : ["hard_disk", "cpu"],
 	"widget_descr" : widgets,
 	"contents" : contents,
 	"caption" : caption,
@@ -318,54 +208,6 @@ symbol SchemeDialog2 () {
 	"fallback_functions" : $[`abort : AskAbort ]
     ]);
 }
-
-/**
- * Run dialog for single scheme configuration
- * @return symbol for wizard sequencer
- */
-symbol SchemeDialog3 () {
-    y2milestone ("Running single scheme management dialog part 3");
-
-    term contents = `HBox (`HStretch (), `VBox (
-	`VStretch (),
-	`Left ("screensaver"),
-	`VStretch (),
-	`Left ("dpms"),
-/*	// frame
-	// Display is a substantive (screen)
-	`Frame (_("Display Settings"), `HBox (
-	    `HSpacing (2),
-	    `VBox (
-		`VSpacing (1),
-		`Left ("allow_screensaver"),
-		`Left ("dpms"),
-		`VSpacing (1)
-	    ),
-	    `HSpacing (2)
-	)),
-	`VStretch (),
-	"suspend_timeout",*/
-	`VStretch ()
-    ), `HStretch ());
-
-    // dialog caption
-    string caption = _("Power Management Scheme Setup");
-
-    return CWM::ShowAndRun ($[
-	"widget_names" : [
-	    "screensaver",
-	    "dpms",
-//	    "suspend_timeout"
-	],
-	"widget_descr" : widgets,
-	"contents" : contents,
-	"caption" : caption,
-	"back_button" : Label::BackButton (),
-	"next_button" : Label::OKButton (),
-	"fallback_functions" : $[`abort : AskAbort ]
-    ]);
-}
-
 
 
 

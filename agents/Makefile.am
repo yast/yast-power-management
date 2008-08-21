@@ -5,7 +5,7 @@
 agent_SCRIPTS =
 
 scrconf_DATA =				\
-	cfg_powersave_global.scr	\
-	cfg_powersave_schemes.scr
+	etc_pm-profiler.scr		\
+	etc_pm-profiler_profiles.scr
 
 EXTRA_DIST = $(agent_SCRIPTS) $(scrconf_DATA)

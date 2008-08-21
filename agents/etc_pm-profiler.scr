@@ -1,0 +1,8 @@
+/*
+ */
+
+.etc.pm-profiler
+
+`ag_ini(
+  `SysConfigFile("/etc/pm-profiler.conf")
+)

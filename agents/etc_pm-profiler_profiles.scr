@@ -1,16 +1,7 @@
-.sysconfig.powersave.global
+.etc.pm-profiler.profiles
 
 `ag_ini(
-    `IniAgent(
-	[
-	    "/etc/sysconfig/powersave/battery",
-	    "/etc/sysconfig/powersave/common",
-	    "/etc/sysconfig/powersave/cpufreq",
-	    "/etc/sysconfig/powersave/events",
-	    "/etc/sysconfig/powersave/hdparm",
-	    "/etc/sysconfig/powersave/sleep",
-	    "/etc/sysconfig/powersave/thermal",
-	],
+    `IniAgent( [ "/etc/pm-profiler/*" ],
 	$[
 	    /* values at the top level, allow comments after value */
 	    "options"	: [ "global_values" ],
@@ -24,7 +15,7 @@
 	    ],
 	    /* matching rules */
 	    "rewrite"	: [
-		[ "/etc/sysconfig/powersave/(.*)", "/etc/sysconfig/powersave/%s" ],
+		[ "/etc/pm-profiler/(.*)", "/etc/pm-profiler/%s" ],
 	    ],
 	]
 ))

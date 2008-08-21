@@ -19,394 +19,6 @@ import "String";
 include "power-management/helps.ycp";
 include "power-management/misc.ycp";
 
-// battery warning widget
-
-/**
- * Init function of a widget
- * @param key string widget id
- */
-define void BatteryWarningInit (string key) {
-    foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	string widget = sformat ("A_%1", w);
-	string value = GetBatteryStatusAction (w);
-	UI::ChangeWidget (`id (widget), `Value, value);
-	integer i_value = GetBatteryStatusCapacity (w);
-	UI::ChangeWidget (`id (w), `Value, i_value);
-    });
-    UI::SetFocus (`id ("POWER"));
-}
-
-/**
- * Store settings of a widget
- * @param key string widget id
- * @param event map event that caused storing of widget settings
- */
-define void BatteryWarningStore (string key, map event) {
-    foreach (string w, ["WARNING", "LOW", "CRITICAL"], {
-	string widget = sformat ("A_%1", w);
-	string value = (string)UI::QueryWidget (`id (widget), `Value);
-	SetBatteryStatusAction (w, value);
-	integer i_value = (integer)UI::QueryWidget (`id (w), `Value);
-	SetBatteryStatusCapacity (w, i_value);
-    });
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getBatteryWarning () {
-    return $[
-	"widget" : `custom,
-	// frame
-	"custom_widget" : `Frame (_("Battery Capacity Feedback"), `HBox (
-	    `HSpacing (2),
-	    `VBox (
-		`VSpacing (2),
-		`IntField (`id ("WARNING"),
-		    `opt (`hstretch),
-		    // int field
-		    _("&Warning Capacity"),
-		    0, 100, 0),
-		`VSpacing (1),
-		`IntField (`id ("LOW"),
-		    `opt (`hstretch),
-		    // int field
-		    _("&Low Capacity"),
-		    0, 100, 0),
-                `VSpacing (1),
-                `IntField (`id ("CRITICAL"),
-                    `opt (`hstretch),
-		    // int field
-		    _("&Critical Capacity"),
-		    0, 100, 0),
-                `VSpacing (2)
-            ),
-            `HSpacing (2),
-	    `VBox (
-		`VSpacing (2),
-		`ComboBox (`id ("A_WARNING"),
-		    `opt (`hstretch),
-                    // combo box
-		    _("War&ning Level Action"),
-		    GetAcpiEventHandlers ()),
-		`VSpacing (1),
-		`ComboBox (`id ("A_LOW"),
-		    `opt (`hstretch),
-                    // combo box
-		    _("Low Level &Action"),
-                    GetAcpiEventHandlers ()),
-                `VSpacing (1),
-                `ComboBox (`id ("A_CRITICAL"),
-                    `opt (`hstretch),
-                    // combo box
-		    _("Cr&itical Level Action"),
-                    GetAcpiEventHandlers ()),
-                `VSpacing (2)
-            ),
-	    `HSpacing (2)
-	)),
-	"help" : HELPS["battery_warning"]:"",
-	"init" : BatteryWarningInit,
-	"store" : BatteryWarningStore,
-    ];
-}
-
-// acpi buttons widget
-
-/**
- * Init function of a widget
- * @param key string widget id
- */
-define void AcpiButtonsInit (string key) {
-    foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	string value = GetAcpiButtonAction (w);
-	UI::ChangeWidget (`id (w), `Value, value);
-    });
-    UI::ChangeWidget (`id ("POWER"), `Enabled,
-	PowerManagement::power_available);
-    UI::ChangeWidget (`id ("SLEEP"), `Enabled,
-	PowerManagement::sleep_available);
-    UI::ChangeWidget (`id ("LID_CLOSED"), `Enabled,
-	PowerManagement::lid_available);
-    UI::SetFocus (`id ("POWER"));
-}
-
-/**
- * Store settings of a widget
- * @param key string widget id
- * @param event map event that caused storing of widget settings
- */
-define void AcpiButtonsStore (string key, map event) {
-    foreach (string w, ["POWER", "SLEEP", "LID_CLOSED"], {
-	string value = (string)UI::QueryWidget (`id (w), `Value);
-	SetAcpiButtonAction (w, value);
-    });
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getAcpiButtonsWidget () ``{
-    return $[
-	"widget" : `custom,
-	// frame
-	"custom_widget" : `Frame (_("ACPI Button Configuration"), `HBox (
-	    `HSpacing (2),
-	    `VBox (
-		`VSpacing (2),
-		`ComboBox (`id ("POWER"),
-		    `opt (`hstretch),
-		    // combo box
-		    _("&Power Button"),
-		    GetAcpiEventHandlers ()),
-		`VSpacing (1),
-		`ComboBox (`id ("SLEEP"),
-		    `opt (`hstretch),
-		    // combo box
-		    _("&Sleep Button"),
-		    GetAcpiEventHandlers ()),
-		`VSpacing (1),
-		`ComboBox (`id ("LID_CLOSED"),
-		    `opt (`hstretch),
-		    // combo box
-		    _("&Laptop Lid Closing"),
-		    GetAcpiEventHandlers ()),
-		`VSpacing (2)
-	    ),
-	    `HSpacing (2)
-	)),
-	"help" : HELPS["acpi_buttons"]:"",
-	"init" : AcpiButtonsInit,
-	"store" : AcpiButtonsStore,
-    ];
-}
-
-// allowing/disallowing suspend to disk
-
-
-/**
- * Init function of a widget
- * @param key string widget id
- */
-define void EnableSTDInit (string key) {
-    UI::SetFocus (`id (key));
-    UI::ChangeWidget (`id (key), `Value, PowerManagement::GetPermission("hal-power-hibernate") == "desktop-console");
-}
-
-/**
- * Store settings of a widget
- * @param key string widget id
- * @param event map event that caused storing of widget settings
- */
-define void EnableSTDStore (string key, map event) {
-    string value = (boolean)UI::QueryWidget (`id (key), `Value) ? "desktop-console" : "";
-    PowerManagement::SetPermission("hal-power-hibernate", value);
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getEnableSTDWidget () {
-    return $[
-	"widget" : `checkbox,
-	// check box
-	"label" : _("Suspend to &Disk"),
-	"help" : HELPS["enable_std"]:"",
-	"init" : EnableSTDInit,
-	"store" : EnableSTDStore,
-    ];
-}
-
-// allowing/disallowing suspend to ram
-
-
-/**
- * Init function of a widget
- * @param key string widget id
- */
-define void EnableSTRInit (string key) {
-    if (! UI::WidgetExists (`id ("enable_std")))
-	UI::SetFocus (`id (key));
-
-    UI::ChangeWidget (`id (key), `Value, PowerManagement::GetPermission("hal-power-suspend") == "desktop-console");
-
-    if (PowerManagement::ACPI ()
-	&& ! contains (PowerManagement::ACPIModes (), "S3"))
-    {
-	UI::ChangeWidget (`id (key), `Enabled, false);
-    }
-}
-
-/**
- * Store settings of a widget
- * @param key string widget id
- * @param event map event that caused storing of widget settings
- */
-define void EnableSTRStore (string key, map event) {
-    string value = (boolean)UI::QueryWidget (`id (key), `Value) ? "desktop-console" : "";
-    PowerManagement::SetPermission("hal-power-suspend", value);
-}
-
-/**
- * Handle function of a widget
- * @param key string widget id
- * @param event map event that will be handled
- * @return symbol always nil
- */
-define symbol EnableSTRHandle (string key, map event) {
-    if ((boolean)UI::QueryWidget (`id (key), `Value))
-    {
-	// popup message
-	Popup::Message (_("Use caution because suspending the machine to RAM fails
-on many machines. See the help for details.
-"));
-    }
-    return nil;
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getEnableSTRWidget () {
-    return $[
-	"widget" : `checkbox,
-	// check box
-	"label" : _("&Suspend to RAM"),
-	"help" : HELPS["enable_str"]:"",
-	"init" : EnableSTRInit,
-	"store" : EnableSTRStore,
-	"opt" : [ `notify ],
-	"handle_events" : ["enable_str"],
-	"handle" : EnableSTRHandle,
-    ];
-}
-
-// warning related to STR and Standby
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getStrStandbyAdditionalHelp () {
-    return $[
-	"widget" : `empty,
-	"help" : HELPS["str_standby_additional_info"]:"",
-    ];
-}
-
-// common info for suspend/standby
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-map<string,any> getSuspendPreword () {
-    return $[
-	"widget" : `empty,
-	"help" : HELPS["suspend_preword"]:"",
-    ];
-}
-
-
-// allowing/disallowing standby
-
-/**
- * Init function of a widget
- * @param key string widget id
- */
-define void EnableStandbyInit (string key) {
-    if (! UI::WidgetExists (`id ("enable_std")))
-	UI::SetFocus (`id (key));
-
-    UI::ChangeWidget (`id (key), `Value, PowerManagement::GetPermission("hal-power-standby") == "desktop-console");
-
-    if (PowerManagement::ACPI ()
-	&& ! contains (PowerManagement::ACPIModes (), "S1"))
-    {
-	UI::ChangeWidget (`id (key), `Enabled, false);
-    }
-}
-
-/**
- * Store settings of a widget
- * @param key string widget id
- * @param event map event that caused storing of widget settings
- */
-define void EnableStandbyStore (string key, map event) {
-    string value = (boolean)UI::QueryWidget (`id (key), `Value) ? "desktop-console" : "";
-    PowerManagement::SetPermission("hal-power-standby", value);
-}
-
-/**
- * Handle function of a widget
- * @param key string widget id
- * @param event map event that will be handled
- * @return symbol always nil
- */
-define symbol EnableStandbyHandle (string key, map event) {
-    if ((boolean)UI::QueryWidget (`id (key), `Value))
-    {
-	// popup message
-	Popup::Message (_("Use caution because putting the machine to the standby state
-fails on many machines. See the help for details.
-"));
-    }
-    return nil;
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-define map<string,any> getEnableStandbyWidget () {
-    return $[
-	"widget" : `checkbox,
-	// check box
-	"label" : _("S&tandby Mode"),
-	"help" : HELPS["enable_standby"]:"",
-	"init" : EnableStandbyInit,
-	"store" : EnableStandbyStore,
-	"opt" : [ `notify ],
-	"handle_events" : ["enable_standby"],
-	"handle" : EnableStandbyHandle,
-    ];
-}
-
-
-// menu button for setting global options
-
-/**
- * Handle function of a widget
- * @param key string widget id
- * @param event map event that will be handled
- * @return symbol always nil
- */
-symbol OtherSettingsMenuButtonHandle (string key, map event) {
-    any id = event["ID"]:nil;
-    if (id == "enable_suspend_button")
-	return `enable_suspend;
-    return nil;
-}
-
-/**
- * Get description map of a widget
- * @return a map widget description map
- */
-map<string,any> getOtherSettingsButton () {
-    return $[
-	"widget" : `custom,
-	"custom_widget" : `PushButton (`id("enable_suspend_button"), _("&Suspend Permissions...")),
-	"help" : HELPS["other_settings_menu_button"]:"",
-	"handle" : OtherSettingsMenuButtonHandle,
-	"handle_events" : [
-	    "enable_suspend_button",
-	],
-    ];
-}
 
 // scheme selection widget
 
@@ -420,9 +32,14 @@ define symbol SchemeSelectionHandle (string key, map event) {
     any ev_id = event["ID"]:nil;
     if (ev_id == `schemes_edit)
 	return `schemes_edit;
-    if (ev_id == `ac_scheme || ev_id == `dc_scheme)
+    if (ev_id == `scheme)
     {
 	string current = (string)UI::QueryWidget (`id (ev_id), `Value);
+	if (current == "")
+	{
+	    UI::ChangeWidget (`id (`descr), `Value, _("Default system settings"));
+	    return nil;
+	}
 	string descr = "";
 	foreach (map s, PowerManagement::schemes, {
 	    if (s["_scheme_id"]:"" == current)
@@ -435,8 +52,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 	    // but without HTML tags!!!
 	    descr = _("No scheme description available");
 	}
-	UI::ChangeWidget (`id (ev_id == `ac_scheme ? `ac_descr : `dc_descr),
-	    `Value, descr);
+	UI::ChangeWidget (`id (`descr), `Value, descr);
     }
 
     return nil;
@@ -453,24 +69,15 @@ define void SchemeSelectionInit (string key) {
 	name = PowerManagement::TranslateSchemeName (name);
 	return `item (`id (id), name);
     });
-    UI::ReplaceWidget (`ac_scheme_rp,
-	`ComboBox (`id (`ac_scheme), `opt (`hstretch, `notify),
+    items = add (items, `item (`id (""), _("Default")));
+
+    UI::ReplaceWidget (`scheme_rp,
+	`ComboBox (`id (`scheme), `opt (`hstretch, `notify),
 	    // combo box
-	    _("&AC Powered"), items));
-    UI::ReplaceWidget (`dc_scheme_rp,
-	`ComboBox (`id (`dc_scheme), `opt (`hstretch, `notify),
-	    // combo box
-	    _("&Battery Powered"), items));
-    string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
-    if (scheme == "")
-	scheme = "performance";
-    UI::ChangeWidget (`id (`ac_scheme), `Value, scheme);
-    scheme = PowerManagement::global_settings["BATTERY_SCHEME"]:"";
-    if (scheme == "")
-	scheme = "performance";
-    UI::ChangeWidget (`id (`dc_scheme), `Value, scheme);
-    SchemeSelectionHandle (key, $["ID" : `ac_scheme ]);
-    SchemeSelectionHandle (key, $["ID" : `dc_scheme ]);
+	    _("&Selected Scheme"), items));
+    string scheme = PowerManagement::global_settings["SCHEME"]:"";
+    UI::ChangeWidget (`id (`scheme), `Value, scheme);
+    SchemeSelectionHandle (key, $["ID" : `scheme ]);
 }
 
 /**
@@ -479,10 +86,8 @@ define void SchemeSelectionInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void SchemeSelectionStore (string key, map event) {
-    PowerManagement::global_settings["BATTERY_SCHEME"]
-	= (string)UI::QueryWidget (`id (`dc_scheme), `Value);
-    PowerManagement::global_settings["AC_SCHEME"]
-	= (string)UI::QueryWidget (`id (`ac_scheme), `Value);
+    PowerManagement::global_settings["SCHEME"]
+	= (string)UI::QueryWidget (`id (`scheme), `Value);
 }
 
 /**
@@ -496,18 +101,11 @@ define map<string,any> getSchemeSelectionWidget () {
 	"custom_widget" : `Frame (_("Energy Saving Schemes"), `VBox (
 	    `HBox (
 		`HWeight (1, `VBox (
-		    `ReplacePoint (`id (`ac_scheme_rp),
-			`ComboBox (`id (`ac_scheme), `opt (`hstretch, `notify),
+		    `ReplacePoint (`id (`scheme_rp),
+			`ComboBox (`id (`scheme), `opt (`hstretch, `notify),
 			    // combo box
 			    _("&AC Powered"), [])),
-		    `RichText (`id (`ac_descr), `opt (`hstretch), "")
-		)),
-		`HWeight (1, `VBox (
-		    `ReplacePoint (`id (`dc_scheme_rp),
-			`ComboBox (`id (`dc_scheme), `opt (`hstretch, `notify),
-			    // combo box
-			    _("&Battery Powered"), [])),
-		    `RichText (`id (`dc_descr), `opt (`hstretch), "")
+		    `RichText (`id (`descr), `opt (`hstretch), "")
 		))
 	    ),
 	    `HBox (
@@ -520,7 +118,7 @@ define map<string,any> getSchemeSelectionWidget () {
 	)),
 	"init" : SchemeSelectionInit,
 	"handle" : SchemeSelectionHandle,
-	"handle_events" : [`schemes_edit, `ac_scheme, `dc_scheme],
+	"handle_events" : [`schemes_edit, `scheme, `dc_scheme],
 	"store" : SchemeSelectionStore,
 	"help" : HELPS["scheme_selection"]:"",
     ];
@@ -825,15 +423,10 @@ define map<string,any> getSchemeDescrWidget () {
  */
 define void HardDiskInit (string key) {
     string value = (string)
-	PowerManagement::current_scheme["DISK_STANDBY_MODE"]:"";
+	PowerManagement::current_scheme["ALPM"]:"";
     if (value == "")
-	value = "powersave";
-    UI::ChangeWidget (`id (`standby), `Value, value);
-    value = (string)
-	PowerManagement::current_scheme["DISK_ACOUSTIC"]:"";
-    if (value == "")
-	value = "quiet";
-    UI::ChangeWidget (`id (`acoustic), `Value, value);
+	value = "max_performance";
+    UI::ChangeWidget (`id (`alpm), `Value, value);
 }
 
 /**
@@ -842,10 +435,8 @@ define void HardDiskInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void HardDiskStore (string key, map event) {
-    PowerManagement::current_scheme["DISK_STANDBY_MODE"]
-	= (string)UI::QueryWidget (`id (`standby), `Value);
-    PowerManagement::current_scheme["DISK_ACOUSTIC"]
-	= (string)UI::QueryWidget (`id (`acoustic), `Value);
+    PowerManagement::current_scheme["ALPM"]
+	= (string)UI::QueryWidget (`id (`alpm), `Value);
 }
 
 /**
@@ -856,49 +447,114 @@ define map<string,any> getHardDiskWidget () {
     return $[
 	"widget" : `custom,
 	// frame,
-	"custom_widget" : `Frame (_("Hard Disk"), `VBox (
+	"custom_widget" : `Frame (_("SATA Power Management"), `HBox (`HStretch (), `VBox (
 	    `VStretch (),
 	    // combo box
-	    `Left (`ComboBox (`id (`standby), `opt (`hstretch),
+	    `Left (`ComboBox (`id (`alpm), `opt (`hstretch),
 		// combo box
-		_("&Standby Policy"),
+		_("Aggressive Link Power Management"),
 		[
-		    `item (`id ("performance"),
+		    `item (`id ("min_power"),
+			// combo box item
+			_("Maximum Power Saving")),
+		    `item (`id ("medium_power"),
+			// combo box item
+			_("Medium Power Saving")),
+		    `item (`id ("max_performance"),
 			// combo box item
 			_("Maximum Performance")),
-		    `item (`id ("powersave"),
-			// combo box item
-			_("Power Saving")),
-		    `item (`id ("aggressiv_powersave"),
-			// combo box item
-			_("Aggressive Power Saving")),
-		    `item (`id ("off"),
-			// combo box item
-			_("Disabled")),
 		])),
-	    `VStretch (),
-	    `Left (`ComboBox (`id (`acoustic), `opt (`hstretch),
-		// combo box
-		_("&Acoustic Policy"),
-		[
-		    `item (`id ("performance"),
-			// combo box item
-			_("Maximum Performance")),
-		    `item (`id ("low"),
-			// combo box item
-			_("Quiet")),
-		    `item (`id ("quiet"),
-			// combo box item
-			_("Maximally Quiet")),
-		    `item (`id ("off"),
-			// combo box item
-			_("Disabled")),
-		])),
-	    `VStretch ()
+	    `VStretch ()), `HStretch ()
 	)),
 	"init" : HardDiskInit,
 	"store" : HardDiskStore,
 	"help" : HELPS["hard_disk"]:"",
+    ];
+}
+
+// cpu policy widget
+
+/**
+ * Handle function of a widget
+ * @param key string widget id
+ * @param event map event that will be handled
+ * @return symbol for wizard sequencer
+ */
+define symbol CpuHandle (string key, map event) {
+    string governor = (string)UI::QueryWidget (`id (`governor), `Value);
+    UI::ChangeWidget (`id (`ondemand_threshold), `Enabled, governor == "ondemand");
+    return nil;
+}
+
+/**
+ * Init function of a widget
+ * @param key string widget id
+ */
+define void CpuInit (string key) {
+    UI::ChangeWidget (`id (`governor), `Value,
+	PowerManagement::current_scheme["CPUFREQ_GOVERNOR"]:"performance");
+    UI::ChangeWidget (`id (`sched_saving), `Value,
+	PowerManagement::current_scheme["CPUFREQ_SCHED_MC_POWER_SAVINGS"]:"0" == "1");
+    UI::ChangeWidget (`id (`ondemand_threshold), `Value,
+	tointeger (PowerManagement::current_scheme["CPUFREQ_ONDEMAND_UP_THRESHOLD"]:"0") / 10);
+    UI::ChangeWidget (`id (`powersave_bias), `Value,
+	tointeger (PowerManagement::current_scheme["CPUFREQ_ONDEMAND_POWERSAVE_BIAS"]:"1000"));
+    CpuHandle (key, nil);
+}
+
+/**
+ * Store settings of a widget
+ * @param key string widget id
+ * @param event map event that caused storing of widget settings
+ */
+define void CpuStore (string key, map event) {
+    PowerManagement::current_scheme["CPUFREQ_GOVERNOR"] =
+	(string)UI::QueryWidget (`id (`governor), `Value);
+    PowerManagement::current_scheme["CPUFREQ_SCHED_MC_POWER_SAVINGS"] =
+	(boolean)UI::QueryWidget (`id (`sched_saving), `Value) ? "1" : "0";
+    PowerManagement::current_scheme["CPUFREQ_ONDEMAND_UP_THRESHOLD"] =
+	tostring ((integer)UI::QueryWidget (`id (`ondemand_threshold), `Value) * 10);
+    PowerManagement::current_scheme["CPUFREQ_ONDEMAND_POWERSAVE_BIAS"] =
+	tostring ((integer)UI::QueryWidget (`id (`powersave_bias), `Value));
+}
+
+
+map<string,any> getCpuWidget () {
+    return $[
+	"widget" : `custom,
+	// frame,
+	"custom_widget" : `Frame (_("CPU Power Management"), `HBox (`HStretch (), `VBox (
+	    `VStretch (),
+	    // combo box
+	    `Left (`ComboBox (`id (`governor), `opt (`hstretch, `notify),
+		// combo box
+		_("CPU Frequency Governor"),
+		[
+		    `item (`id ("powersave"),
+			// combo box item
+			_("Maximum Power Saving")),
+		    `item (`id ("performance"),
+			// combo box item
+			_("Maximum Performance")),
+		    `item (`id ("ondemand"),
+			// combo box item
+			_("On Demand")),
+		    `item (`id ("userspace"),
+			// combo box item
+			_("User Space")),
+		])),
+	    `VStretch (),
+	    `Left (`IntField (`id (`ondemand_threshold), _("Load Checking Interval"), 0, 1000000, 0)),
+	    `VStretch (),
+	    `Left (`IntField (`id (`powersave_bias), _("Lower frequency by (percent)"), 0, 100, 0)),
+	    `VStretch (),
+	    `Left (`CheckBox (`id (`sched_saving), _("Balance Load between CPU Cores")))
+	), `HStretch ())),
+	"init" : CpuInit,
+	"store" : CpuStore,
+	"handle" : CpuHandle,
+	"handle_events" : [ `governor ],
+	"help" : HELPS["cpu"]:"",
     ];
 }
 
@@ -955,13 +611,13 @@ define map<string,any> getCoolingPolicyWidget () {
 	    `ComboBox (`id (`overheat),
 		`opt (`hstretch),
 		// combo box
-		_("&Overheat Temperature Action"),
-		GetAcpiThermalEventHandlers ()),
+		_("&Overheat Temperature Action"), []),
+//		GetAcpiThermalEventHandlers ()),
 	    `ComboBox (`id (`overheat_critical),
 		`opt (`hstretch),
 		// combo box
-		_("&Critical Temperature Action"),
-		GetAcpiThermalEventHandlers ())
+		_("&Critical Temperature Action"), [])
+//		GetAcpiThermalEventHandlers ())
 	)),
 	"init" : CoolingPolicyInit,
 	"store" : CoolingPolicyStore,
@@ -1209,19 +865,13 @@ define map<string,any> getDpmsWidget () {
 // general settings
 
 map<string,map<string,any> > widgets = $[
-    "battery_warning" : getBatteryWarning (),
-    "acpi_buttons" : getAcpiButtonsWidget (),
-    "suspend_preword" : getSuspendPreword (),
-    "enable_std" : getEnableSTDWidget (),
-    "enable_str" : getEnableSTRWidget (),
-    "enable_standby" : getEnableStandbyWidget (),
-    "str_standby_additional_info" : getStrStandbyAdditionalHelp (),
-    "other_settings_menu_button" : getOtherSettingsButton (),
     "scheme_selection" : getSchemeSelectionWidget (),
     "schemes_list" : getSchemesListWidget (),
     "scheme_name" : getSchemeNameWidget (),
     "scheme_descr" : getSchemeDescrWidget (),
     "hard_disk" : getHardDiskWidget (),
+    "cpu" : getCpuWidget (),
+
     "cooling_policy" : getCoolingPolicyWidget (),
     "screensaver" : getScreensaverWidget (),
     "dpms" : getDpmsWidget (),
