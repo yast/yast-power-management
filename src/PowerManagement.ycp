@@ -153,39 +153,6 @@ global boolean Modified() {
     return modified;
 }
 
-global list<string> GetActions()
-{
-    return permissions_actions;
-}
-
-global string GetPermission(string action)
-{
-    return global_permissions[action]:nil;
-}
-
-global boolean SetPermission(string action, string permission)
-{
-    if (!contains(permissions_actions, action))
-    {
-	y2error("Unknown action '%1', supported: %2", action, permissions_actions);
-	return false;
-    }
-    else if (permission == nil)
-    {
-	y2error("Invalid permission: %1", permission);
-    }
-    else
-    {
-	if (global_permissions[action]:nil != permission)
-	{
-	    modified = true;
-	}
-
-	global_permissions[action] = permission;
-	return true;
-    }
-}
-
 /**
  * Read all power-management settings
  * @return true on success
@@ -284,7 +251,6 @@ global boolean Read() {
 	    string v = (string)SCR::Read (add (p, conf));
 	    scheme[key] = v;
 	});
-y2internal ("Scheme: %1", scheme);
 	return scheme;
     });
     new_schemes = $[];
@@ -485,35 +451,20 @@ global map Export () {
  * @return summary of the current configuration
  */
 global list<string> Summary() {
-    string ac_scheme = "";
-    string bat_scheme = "";
-
-    string scheme = PowerManagement::global_settings["AC_SCHEME"]:"";
+    string scheme = PowerManagement::global_settings["SCHEME"]:"";
     if (scheme == "")
-	scheme = "performance";
-
-    foreach (map<string,string> s, schemes, ``{
+	scheme = _("Default settings");
+    else
+    {
+      foreach (map<string,string> s, schemes, ``{
 	if (s["_scheme_id"]:"" == scheme)
-	    ac_scheme = s["SCHEME_DESCRIPTION"]:"";
-    });
-    if (ac_scheme == "")
-	ac_scheme = scheme;
-
-    scheme = PowerManagement::global_settings["BATTERY_SCHEME"]:"";
-    if (scheme == "")
-        scheme = "performance";
-    foreach (map<string,string> s, schemes, ``{
-	if (s["_scheme_id"]:"" == scheme)
-	    bat_scheme = s["SCHEME_DESCRIPTION"]:"";
-    });
-    if (bat_scheme == "")
-	bat_scheme = scheme;
+	    scheme = s["SCHEME_DESCRIPTION"]:"";
+      });
+    }
 
     list<string> ret = [
 	// summary text, %1 is scheme name
-	sformat (_("AC Scheme: %1"), ac_scheme),
-	// summary text, %1 is scheme name
-	sformat (_("Battery Scheme: %1"), bat_scheme),
+	sformat (_("Selected Scheme: %1"), scheme),
      ];
     y2milestone ("Power management summary: %1", ret);
 
@@ -528,21 +479,6 @@ global list<string> Summary() {
  */
 global map AutoPackages() {
     return $[ "install":["pm-profiler"], "remove":[] ];
-}
-
-/**
- * List all supported ACPI modes
- * @return a list containing all supported ACPI modes
- */
-global list<string> ACPIModes () {
-    if (acpi_modes == nil)
-    {
-	string modes = (string)SCR::Read (.target.string, "/proc/acpi/sleep");
-	list<string> spl = splitstring (modes, " \t");
-	spl = filter (string s, spl, {return s != "" && s != "\n";});
-	acpi_modes = spl;
-    }
-    return acpi_modes;
 }
 
 /**
