@@ -423,7 +423,7 @@ define map<string,any> getSchemeDescrWidget () {
  */
 define void HardDiskInit (string key) {
     string value = (string)
-	PowerManagement::current_scheme["ALPM"]:"";
+	PowerManagement::current_scheme["SATA_ALPM"]:"";
     if (value == "")
 	value = "max_performance";
     UI::ChangeWidget (`id (`alpm), `Value, value);
@@ -435,7 +435,7 @@ define void HardDiskInit (string key) {
  * @param event map event that caused storing of widget settings
  */
 define void HardDiskStore (string key, map event) {
-    PowerManagement::current_scheme["ALPM"]
+    PowerManagement::current_scheme["SATA_ALPM"]
 	= (string)UI::QueryWidget (`id (`alpm), `Value);
 }
 
@@ -491,14 +491,15 @@ define symbol CpuHandle (string key, map event) {
  * @param key string widget id
  */
 define void CpuInit (string key) {
+y2internal ("CS: %1", PowerManagement::current_scheme);
     UI::ChangeWidget (`id (`governor), `Value,
 	PowerManagement::current_scheme["CPUFREQ_GOVERNOR"]:"performance");
     UI::ChangeWidget (`id (`sched_saving), `Value,
 	PowerManagement::current_scheme["CPUFREQ_SCHED_MC_POWER_SAVINGS"]:"0" == "1");
     UI::ChangeWidget (`id (`ondemand_threshold), `Value,
-	tointeger (PowerManagement::current_scheme["CPUFREQ_ONDEMAND_UP_THRESHOLD"]:"0") / 10);
+	tointeger (PowerManagement::current_scheme["CPUFREQ_ONDEMAND_UP_THRESHOLD"]:"0"));
     UI::ChangeWidget (`id (`powersave_bias), `Value,
-	tointeger (PowerManagement::current_scheme["CPUFREQ_ONDEMAND_POWERSAVE_BIAS"]:"1000"));
+	tointeger (PowerManagement::current_scheme["CPUFREQ_ONDEMAND_POWERSAVE_BIAS"]:"1000") / 10);
     CpuHandle (key, nil);
 }
 
@@ -513,9 +514,9 @@ define void CpuStore (string key, map event) {
     PowerManagement::current_scheme["CPUFREQ_SCHED_MC_POWER_SAVINGS"] =
 	(boolean)UI::QueryWidget (`id (`sched_saving), `Value) ? "1" : "0";
     PowerManagement::current_scheme["CPUFREQ_ONDEMAND_UP_THRESHOLD"] =
-	tostring ((integer)UI::QueryWidget (`id (`ondemand_threshold), `Value) * 10);
+	tostring ((integer)UI::QueryWidget (`id (`ondemand_threshold), `Value));
     PowerManagement::current_scheme["CPUFREQ_ONDEMAND_POWERSAVE_BIAS"] =
-	tostring ((integer)UI::QueryWidget (`id (`powersave_bias), `Value));
+	tostring ((integer)UI::QueryWidget (`id (`powersave_bias), `Value) * 10);
 }
 
 

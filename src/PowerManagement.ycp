@@ -31,7 +31,7 @@ import "String";
 map<string,string> scheme_options_mapping = $[
     "SCHEME_NAME"			: "NAME",
     "SCHEME_DESCRIPTION"		: "DESCRIPTION",
-    "ASPM"				: "ASPM",
+    "SATA_ALPM"				: "SATA_ALPM",
     "CPUFREQ_GOVERNOR"			: "CPUFREQ_GOVERNOR",
     "CPUFREQ_SCHED_MC_POWER_SAVINGS"	: "CPUFREQ_SCHED_MC_POWER_SAVINGS",
     "CPUFREQ_ONDEMAND_UP_THRESHOLD"	: "CPUFREQ_ONDEMAND_UP_THRESHOLD",
@@ -284,6 +284,7 @@ global boolean Read() {
 	    string v = (string)SCR::Read (add (p, conf));
 	    scheme[key] = v;
 	});
+y2internal ("Scheme: %1", scheme);
 	return scheme;
     });
     new_schemes = $[];
