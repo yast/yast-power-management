@@ -26,14 +26,14 @@ include "power-management/misc.ycp";
 define boolean PrintHandler (map options) {
     boolean print_all = false;
     boolean printed = false;
-    if (! (haskey (options, "selected_scheme")
-	|| haskey (options, "scheme")))
+    if (! (haskey (options, "selected_profile")
+	|| haskey (options, "profile")))
     {
 	print_all = true;
     }
-    if (print_all || haskey (options, "scheme"))
+    if (print_all || haskey (options, "profile"))
     {
-	string scheme = options["scheme"]:"";
+	string scheme = options["profile"]:"";
 	boolean all_schemes = print_all || scheme == "";
 	foreach (map<string,string> s, PowerManagement::schemes, {
 	    if (all_schemes || s["SCHEME_NAME"]:"" == scheme)
@@ -41,10 +41,10 @@ define boolean PrintHandler (map options) {
 		if (printed)
 		    CommandLine::Print ("\n");
 		// cmdline output, %1 is scheme name
-		CommandLine::Print (sformat (_("Scheme Name: %1"),
+		CommandLine::Print (sformat (_("Profile Name: %1"),
 		    s["SCHEME_NAME"]:""));
 		// cmdline output, %1 is scheme description
-		CommandLine::Print (sformat (_("Scheme Description: %1"),
+		CommandLine::Print (sformat (_("Profile Description: %1"),
 		    s["SCHEME_DESCRIPTION"]:""));
 		foreach (string k, string v, s, {
 		    if (k != "SCHEME_NAME" && k != "SCHEME_DESCRIPTION"
@@ -58,15 +58,15 @@ define boolean PrintHandler (map options) {
 	    }
 	});
     }
-    if (print_all || haskey (options, "selected_scheme"))
+    if (print_all || haskey (options, "selected_profile"))
     {
 	if (printed)
 	    CommandLine::Print ("\n");
 	// header for commandline output
-	CommandLine::Print (_("Power Saving Schemes:\n"));
+	CommandLine::Print (_("Power Saving Profiles:\n"));
 	string scheme = PowerManagement::global_settings["SCHEME"]:"";
 	if (scheme == "")
-	    scheme = "performance";
+	    scheme = _("Default Profile");
 	foreach (map<string,string> s, PowerManagement::schemes, {
 	    if (s["_scheme_id"]:"" == scheme)
 	    {
@@ -75,7 +75,7 @@ define boolean PrintHandler (map options) {
 	    }
 	});
 	scheme = PowerManagement::TranslateSchemeName (scheme);
-	CommandLine::Print (sformat (_("Selected Scheme: %1"), scheme));
+	CommandLine::Print (sformat (_("Selected Profile: %1"), scheme));
 	list<string> available = maplist (map<string,string> s,
 	    PowerManagement::schemes,
 	{
@@ -83,7 +83,7 @@ define boolean PrintHandler (map options) {
 	});
 	available = filter (string s, available, {return s != nil;});
 	// cmdline about power saving schemes, %1 is list of schemes,
-	CommandLine::Print (sformat (_("Available Schemes: %1"),
+	CommandLine::Print (sformat (_("Available Profiles: %1"),
 	    mergestring (available, ", ")));
 	printed = true;
     }
@@ -96,9 +96,9 @@ define boolean PrintHandler (map options) {
   * @return boolean true if settings have been changed
   */
 boolean SetHandler (map options) {
-    if (haskey (options, "scheme"))
+    if (haskey (options, "profile"))
     {
-	string scheme = options["scheme"]:"";
+	string scheme = options["profile"]:"";
 	string scheme_id = nil;
 	boolean ret = false;
 	foreach (map<string,string> s, PowerManagement::schemes, {
@@ -113,7 +113,7 @@ boolean SetHandler (map options) {
 	else if (scheme != "")
 	{
 	    // error report
-	    CommandLine::Error (_("Specified scheme not found."));
+	    CommandLine::Error (_("Specified profile not found."));
 	}
 	return ret;
     }
@@ -132,13 +132,13 @@ boolean SchemeHandler (map options) {
     if (! (s_add || s_edit || s_delete))
     {
 	// error report
-	CommandLine::Error (_("Operation with the scheme not specified."));
+	CommandLine::Error (_("Operation with the profile not specified."));
 	return false;
     }
     if (! haskey (options, "name"))
     {
 	// error report
-	CommandLine::Error (_("Scheme name not specified."));
+	CommandLine::Error (_("Profile name not specified."));
 	return false;
     }
     string scheme_name = options["name"]:"";
@@ -213,58 +213,58 @@ map cmdline = $[
 	    // command line help text for an action
 	    "help"	: _("Set general settings"),
 	],
-	"scheme" : $[
+	"profile" : $[
 	    "handler"	: SchemeHandler,
 	    // command line help text for an action
-	    "help"	: _("Set options of a scheme"),
+	    "help"	: _("Set options of a profile"),
 	],
     ],
 
     "options"       : $[
-	"scheme" : $[
+	"profile" : $[
 	    "type"	: "string",
 	    // command line help text for an option
-	    "help"	: _("Display only specified scheme"),
+	    "help"	: _("Display only specified profile"),
 	],
-	"selected_scheme" : $[
+	"selected_profile" : $[
 	    // command line help text for an option
-	    "help"	: _("Display only scheme selected for being used"),
+	    "help"	: _("Display only profile selected for being used"),
 	],
-	"scheme" : $[
+	"profile" : $[
 	    // command line help text for an option
-	    "help"	: _("Scheme to use when running on AC power source"),
+	    "help"	: _("Profile to be used"),
 	    "type"	: "string",
 	],
 	"name" : $[
 	    // command line help text for an option
-	    "help"	: _("The scheme name"),
+	    "help"	: _("The profile name"),
 	    "type"	: "string",
 	],
 	"add" : $[
 	    // command line help text for an option
-	    "help"	: _("Add a new scheme"),
+	    "help"	: _("Add a new profile"),
 	],
 	"edit" : $[
 	    // command line help text for an option
-	    "help"	: _("Edit an existing scheme"),
+	    "help"	: _("Edit an existing profile"),
 	],
 	"delete" : $[
 	    // command line help text for an option
-	    "help"	: _("Remove an existing scheme"),
+	    "help"	: _("Remove an existing profile"),
 	],
 	"description" : $[
 	    // command line help text for an option
-	    "help"	: _("The description of the scheme"),
+	    "help"	: _("The description of the profile"),
 	    "type"	: "string",
 	],
 	"clone" : $[
 	    // command line help text for an option
-	    "help"	: _("The scheme to clone"),
+	    "help"	: _("The profile to clone"),
 	    "type"	: "string",
 	],
 	"option" : $[
 	    // command line help text for an option
-	    "help"	: _("Option of a scheme to modify"),
+	    "help"	: _("Option of a profile to modify"),
 	    "type"	: "string",
 	],
 	"value" : $[
@@ -274,15 +274,15 @@ map cmdline = $[
 	],
 	"rename" : $[
 	    // command line help text for an option
-	    "help"	: _("New name of the scheme to rename"),
+	    "help"	: _("New name of the profile to rename"),
 	    "type"	: "string",
 	],
     ],
 
     "mappings"      : $[
-	"print"		: [ "selected_scheme", "scheme", ],
-	"set"		: [ "scheme", ],
-	"scheme"	: ["add", "edit", "delete", "name", "description",
+	"print"		: [ "selected_profile", "profile", ],
+	"set"		: [ "profile", ],
+	"profile"	: ["add", "edit", "delete", "name", "description",
 				"clone", "option", "value", "rename"],
     ],
 ];

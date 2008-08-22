@@ -138,7 +138,7 @@ symbol SchemesDialog () {
     ), `HSpacing (2));
 
     // dialog caption
-    string caption = _("Power Management Scheme Setup");
+    string caption = _("Power Management Profile Setup");
 
     return CWM::ShowAndRun ($[
 	"widget_names" : ["schemes_list"],
@@ -167,7 +167,7 @@ symbol SchemeDialog1 () {
     ), `HSpacing (2));
 
     // dialog caption
-    string caption = _("Power Management Scheme Setup");
+    string caption = _("Power Management Profile Setup");
 
     return CWM::ShowAndRun ($[
 	"widget_names" : ["scheme_name", "scheme_descr"],
@@ -196,7 +196,7 @@ symbol SchemeDialog2 () {
     ), `HStretch ());
 
     // dialog caption
-    string caption = _("Power Management Scheme Setup");
+    string caption = _("Power Management Profile Setup");
 
     return CWM::ShowAndRun ($[
 	"widget_names" : ["hard_disk", "cpu"],

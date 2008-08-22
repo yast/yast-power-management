@@ -34,119 +34,44 @@ _("<p><b><big>Aborting Saving</big></b><br>
 Abort the save procedure by pressing <b>Abort</b>.</p>"),
 
 
-    // Battery warning dialog help 1/3
-    "battery_warning" : _("<p><b><big>Battery Capacity Feedback</big></b><br>
-Set three battery capacity levels and assign actions for
-each of these capacity levels.</p>")
-    +
-    // Battery warning dialog help 2/3
-    _("<p>Use <b>Warning Capacity</b>, <b>Low Capacity</b>, and
-<b>Critical Capacity</b> to set battery levels as a percentage of full
-capacity.</p>")
-    +
-    // Battery warning dialog help 3/3
-    _("<p>Use <b>Warning Level Action</b>, <b>Low Level Action</b>, and
-<b>Critical Level Action</b> to set actions to perform if the relevant
-battery level is reached.</p>"),
-
-
-    // ACPI buttons dialog help 1/1
-    "acpi_buttons" : _("<p><b><big>ACPI Buttons</big></b><br>
-Assign events to perform after a button is
-pressed. Events can be set for the <b>Power Button</b> and <b>Sleep Button</b>.
-To assign an event to perform when the lid of the laptop is
-closed, use <b>Laptop Lid Closing</b>.</p>"),
-
-    // enabling standby/suspend dialog help 1/6
-    "suspend_preword" : _("<p><b><big>Modes Permitted for Users</big></b><br>
-Configure which power-saving modes users should be able to switch to.</p>"),
-
-    // enabling standby/suspend dialog help 2/6
-    "enable_std" : _("<p><b>Suspend to Disk</b> allows users to suspend the 
-computer to the disk (ACPI mode 4).
-Resuming after suspending to disk takes longer than resuming
-after suspending to RAM.</p>"),
-
-    // enabling standby/suspend dialog help 3/6
-    "enable_str" : _("<p><b>Suspend to RAM</b> allows users to suspend 
-the computer to RAM (ACPI mode 3).
-A computer suspended to RAM still consumes electricity and
-unsaved data will be lost if it is disconnected or the battery drains.</p>"),
-
-    // enabling standby/suspend dialog help 4/6
-    "enable_standby" : _("<p><b>Standby Mode</b> allows users to 
-switch the computer to the standby power saving mode
-(ACPI mode 1).</p>"),
-
-    // enabling standby/suspend dialog help 5/6
-    "str_standby_additional_info" : _("<p><b><big>Supported Power-Saving Modes
-</big></b><br>
-Some machines do not support all power-saving modes. If a mode is not supported
-by your machine, the appropriate check box is disabled.</p>
-")
-
-	// enabling standby/suspend dialog help 6/6
-	// %1 is file path
-	+ sformat (_("<p><b><big>Warning</big></b><br>
-Depending on your hardware, suspend to RAM or standby could fail and you may 
-need to push the reset button to reboot your computer. This could lead to 
-data loss.
-See <tt>%1</tt> for details.</p>"),
-	    "/usr/share/doc/packages/powersave/powersave_manual.html"),
-
     // Main dialog help 1/5
-    "scheme_selection" : _("<p><b><big>Energy Saving Schemes</big></b><br>
-Use <b>AC Powered</b> to adjust the energy saving scheme to use when your
-computer is AC powered.
-Use <b>Battery Powered</b> to adjust the energy saving scheme to use when your
-computer is powered by internal battery.</p>")
+    "profile_selection" : _("<p><b><big>Energy Saving Profiles</big></b><br>
+Use <b>Selected Profile</b> to adjust the energy saving profile to use.</p>")
     +
     // Main dialog help 2/5
-    _("<p>Below the selected schemes, descriptions of both selected schemes
-are displayed.</p>")
+    _("<p>Below the selected profile, its description is displayed.</p>")
     +
     // Main dialog help 3/5
-    _("<p><b><big>Adjusting Energy Saving Schemes</big></b><br>
-To adjust energy saving schemes, delete existing ones, or create new ones,
-use <b>Edit Schemes</b>.</p>"),
+    _("<p><b><big>Adjusting Energy Saving Profiles</big></b><br>
+To adjust energy saving profiles, delete existing ones, or create new ones,
+use <b>Edit Profiles</b>.</p>"),
 
-    // Main dialog help 4/5
-    "other_settings_menu_button" : _("<p><b><big>Permissions</big></b><br>
-To adjust whether users are allowed to switch the computer to the standby or
-suspend mode, use <b>Suspend Permissions</b> button.</p>\n")+
-
-    // Main dialog help 5/5
-_("<p>Beginning with openSUSE 10.2, a lot of configuration options have been
-removed from the Power Management YaST module. All vanished settings have to be
-configured with a graphical client such as <tt>gnome-power-manager</tt> or
-<tt>kpowersave</tt>.</p>")
-,
 
 
     // Schemes list dialog 1/3
-    "schemes_list" : _("<p><b><big>Scheme Setup</big></b><br>
-Here, adjust the energy saving schemes. To modify a scheme, select
+    "profiles_list" : _("<p><b><big>Profile Setup</big></b><br>
+Here, adjust the energy saving Profiles. To modify a profile, select
 it and click <b>Edit</b>.</p>")
     +
     // Schemes list dialog 2/3
-    _("<p>To add a new scheme, select a scheme to clone then click
-<b>Add</b>. To delete an existing scheme, select it and click 
+    _("<p>To add a new profile, select a profile to clone then click
+<b>Add</b>. To delete an existing profile, select it and click 
 <b>Delete</b>.</p>")
     +
-    // Schemes list dialog 3/3
-    _("<p>In the main dialog, assign schemes to use when you 
+    // Profiles list dialog 3/3
+    _("<p>In the main dialog, assign profiles to use when you 
 work on battery or AC power.</p>"),
 
-    // Scheme editation dialog 1 help 1/6
-    "scheme_name" : _("<p><big><b>Scheme Setup</b></big>
-Configure the settings of the scheme. Enter its name in <b>Scheme Name</b>
-and optionally a description in <b>Scheme Description</b>.</p>"),
+    // Profile editation dialog 1 help 1/6
+    "profile_name" : _("<p><big><b>Profile Setup</b></big>
+Configure the settings of the profile. Enter its name in <b>Profile Name</b>
+and optionally a description in <b>Profile Description</b>.</p>"),
 
-    // Scheme editation dialog 1 help 2/6
+    // Profile editation dialog 1 help 2/6
     // rwalter merged content into previous. sorry.
-    "scheme_descr" : "",
+    "profile_descr" : "",
 
-    // Scheme editation dialog 2 help 1/2
+    // Profile editation dialog 2 help 1/2
     "hard_disk" : _("<p><b><big>Hard Disk Settings</big></b><br>
 Use <b>Standby Policy</b> to adjust the power saving policy of the hard disks.
 Remember that more power saving also means waiting more often until the disk
@@ -155,8 +80,8 @@ Use <b>Acoustic Policy</b> to adjust the acoustic policy of the disk. The noise
 produced by the disk may be lowered by moving disk heads more slowly. Not all
 disks support this feature.</p>"),
 
-    // Scheme editation dialog 2 help 2/2
-    "cooling_policy" : _("<p><b><big>Cooling Policy</big></b><br>
+    // Profile editation dialog 2 help 2/2
+    "cpu" : _("<p><b><big>Cooling Policy</big></b><br>
 Use the cooling policy <b>Status</b> to adjust the active or passive cooling policy.
 Active means that the cooling fan is
 turned on if the system starts overheating.
@@ -167,31 +92,6 @@ that does not help, turns the cooling fan on.</p>
 or reaches critical temperature, use <b>Overheat Temperature Action</b> and
 <b>Critical Temperature Action</b>.</p>"),
 
-    // Scheme editation dialog 3 help 1/2
-    "allow_screensaver" : _("<p><b><big>Enable Screen Saver</big></b><br>
-To enable the screen saver in this scheme, set <b>Enable Screen Saver</b>.
-Disabling the screen saver is useful for schemes used, for example, for
-presentations.</p>"),
-
-    // Scheme editation dialog 3 help 2/2
-    // Display is a substantive (screen)
-    "dpms" : _("<p><b><big>Display Blanking</big></b><br>
-To allow blanking the display using DPMS, set
-<b>Enable Display Power Management</b>.
-To set the standby, suspend, and power off time-outs use
-<b>Display Standby Time-Out</b>, <b>Display Suspend Time-Out</b>, and
-<b>Display Power Off Time-Out</b>. To disable a time-out,
-set its value to <b>0</b>.</p>"),
-
-    // Scheme editation dialog 3 help 3/3
-/*    "suspend_timeout" : _("<p><b><big>System Suspend Settings</big></b><br>
-To enable system suspend when keyboard and mouse are not used for
-a specified time, set <b>Enable System Suspend Timeout</b>. To specify the
-timeout, use <b>Suspend Timeout</b> to set it in minutes.
-To set the suspend method, use
-<b>Suspend Method</b>. See the documentation to learn more information
-about power saving modes.</p>"),
-*/
 ];
 
 /* EOF */

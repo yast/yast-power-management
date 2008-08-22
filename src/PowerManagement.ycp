@@ -168,14 +168,14 @@ global boolean Read() {
 	    /* Progress stage 2/3 */
 	    _("Read general settings"),
 	    /* Progress stage 3/3 */
-	    _("Read power saving schemes"),
+	    _("Read power saving profiles"),
 	], [
 	    /* Progress step 1/3 */
 	    _("Checking the environment..."),
 	    /* Progress step 2/3 */
 	    _("Reading general settings..."),
 	    /* Progress step 3/3 */
-	    _("Reading power saving schemes..."),
+	    _("Reading power saving profiles..."),
 	    /* Progress finished */
 	    _("Finished")
 	],
@@ -246,7 +246,7 @@ global boolean Read() {
     if(! stage_success)
     {
 	/* Error message */
-	Report::Warning(_("Cannot read power saving schemes."));
+	Report::Warning(_("Cannot read power saving profiles."));
     }
     sleep(sl);
 
@@ -286,14 +286,14 @@ global boolean Write() {
     // We do not set help text here, because it was set outside
     Progress::New(caption, " ", steps, [
 	    /* Progress stage 1/3 */
-	    _("Write schemes"),
+	    _("Write profiles"),
 	    /* Progress stage 2/3 */
 	    _("Write general settings"),
 	    /* Progress stage 3/3 */
 	    _("Restart pm-profiler daemon")
 	], [
 	    /* Progress step 1/3 */
-	    _("Writing schemes..."),
+	    _("Writing profiles..."),
 	    /* Progress step 2/3 */
 	    _("Writing general settings..."),
 	    /* Progress step 3/3 */
@@ -349,7 +349,7 @@ global boolean Write() {
     if(! stage_success)
     {
 	/* Error message */
-	Report::Error(_("Cannot write power saving schemes."));
+	Report::Error(_("Cannot write power saving profiles."));
     }
     success = success && stage_success;
     stage_success = true;
@@ -452,7 +452,7 @@ global list<string> Summary() {
 
     list<string> ret = [
 	// summary text, %1 is scheme name
-	sformat (_("Selected Scheme: %1"), scheme),
+	sformat (_("Selected Profile: %1"), scheme),
      ];
     y2milestone ("Power management summary: %1", ret);
 

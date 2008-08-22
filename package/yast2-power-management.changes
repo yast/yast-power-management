@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Aug 22 13:22:26 CEST 2008 - jsrain@suse.cz
+
+- renamed schemes to profiles, some more clean-up
+
+-------------------------------------------------------------------
 Thu Aug 21 15:35:43 CEST 2008 - jsrain@suse.cz
 
 - updated to use pm-profiler for servers (fate #302521)

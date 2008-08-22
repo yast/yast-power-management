@@ -49,7 +49,7 @@ define symbol SchemeSelectionHandle (string key, map event) {
 	{
 	    // fallback scheme description, displayed in a rich text
 	    // but without HTML tags!!!
-	    descr = _("No scheme description available");
+	    descr = _("No profile description available");
 	}
 	UI::ChangeWidget (`id (`descr), `Value, descr);
     }
@@ -73,7 +73,7 @@ define void SchemeSelectionInit (string key) {
     UI::ReplaceWidget (`scheme_rp,
 	`ComboBox (`id (`scheme), `opt (`hstretch, `notify),
 	    // combo box
-	    _("&Selected Scheme"), items));
+	    _("&Selected Profile"), items));
     string scheme = PowerManagement::global_settings["SCHEME"]:"";
     UI::ChangeWidget (`id (`scheme), `Value, scheme);
     SchemeSelectionHandle (key, $["ID" : `scheme ]);
@@ -97,7 +97,7 @@ define map<string,any> getSchemeSelectionWidget () {
     return $[
 	"widget" : `custom,
 	// frame
-	"custom_widget" : `Frame (_("Energy Saving Schemes"), `VBox (
+	"custom_widget" : `Frame (_("Energy Saving Profiles"), `VBox (
 	    `HBox (
 		`HWeight (1, `VBox (
 		    `ReplacePoint (`id (`scheme_rp),
@@ -111,7 +111,7 @@ define map<string,any> getSchemeSelectionWidget () {
 		`HStretch (),
 		`PushButton (`id (`schemes_edit),
 		    // push button
-		    _("Ed&it Schemes")),
+		    _("Ed&it Profiles")),
 		`HStretch ()
 	    )
 	)),
@@ -141,7 +141,7 @@ define void SchemesRedraw () {
 	if (descr == "")
 	{
 	    // fallback scheme description, table entre
-	    descr = _("No scheme description available");
+	    descr = _("No profile description available");
 	}
 	return `item (`id (scheme_id), name, descr);
     });
@@ -180,7 +180,7 @@ define symbol SchemesHandle (string key, map event) {
 	if (selected == nil)
 	{
 	    // popup message
-	    Popup::Message (_("No scheme selected."));
+	    Popup::Message (_("No profile selected."));
 	}
 	if (selected == "performance" || selected == "powersave")
 	{
@@ -188,7 +188,7 @@ define symbol SchemesHandle (string key, map event) {
 	  if (false)
 	  {
 	    // popup message
-	    Popup::Message (_("The selected scheme cannot be modified.
+	    Popup::Message (_("The selected profile cannot be modified.
 Add a new one instead."));
 	    return nil;
 	  }
@@ -203,7 +203,7 @@ Add a new one instead."));
 	if (selected == nil)
 	{
 	    // popup message
-	    Popup::Message (_("No scheme selected."));
+	    Popup::Message (_("No profile selected."));
 	}
 	PowerManagement::current_schemes = filter (
 	    map<string,string>s,
@@ -249,9 +249,9 @@ define map<string,any> getSchemesListWidget () {
 	"custom_widget" : `VBox (
 	    `Table (`id (`schemes), `opt (`notify, `immediate), `header (
 		// table header
-		_("Scheme Name"),
+		_("Profile Name"),
 		// table header
-		_("Scheme Description")),
+		_("Profile Description")),
 		[]),
 	    `HBox (
 		`PushButton (`id (`add), Label::AddButton ()),
@@ -298,7 +298,7 @@ define boolean SchemeNameValidate (string key, map event) {
     if (new_name == "")
     {
 	// popup message
-	Popup::Message (_("Scheme name must be set."));
+	Popup::Message (_("Profile name must be set."));
 	return false;
     }
     if (new_name == original_scheme_name)
@@ -309,14 +309,14 @@ define boolean SchemeNameValidate (string key, map event) {
     if (contains (names, new_name))
     {
 	// popup message
-	Popup::Message (_("The specified scheme name is not unique."));
+	Popup::Message (_("The specified profile name is not unique."));
 	return false;
     }
     if (size (new_name) > 32)
     {
 	Popup::Message (
 	    // pop-up message
-	    _("The scheme name must not be longer than 32 characters."));
+	    _("The profile name must not be longer than 32 characters."));
 	return false;
     }
     return true;
@@ -407,7 +407,7 @@ define map<string,any> getSchemeDescrWidget () {
     return $[
 	"widget" : `textentry,
 	// text entry
-	"label" : _("Scheme &Description"),
+	"label" : _("Profile &Description"),
 	"help" : HELPS["scheme_descr"]:"",
 	"init" : SchemeDescrInit,
 	"store" : SchemeDescrStore,
