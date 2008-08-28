@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Aug 28 11:19:39 CEST 2008 - jsrain@suse.cz
+
+- updated the scope to only select profiles
+
+-------------------------------------------------------------------
 Fri Aug 22 13:22:26 CEST 2008 - jsrain@suse.cz
 
 - renamed schemes to profiles, some more clean-up

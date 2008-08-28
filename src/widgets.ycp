@@ -106,6 +106,7 @@ define map<string,any> getSchemeSelectionWidget () {
 			    _("&AC Powered"), [])),
 		    `RichText (`id (`descr), `opt (`hstretch), "")
 		))
+/*
 	    ),
 	    `HBox (
 		`HStretch (),
@@ -113,6 +114,7 @@ define map<string,any> getSchemeSelectionWidget () {
 		    // push button
 		    _("Ed&it Profiles")),
 		`HStretch ()
+*/
 	    )
 	)),
 	"init" : SchemeSelectionInit,

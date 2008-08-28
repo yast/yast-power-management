@@ -34,17 +34,20 @@ _("<p><b><big>Aborting Saving</big></b><br>
 Abort the save procedure by pressing <b>Abort</b>.</p>"),
 
 
-    // Main dialog help 1/5
+    // Main dialog help 1/2
     "profile_selection" : _("<p><b><big>Energy Saving Profiles</big></b><br>
 Use <b>Selected Profile</b> to adjust the energy saving profile to use.</p>")
     +
-    // Main dialog help 2/5
+    // Main dialog help 2/2
     _("<p>Below the selected profile, its description is displayed.</p>")
+/*
     +
     // Main dialog help 3/5
     _("<p><b><big>Adjusting Energy Saving Profiles</big></b><br>
 To adjust energy saving profiles, delete existing ones, or create new ones,
-use <b>Edit Profiles</b>.</p>"),
+use <b>Edit Profiles</b>.</p>")
+*/
+,
 
 
 

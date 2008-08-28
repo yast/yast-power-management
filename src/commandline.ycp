@@ -24,8 +24,10 @@ include "power-management/misc.ycp";
   * @return boolean true if settings have been changed
   */
 define boolean PrintHandler (map options) {
-    boolean print_all = false;
+    boolean print_all = true;
     boolean printed = false;
+/*
+    boolean print_all = false;
     if (! (haskey (options, "selected_profile")
 	|| haskey (options, "profile")))
     {
@@ -57,7 +59,7 @@ define boolean PrintHandler (map options) {
 		printed = true;
 	    }
 	});
-    }
+    }*/
     if (print_all || haskey (options, "selected_profile"))
     {
 	if (printed)
@@ -213,11 +215,13 @@ map cmdline = $[
 	    // command line help text for an action
 	    "help"	: _("Set general settings"),
 	],
+/*
 	"profile" : $[
 	    "handler"	: SchemeHandler,
 	    // command line help text for an action
 	    "help"	: _("Set options of a profile"),
 	],
+*/
     ],
 
     "options"       : $[
@@ -280,10 +284,11 @@ map cmdline = $[
     ],
 
     "mappings"      : $[
-	"print"		: [ "selected_profile", "profile", ],
+//	"print"		: [ "selected_profile", "profile", ],
+	"print"		: [ ],
 	"set"		: [ "profile", ],
-	"profile"	: ["add", "edit", "delete", "name", "description",
-				"clone", "option", "value", "rename"],
+//	"profile"	: ["add", "edit", "delete", "name", "description",
+//				"clone", "option", "value", "rename"],
     ],
 ];
 
