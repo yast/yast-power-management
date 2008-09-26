@@ -15,9 +15,6 @@ import "PowerManagement";
 
 textdomain "power-management";
 
-include "power-management/misc.ycp";
-
-
 /**
   * Handler for command line interface
   * @param options map options from the command line
