@@ -1,7 +1,7 @@
 .etc.pm-profiler.profiles
 
 `ag_ini(
-    `IniAgent( [ "/etc/pm-profiler/*" ],
+    `IniAgent( [ "/etc/pm-profiler/*/config" ],
 	$[
 	    /* values at the top level, allow comments after value */
 	    "options"	: [ "global_values" ],
@@ -15,7 +15,7 @@
 	    ],
 	    /* matching rules */
 	    "rewrite"	: [
-		[ "/etc/pm-profiler/(.*)", "/etc/pm-profiler/%s" ],
+		[ "/etc/pm-profiler/(.*)/config", "/etc/pm-profiler/%s/config" ],
 	    ],
 	]
 ))

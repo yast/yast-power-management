@@ -3,6 +3,7 @@
 @HEADER@
 BuildRequires:	update-desktop-files yast2-devtools yast2-testsuite perl-XML-Writer yast2
 Requires:	gettext
+BuildArchitectures: noarch
 
 # .etc.policykit agent
 Requires:	yast2 >= 2.14.7
