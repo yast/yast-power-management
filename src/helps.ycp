@@ -34,12 +34,17 @@ _("<p><b><big>Aborting Saving</big></b><br>
 Abort the save procedure by pressing <b>Abort</b>.</p>"),
 
 
-    // Main dialog help 1/2
-    "profile_selection" : _("<p><b><big>Energy Saving Profiles</big></b><br>
+    // Main dialog help 1/3
+    "scheme_selection" : _("<p><b><big>Energy Saving Profiles</big></b><br>
 Use <b>Selected Profile</b> to adjust the energy saving profile to use.</p>")
     +
-    // Main dialog help 2/2
+    // Main dialog help 2/3
     _("<p>Below the selected profile, its description is displayed.</p>")
+    +
+    // Main dialog help 3/3
+    _("<p>To read more about pm-profiler and to learn how to create or modify
+the power saving profiles, refer to the
+<i>/usr/share/doc/packages/pm-profiler/README</i> file.</p>")
 /*
     +
     // Main dialog help 3/5
