@@ -385,10 +385,20 @@ global boolean Write() {
     if(Abort()) return false;
     Progress::NextStage ();
 
-    y2milestone ("Restarting pm-profiler daemon");
-    if (! write_only)
-	stage_success = Service::Restart ("pm-profiler");
-    stage_success = Service::Enable ("pm-profiler") && stage_success;
+    if (global_settings["SCHEME"]:"" == "")
+    {
+	y2milestone ("Stopping pm-profiler daemon");
+	if (! write_only)
+	    stage_success = Service::Stop ("pm-profiler");
+	stage_success = Service::Disable ("pm-profiler") && stage_success;
+    }
+    else
+    {
+	y2milestone ("Restarting pm-profiler daemon");
+	if (! write_only)
+	    stage_success = Service::Restart ("pm-profiler");
+	stage_success = Service::Enable ("pm-profiler") && stage_success;
+    }
 
     if(! stage_success)
     {
