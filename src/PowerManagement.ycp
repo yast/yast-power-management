@@ -488,7 +488,7 @@ global string TranslatePowersaveText (string text) {
     if (text == "")
 	return text;
     map out = (map)SCR::Execute (.target.bash_output, sformat (
-	"TEXTDOMAINDIR=/usr/share/locale/ gettext power-management \"%1\"",
+	"TEXTDOMAINDIR=/usr/share/locale/ gettext pm-profiler \"%1\"",
 	text));
     if (out["exit"]:-1 != 0)
     {
