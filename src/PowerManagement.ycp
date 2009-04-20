@@ -150,6 +150,9 @@ global boolean Read() {
     if (Mode::config ())
 	AbortFunction = nil;
 
+    // hide progress, it is too fast (bnc #447574)
+    boolean progress_status = Progress::set (false);
+
     /* PowerManagement read dialog caption */
     string caption = _("Initializing Configuration");
 
@@ -183,14 +186,18 @@ global boolean Read() {
     );
 
     // read database
-    if(Abort()) return false;
+    if(Abort()) {
+	Progress::set (progress_status);
+	return false;
+    }
     Progress::NextStage();
 
     // check installed packages
-    if (false && ! Mode::test ()
+    if (! Mode::test ()
 	&& ! PackageSystem::CheckAndInstallPackagesInteractive (["pm-profiler"])
     )
     {
+	Progress::set (progress_status);
 	return false;
     }
 
@@ -205,7 +212,10 @@ global boolean Read() {
     sleep(sl);
 
     // read general settings
-    if(Abort()) return false;
+    if(Abort()) {
+	Progress::set (progress_status);
+	return false;
+    }
     Progress::NextStage();
 
     list<string> r_schemes = (list<string>)
@@ -227,7 +237,10 @@ global boolean Read() {
     sleep(sl);
 
     // read saving schemes
-    if(Abort()) return false;
+    if(Abort()) {
+	Progress::set (progress_status);
+	return false;
+    }
     Progress::NextStage();
 
     schemes = maplist (string s, r_schemes, ``{
@@ -260,6 +273,7 @@ global boolean Read() {
     y2debug ("Global settings: %1", global_settings);
     y2debug ("Power saving schemes: %1", schemes);
 
+    Progress::set (progress_status);
     return success;
 }
 
