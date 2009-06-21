@@ -11,7 +11,8 @@ Requires:	yast2 >= 2.14.7
 Summary:	YaST2 - Power Management Configuration
 
 %description
--
+This package contains the YaST2 component for Power management
+configuration.
 
 @PREP@
 
