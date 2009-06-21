@@ -8,7 +8,7 @@ BuildArchitectures: noarch
 # .etc.policykit agent
 Requires:	yast2 >= 2.14.7
 
-Summary:	Configuration of power-management
+Summary:	YaST2 - Power Management Configuration
 
 %description
 -
