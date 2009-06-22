@@ -1,6 +1,7 @@
 @HEADER-COMMENT@
 
 @HEADER@
+License: GPL v2 or later
 BuildRequires:	update-desktop-files yast2-devtools yast2-testsuite perl-XML-Writer yast2
 Requires:	gettext
 BuildArchitectures: noarch
