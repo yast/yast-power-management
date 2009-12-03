@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Dec  3 10:21:35 CET 2009 - jsrain@suse.cz
+
+- fixed desktop file category (bnc#559343)
+
+-------------------------------------------------------------------
 Tue Jun 23 22:31:19 CEST 2009 - coolo@novell.com
 
 - fix build with automake 1.11
