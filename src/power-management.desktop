@@ -19,7 +19,7 @@ X-SuSE-YaST-AutoInstResource=power-management
 X-SuSE-YaST-AutoInstSchema=power-management.rnc
 
 Icon=yast-power-management
-Exec=/sbin/yast2 power-management 
+Exec=xdg-su -c "/sbin/yast2 power-management"
 
 Name=Power Management
 GenericName=Configure power management
