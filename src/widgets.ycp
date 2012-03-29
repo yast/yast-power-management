@@ -548,7 +548,7 @@ map<string,any> getCpuWidget () {
 	    `VStretch (),
 	    `Left (`IntField (`id (`ondemand_threshold), _("Load Checking Interval"), 0, 1000000, 0)),
 	    `VStretch (),
-	    `Left (`IntField (`id (`powersave_bias), _("Lower frequency by (percent)"), 0, 100, 0)),
+	    `Left (`IntField (`id (`powersave_bias), _("Lower Frequency by (percent)"), 0, 100, 0)),
 	    `VStretch (),
 	    `Left (`CheckBox (`id (`sched_saving), _("Balance Load between CPU Cores")))
 	), `HStretch ())),

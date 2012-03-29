@@ -229,7 +229,7 @@ map cmdline = $[
 	],
 	"selected_profile" : $[
 	    // command line help text for an option
-	    "help"	: _("Display only profile selected for being used"),
+	    "help"	: _("Display only profile selected for use"),
 	],
 	"profile" : $[
 	    // command line help text for an option
