@@ -4,6 +4,7 @@ namespace config = "http://www.suse.com/1.0/configns"
 
 power-management = element power-management {
     element global_settings {
+        element SCHEME { text }? &
         element AC_SCHEME { text }? &
         element BATTERY_CRITICAL { text }? &
         element BATTERY_LOW { text }? &
