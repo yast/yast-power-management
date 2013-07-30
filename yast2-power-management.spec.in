@@ -10,6 +10,8 @@ BuildArchitectures: noarch
 # .etc.policykit agent
 Requires:	yast2 >= 2.14.7
 
+Requires:       yast2-ruby-bindings >= 1.0.0
+
 Summary:	YaST2 - Power Management Configuration
 
 %description
@@ -28,8 +30,8 @@ configuration.
 %defattr(-,root,root)
 %dir @yncludedir@/power-management
 @yncludedir@/power-management/*
-@clientdir@/power-management.ycp
-@clientdir@/power-management_*.ycp
+@clientdir@/power-management.rb
+@clientdir@/power-management_*.rb
 @moduledir@/PowerManagement.*
 @desktopdir@/power-management.desktop
 @scrconfdir@/*
