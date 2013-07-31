@@ -1,27 +1,31 @@
-# Makefile.am for power-management/src
+# Sources for power-management
+
+module_DATA = \
+  modules/PowerManagement.rb
+
+client_DATA = \
+  clients/power-management_auto.rb \
+  clients/power-management.rb
 
 yncludedir = @yncludedir@/power-management
-rncdir =  $(schemadir)/autoyast/rnc
+ynclude_DATA = \
+  include/power-management/widgets.rb \
+  include/power-management/wizards.rb \
+  include/power-management/commandline.rb \
+  include/power-management/dialogs.rb \
+  include/power-management/helps.rb
 
-rnc_DATA = power-management.rnc
+scrconf_DATA = \
+  scrconf/etc_pm-profiler.scr \
+  scrconf/etc_pm-profiler_profiles.scr
 
-client_DATA =			\
-	power-management.ycp		\
-	power-management_auto.ycp
+schemafilesdir = $(schemadir)/autoyast/rnc
+schemafiles_DATA = \
+  autoyast-rnc/power-management.rnc
 
-ynclude_DATA =			\
-	helps.ycp		\
-	wizards.ycp		\
-	dialogs.ycp		\
-	widgets.ycp		\
-	commandline.ycp	
+desktop_DATA = \
+  desktop/power-management.desktop
 
-desktop_DATA =			\
-	power-management.desktop
-
-module_DATA =			\
-	PowerManagement.ycp
-
-EXTRA_DIST = $(client_DATA) $(ynclude_DATA) $(module_DATA) $(desktop_DATA) $(rnc_DATA)
+EXTRA_DIST = $(module_DATA) $(client_DATA) $(ynclude_DATA) $(scrconf_DATA) $(schemafiles_DATA) $(desktop_DATA)
 
 include $(top_srcdir)/Makefile.am.common
